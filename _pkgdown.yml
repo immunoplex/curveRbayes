@@ -1,8 +1,8 @@
 url: https://immunoplex.github.io/curveRbayes/
+
 template:
   bootstrap: 5.0
   bootswatch: flatly
-  mathjax: true
 
 home:
   title: curveRbayes
@@ -12,20 +12,23 @@ home:
     profiling.
 
 navbar:
+  title: "curveRbayes"
   logo:
-    src: man/figures/logo_small.png
+    image: man/figures/logo_small.png
     alt: curveRbayes logo
     width: 200px
+    href: index.html
   structure:
     left:
     - intro
     - reference
     - articles
-    - news
-    right: github
+    right:
+    - search
+    - github
   components:
     github:
-      icon: fab fa-github
+      icon: fa-github
       href: https://github.com/immunoplex/curveRbayes
 
 reference:
@@ -83,8 +86,8 @@ reference:
   desc: >
     Posterior predictive grid construction and test-sample back-calculation.
     `predict_grid_bayes()` implements the three-step CDAN procedure
-    (posterior draw → forward evaluation → Student-t noise injection →
-    analytical inversion) to produce a full precision profile. 
+    (posterior draw, forward evaluation, Student-t noise injection,
+    analytical inversion) to produce a full precision profile.
     `predict_samples_bayes()` back-calculates observed test-sample responses
     without noise injection, since the observed response is already the noisy
     measurement.
@@ -92,5 +95,11 @@ reference:
   - predict_grid_bayes
   - predict_samples_bayes
 
+- title: Example Datasets
+  desc: Synthetic immunoassay datasets for testing and documentation.
+  contents:
+  - bead_assay_example
+  - elisa_assay_example
+
 news:
-  one_page: yes
+  one_page: true

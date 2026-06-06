@@ -1,0 +1,25 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://immunoplex.github.io/curveRbayes/404.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/articles/bayesian-quickstart.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/articles/index.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/authors.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/index.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/news/index.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/bead_assay_example.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/build_stan_data.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/collect_samples_bayes.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/compare_models_loo.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/compile_stan_model.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/compute_dynamic_priors.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/compute_loo.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/elisa_assay_example.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/extract_curve_params.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/fit_bayes_single.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/fit_calibration_bayes.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/index.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/stan_model_path.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/summary_table_bayes.html</loc></url>
+</urlset>
+

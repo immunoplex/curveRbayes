@@ -1,0 +1,18 @@
+/* Push hero content below the fixed navbar */
+.jumbotron,
+.homepage-title,
+#pkgdown-sidebar,
+.contents {
+  padding-top: 1.5rem;
+}
+
+/* Ensure the page title is visible and not hidden under navbar */
+.page-header {
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+/* Extra breathing room on the home page hero block */
+.template-home main {
+  padding-top: 2.5rem;
+}
