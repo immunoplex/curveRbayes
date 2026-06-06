@@ -1,0 +1,96 @@
+url: https://immunoplex.github.io/curveRbayes/
+template:
+  bootstrap: 5.0
+  bootswatch: flatly
+  mathjax: true
+
+home:
+  title: curveRbayes
+  description: Bayesian hierarchical calibration curves for the curveR suite. Hierarchical
+    Stan models (4PL/5PL/Gompertz) with non-centred parameterisation, PSIS-LOO model
+    selection, Bayesian stacking weights, and CDAN posterior predictive precision
+    profiling.
+
+navbar:
+  logo:
+    src: man/figures/logo_small.png
+    alt: curveRbayes logo
+    width: 200px
+  structure:
+    left:
+    - intro
+    - reference
+    - articles
+    - news
+    right: github
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/immunoplex/curveRbayes
+
+reference:
+- title: Main Entry Point
+  desc: >
+    The function most users call directly. Expects preprocessed standards
+    on the fitting scale (use `curveRcore::preprocess_standards()` upstream).
+    Fits all `curve_id` values simultaneously via hierarchical Stan models
+    and returns a `calibration_result_multiplate`.
+  contents:
+  - fit_calibration_bayes
+
+- title: Multi-Curve Helpers
+  desc: >
+    Convenience extractors that operate on `calibration_result_multiplate`
+    objects returned by `fit_calibration_bayes()`. Both functions also
+    accept the legacy single-`calibration_result` format.
+  contents:
+  - summary_table_bayes
+  - collect_samples_bayes
+
+- title: Stan Compilation and MCMC Fitting
+  desc: >
+    Lower-level functions that compile Stan models and run HMC/NUTS sampling.
+    Called internally by `fit_calibration_bayes()` but exported for users who
+    need fine-grained control over model compilation, sampling parameters, or
+    multi-step workflows.
+  contents:
+  - compile_stan_model
+  - fit_bayes_single
+  - extract_curve_params
+
+- title: Stan Data and Priors
+  desc: >
+    Functions that prepare inputs for Stan. `compute_dynamic_priors()` derives
+    weakly informative hyperpriors from the preprocessed data range.
+    `build_stan_data()` assembles all Stan inputs — observations, curve indices,
+    and prior scalars — into the named list expected by the Stan `data {}` block.
+  contents:
+  - compute_dynamic_priors
+  - build_stan_data
+
+- title: LOO-CV Model Selection
+  desc: >
+    PSIS-LOO cross-validation and Bayesian stacking weights. `compute_loo()`
+    extracts the `log_lik` generated quantity and computes a `loo` object.
+    `compare_models_loo()` runs LOO for every fitted model and returns the
+    `loo_compare()` table plus stacking weights. Called automatically by
+    `fit_calibration_bayes()` when more than one model is fitted.
+  contents:
+  - compute_loo
+  - compare_models_loo
+
+- title: Posterior Prediction and CDAN Precision
+  desc: >
+    Posterior predictive grid construction and test-sample back-calculation.
+    `predict_grid_bayes()` implements the three-step CDAN procedure
+    (posterior draw → forward evaluation → Student-t noise injection →
+    analytical inversion) to produce a full precision profile. 
+    `predict_samples_bayes()` back-calculates observed test-sample responses
+    without noise injection, since the observed response is already the noisy
+    measurement.
+  contents:
+  - predict_grid_bayes
+  - predict_samples_bayes
+
+news:
+  one_page: yes

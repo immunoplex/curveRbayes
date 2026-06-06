@@ -1,0 +1,465 @@
+# =============================================================================
+# fit_calibration_bayes.R — Top-level entry point for Bayesian calibration
+#
+# Receives ALREADY-PREPROCESSED standards (stacked data frame with curve_id,
+# concentration, and response columns on the fitting scale). Fits all
+# curve_ids simultaneously via hierarchical Stan models.
+#
+# Returns a calibration_result_multiplate — one calibration_result per
+# curve_id, each with its own grid, samples, and parameter summaries.
+# This matches the structure of curveRfreq's output for direct comparison.
+#
+# Eligibility gating: After LOO-CV selection, assess_model_eligibility()
+# (from curveRcore) is applied per model × curve_id.  Only the rel_se and
+# dynamic_range gates are active for the Bayesian path (no hard constraint
+# bounds, no vcov matrix). A model is globally eligible if it passes on all
+# curve_ids.
+# =============================================================================
+
+
+#' Fit Bayesian Hierarchical Calibration Curves
+#'
+#' Fits a hierarchical Bayesian model to preprocessed standard curve data
+#' across one or more curve_ids simultaneously. Returns a
+#' `calibration_result_multiplate` with one entry per curve_id, each
+#' containing its own grid predictions, sample predictions, and
+#' parameter summaries.
+#'
+#' @param standards Data frame. Preprocessed stacked standard curve data.
+#'   Must contain `curve_id`, a response column, and a `concentration`
+#'   column — all on the fitting scale.
+#' @param samples Data frame or NULL. Stacked sample data with `curve_id`
+#'   and the response column (on the raw measurement scale).
+#' @param response_var Character. Name of the response column.
+#' @param model_names Character vector. Models to fit.
+#'   Default `c("logistic4", "gompertz4")`.
+#' @param is_log_response Logical. Default TRUE.
+#' @param is_log_independent Logical. Default TRUE.
+#' @param std_curve_conc Numeric. Undiluted standard concentration.
+#' @param fixed_a Numeric or NULL. Fixed lower asymptote (fitting scale).
+#' @param cv_x_max Numeric. Default 150.
+#' @param pcov_threshold Numeric. Percent CV threshold for LLOQ/ULOQ
+#'   determination and the dynamic-range eligibility gate. Default 20.
+#' @param min_dynamic_range_log10 Numeric. Minimum dynamic range (log10)
+#'   for eligibility. Default 0.5.
+#' @param max_rel_se Numeric. Maximum relative SE (SD/|mean|) permitted
+#'   for any parameter. Default 5.0.
+#' @param n_grid Integer. Default 200.
+#' @param grid_min_conc Numeric. Default 1e-4.
+#' @param grid_max_conc Numeric or NULL.
+#' @param chains Integer. Default 4.
+#' @param warmup Integer. Default 1000.
+#' @param sampling Integer. Default 1000.
+#' @param adapt_delta Numeric. Default 0.9.
+#' @param seed Integer or NULL.
+#' @param n_draws_predict Integer. Number of posterior draws for the
+#'   best-model grid and sample predictions. Default 500.
+#' @param n_draws_ensemble Integer. Number of posterior draws for
+#'   non-best-model precision grids. Default 260.
+#' @param compute_all_grids Logical. If TRUE, compute CDAN precision
+#'   grids for every converged model. Required for eligibility gating
+#'   when more than one model is fitted. Default FALSE.
+#' @param run_loo Logical or NULL. Default NULL (auto).
+#' @param verbose Logical. Default FALSE.
+#'
+#' @return A `calibration_result_multiplate` object (from curveRcore).
+#'   Each per-plate `$selection` contains `$assessments`, `$eligible_models`,
+#'   and `$fallback` from the eligibility gating.
+#'
+#' @export
+fit_calibration_bayes <- function(standards,
+                                  samples = NULL,
+                                  response_var,
+                                  model_names = c("logistic4", "gompertz4"),
+                                  is_log_response = TRUE,
+                                  is_log_independent = TRUE,
+                                  std_curve_conc,
+                                  fixed_a = NULL,
+                                  cv_x_max = 150,
+                                  pcov_threshold = 20,
+                                  min_dynamic_range_log10 = 0.5,
+                                  max_rel_se = 5.0,
+                                  n_grid = 200L,
+                                  grid_min_conc = 1e-4,
+                                  grid_max_conc = NULL,
+                                  chains = 4L,
+                                  warmup = 1000L,
+                                  sampling = 1000L,
+                                  adapt_delta = 0.9,
+                                  seed = NULL,
+                                  n_draws_predict = 500L,
+                                  n_draws_ensemble = 260L,
+                                  compute_all_grids = FALSE,
+                                  run_loo = NULL,
+                                  verbose = FALSE) {
+
+  # ── 1. Validate inputs ── (unchanged)
+  if (!("curve_id" %in% names(standards)))
+    stop("standards must contain a 'curve_id' column")
+  if (!(response_var %in% names(standards)))
+    stop("response_var '", response_var, "' not found in standards")
+  if (!("concentration" %in% names(standards)))
+    stop("standards must contain a 'concentration' column (preprocessed)")
+  if (!is.null(samples) && !("curve_id" %in% names(samples)))
+    stop("samples must contain a 'curve_id' column when provided")
+
+  # ── 2. Resolve effective models ── (unchanged)
+  if (is_log_independent)
+    model_names <- setdiff(model_names, "loglogistic4")
+  if (length(model_names) == 0)
+    stop("No models to fit after resolving redundant parameterisations")
+  if (is.null(run_loo)) run_loo <- length(model_names) > 1
+
+  # When more than one model is fitted, eligibility gating needs per-model
+  # CDAN grids. Force compute_all_grids when eligibility gating is needed.
+  if (length(model_names) > 1 && !compute_all_grids) {
+    compute_all_grids <- TRUE
+    if (verbose)
+      message("[fit_calibration_bayes] compute_all_grids forced TRUE ",
+              "for eligibility gating across ", length(model_names), " models")
+  }
+
+  # ── 3. Discover curve_ids and build mapping ── (unchanged)
+  curve_ids    <- sort(unique(standards$curve_id))
+  n_curves     <- length(curve_ids)
+  curve_id_map <- stats::setNames(seq_len(n_curves), as.character(curve_ids))
+
+  # ── 4. Fit each model family ── (unchanged)
+  bayes_fits <- list()
+
+  for (fam in model_names) {
+    if (verbose) message("\n\u2500\u2500 Fitting ", fam, " \u2500\u2500")
+
+    priors <- compute_dynamic_priors(
+      data              = standards,
+      response_variable = response_var,
+      fixed_a           = fixed_a,
+      model_family      = fam
+    )
+
+    sdata <- build_stan_data(
+      standards         = standards,
+      response_variable = response_var,
+      priors            = priors,
+      model_family      = fam,
+      curve_id_map      = curve_id_map
+    )
+
+    bayes_fits[[fam]] <- fit_bayes_single(
+      sdata, model_family = fam,
+      chains = chains, warmup = warmup, sampling = sampling,
+      adapt_delta = adapt_delta, seed = seed,
+      verbose = verbose
+    )
+  }
+
+  # ── 5. LOO-CV ranking — unchanged, always computed when > 1 model ──
+  if (run_loo && length(bayes_fits) > 1) {
+    loo_selection <- compare_models_loo(bayes_fits)
+  } else {
+    best_loo <- names(bayes_fits)[1]
+    loo_selection <- list(
+      best_model_name = best_loo,
+      criterion       = if (length(bayes_fits) == 1) "single_model" else "LOO",
+      loo_results     = NULL,
+      comparison      = NULL,
+      weights         = NULL
+    )
+  }
+
+  # LOO ranking scores for select_best_eligible():
+  # elpd_loo — higher is better.
+  loo_scores <- if (!is.null(loo_selection$loo_results)) {
+    vapply(names(bayes_fits), function(nm) {
+      lo <- loo_selection$loo_results[[nm]]
+      if (is.null(lo)) return(NA_real_)
+      tryCatch(lo$estimates["elpd_loo", "Estimate"], error = function(e) NA_real_)
+    }, numeric(1))
+  } else {
+    # Single model or no LOO: use 0 as a placeholder score
+    stats::setNames(rep(0, length(bayes_fits)), names(bayes_fits))
+  }
+
+  # ── 6. Build shared ensemble output ── (unchanged structure)
+  ensemble_out <- lapply(bayes_fits, function(bf) {
+    params_all <- lapply(seq_len(n_curves), function(idx) {
+      extract_curve_params(bf, curve_idx = idx)
+    })
+    names(params_all) <- as.character(curve_ids)
+    list(
+      model_name = bf$model_family,
+      converged  = TRUE,
+      n_curves   = n_curves,
+      parameters = params_all,
+      fit_stats  = list(
+        n_divergent     = bf$diagnostics$num_divergent,
+        n_max_treedepth = bf$diagnostics$num_max_treedepth,
+        ebfmi           = bf$diagnostics$ebfmi
+      ),
+      raw_fit = bf
+    )
+  })
+
+  # ── 6a. Per-model CDAN grids ──────────────────────────────────────────────
+  # Grids indexed by [fam][[curve_idx]].  Best model always computed at full
+  # n_draws_predict resolution; non-best at n_draws_ensemble resolution.
+  #
+  # compute_all_grids is TRUE whenever > 1 model is fitted (forced above),
+  # so the eligibility gate always has pcov profiles to work with.
+
+  best_name_loo <- loo_selection$best_model_name
+  ensemble_grids <- list()   # [fam][[idx]] -> grid
+
+  for (fam in names(bayes_fits)) {
+    bf           <- bayes_fits[[fam]]
+    n_draws_use  <- if (fam == best_name_loo) n_draws_predict else n_draws_ensemble
+    ensemble_grids[[fam]] <- vector("list", n_curves)
+
+    for (idx in seq_len(n_curves)) {
+      base_g <- curveRcore::generate_prediction_grid(
+        std_curve_conc     = std_curve_conc,
+        n_grid             = n_grid,
+        grid_min_conc      = grid_min_conc,
+        grid_max_conc      = grid_max_conc,
+        is_log_independent = is_log_independent
+      )
+      ensemble_grids[[fam]][[idx]] <- predict_grid_bayes(
+        base_g, bf, curve_idx = idx,
+        n_draws  = n_draws_use,
+        cv_x_max = cv_x_max,
+        pcov_threshold = pcov_threshold,
+        is_log_x = is_log_independent,
+        is_log_response = is_log_response
+      )
+    }
+
+    if (verbose)
+      message(sprintf("  [grids] %s (%d draws)", fam, n_draws_use))
+  }
+
+  # ── 5b. Per-curve eligibility assessment ───────────────────────────────────
+  # For Bayesian models, constraints = NULL and vcov_matrix = NULL, so only
+  # the rel_se and dynamic_range gates fire.
+  #
+  # A model is globally eligible if it passes all gates on ALL curve_ids.
+  # The per-curve assessments are stored for reporting.
+
+  # assessments_by_model[[fam]][[cid]] = assess_model_eligibility() output
+  assessments_by_model <- lapply(names(bayes_fits), function(fam) {
+    per_curve <- lapply(seq_len(n_curves), function(idx) {
+      cid <- as.character(curve_ids[idx])
+
+      # Parameters for this curve from the ensemble
+      params_df <- ensemble_out[[fam]]$parameters[[cid]]
+
+      # Rename 'mean' -> 'mean', 'sd' -> 'sd' (already correct in Bayesian output)
+      # assess_model_eligibility() accepts 'mean' + 'sd' columns directly.
+
+      g        <- ensemble_grids[[fam]][[idx]]
+      pcov_vec <- if (!is.null(g)) g$pcov else NULL
+      grid_x   <- if (!is.null(g)) g$log10_concentration else NULL
+
+      curveRcore::assess_model_eligibility(
+        model_name              = fam,
+        parameters              = params_df,
+        constraints             = NULL,      # Bayesian: priors are soft, no hard bounds
+        pcov_profile            = pcov_vec,
+        grid_x                  = grid_x,
+        pcov_threshold          = pcov_threshold,
+        bound_tol               = 1e-4,      # not used when constraints = NULL
+        max_rel_se              = max_rel_se,
+        min_dynamic_range_log10 = min_dynamic_range_log10,
+        vcov_matrix             = NULL       # Bayesian: posterior handles this
+      )
+    })
+    names(per_curve) <- as.character(curve_ids)
+    per_curve
+  })
+  names(assessments_by_model) <- names(bayes_fits)
+
+  # Global eligibility: a model must pass all gates on all curve_ids
+  globally_eligible <- vapply(names(bayes_fits), function(fam) {
+    all(vapply(assessments_by_model[[fam]],
+               function(a) isTRUE(a$eligible), logical(1)))
+  }, logical(1))
+
+  if (verbose) {
+    for (fam in names(globally_eligible)) {
+      status <- if (globally_eligible[fam]) "\u2713 eligible" else "\u2717 ineligible"
+      message(sprintf("  [eligibility] %-14s %s", fam, status))
+    }
+  }
+
+  # Build an assessments list for select_best_eligible() — one entry per model,
+  # summarising global eligibility.  Use the median dynamic range across
+  # curve_ids as the summary metric for the fallback tie-breaker.
+  assessments_global <- lapply(names(bayes_fits), function(fam) {
+    per_curve    <- assessments_by_model[[fam]]
+    is_elig      <- globally_eligible[[fam]]
+
+    dr_vals <- vapply(per_curve, function(a) {
+      v <- a$dynamic_range_log10
+      if (is.null(v) || !is.finite(v)) 0 else v
+    }, numeric(1))
+
+    # Aggregate gate failures across curves for the fallback reason
+    all_gates <- do.call(rbind, lapply(per_curve, function(a) a$gates))
+
+    list(
+      model_name          = fam,
+      eligible            = is_elig,
+      gates               = all_gates,
+      dynamic_range_log10 = stats::median(dr_vals),
+      lloq                = stats::median(vapply(per_curve,
+                                          function(a) a$lloq %||% NA_real_,
+                                          numeric(1)), na.rm = TRUE),
+      uloq                = stats::median(vapply(per_curve,
+                                          function(a) a$uloq %||% NA_real_,
+                                          numeric(1)), na.rm = TRUE)
+    )
+  })
+  names(assessments_global) <- names(bayes_fits)
+
+  # ── 5b+. Attach shape-LOQ to each per-curve assessment ─────────────────────
+  for (fam in names(assessments_by_model)) {
+    for (idx in seq_len(n_curves)) {
+      cid <- as.character(curve_ids[idx])
+      g   <- ensemble_grids[[fam]][[idx]]
+      if (!is.null(g) && "d2y_dx2" %in% names(g)) {
+        shape_loq <- curveRcore::compute_shape_loq_from_grid(g)
+        assessments_by_model[[fam]][[cid]] <- c(
+          assessments_by_model[[fam]][[cid]], shape_loq)
+      }
+    }
+  }
+
+  # ── 5c. Eligible model selection ──────────────────────────────────────────
+  eligible_selection <- curveRcore::select_best_eligible(
+    assessments      = assessments_global,
+    ranking_scores   = loo_scores,
+    criterion        = paste0(loo_selection$criterion, "+eligibility"),
+    higher_is_better = TRUE    # LOO elpd: higher is better
+  )
+
+  # Preserve the LOO comparison and weights for downstream auditability
+  eligible_selection$loo_comparison <- loo_selection$comparison
+  eligible_selection$loo_weights    <- loo_selection$weights
+
+  best_name <- eligible_selection$best_model_name
+  best_fit  <- bayes_fits[[best_name]]
+
+  if (verbose && !is.na(best_name)) {
+    fb_tag <- if (isTRUE(eligible_selection$fallback)) " [fallback]" else ""
+    message(sprintf("  [selection] best = %s%s", best_name, fb_tag))
+  }
+
+  # ── 7. Build per-curve_id results ─────────────────────────────────────────
+  plates <- list()
+
+  for (idx in seq_len(n_curves)) {
+    cid <- as.character(curve_ids[idx])
+
+    # Best-model grid: already computed in Section 6a at full resolution
+    grid <- ensemble_grids[[best_name]][[idx]]
+
+    # Sample predictions (best model only)
+    samples_out <- NULL
+    if (!is.null(samples)) {
+      this_samp <- samples[as.character(samples$curve_id) == cid, , drop = FALSE]
+      if (nrow(this_samp) > 0) {
+        samples_out <- predict_samples_bayes(
+          this_samp, best_fit, curve_idx = idx,
+          response_variable = response_var,
+          is_log_response   = is_log_response,
+          n_draws  = n_draws_predict,
+          cv_x_max = cv_x_max,
+          is_log_x = is_log_independent
+        )
+      }
+    }
+
+    # Per-curve ensemble: parameters + per-model grid + eligibility
+    curve_ensemble <- lapply(names(ensemble_out), function(fam) {
+      ens <- ensemble_out[[fam]]
+      cp  <- ens$parameters[[cid]]
+
+      entry <- list(
+        model_name  = ens$model_name,
+        converged   = ens$converged,
+        parameters  = cp,
+        fit_stats   = ens$fit_stats,
+        raw_fit     = ens$raw_fit,
+        eligibility = assessments_by_model[[fam]][[cid]]
+      )
+
+      # Attach per-model grid (best model at full resolution; others at ensemble)
+      entry$grid <- ensemble_grids[[fam]][[idx]]
+
+      entry
+    })
+    names(curve_ensemble) <- names(ensemble_out)
+
+    # Per-plate selection = eligible_selection with per-curve assessments
+    plate_selection <- eligible_selection
+    plate_selection$assessments_by_curve <- assessments_by_model
+
+    # Build calibration_result for this curve_id
+    meta <- list(
+      method             = "bayesian",
+      package            = "curveRbayes",
+      version            = as.character(utils::packageVersion("curveRbayes")),
+      timestamp          = Sys.time(),
+      curve_id           = cid,
+      response_var       = response_var,
+      independent_var    = "concentration",
+      is_log_response    = is_log_response,
+      is_log_independent = is_log_independent,
+      n_curves           = n_curves,
+      n_standards        = sum(as.character(standards$curve_id) == cid),
+      n_samples          = if (!is.null(samples_out)) nrow(samples_out) else 0L,
+      chains             = chains,
+      warmup             = warmup,
+      sampling           = sampling,
+      adapt_delta        = adapt_delta,
+      seed               = seed,
+      compute_all_grids  = compute_all_grids,
+      n_draws_predict    = n_draws_predict,
+      n_draws_ensemble   = n_draws_ensemble,
+      pcov_threshold     = pcov_threshold
+    )
+
+    cr <- curveRcore::new_calibration_result(
+      meta      = meta,
+      ensemble  = curve_ensemble,
+      selection = plate_selection,
+      grid      = grid,
+      samples   = samples_out
+    )
+
+    # Detection limits (LODs, MDC, RDL) for the best eligible model
+    cr <- curveRcore::compute_detection_limits(cr, verbose = verbose)
+
+    plates[[cid]] <- cr
+  }
+
+  # ── 8. Build multiplate result ── (updated meta)
+  multi_meta <- list(
+    method             = "bayesian",
+    package            = "curveRbayes",
+    curve_ids          = curve_ids,
+    n_curves           = n_curves,
+    response_var       = response_var,
+    is_log_response    = is_log_response,
+    is_log_independent = is_log_independent,
+    best_model         = best_name,
+    selection          = eligible_selection,
+    compute_all_grids  = compute_all_grids,
+    pcov_threshold     = pcov_threshold,
+    timestamp          = Sys.time()
+  )
+
+  curveRcore::new_calibration_result_multiplate(
+    meta   = multi_meta,
+    plates = plates
+  )
+}

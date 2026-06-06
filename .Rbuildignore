@@ -1,0 +1,10 @@
+^.*\.exe$
+^.*\.Rhistory$
+^\.RDataTmp$
+^\.Rproj\.user$
+^.*\.Rproj$
+^_pkgdown\.yml$
+^data-raw$
+^docs$
+^\.github$
+^\.git$

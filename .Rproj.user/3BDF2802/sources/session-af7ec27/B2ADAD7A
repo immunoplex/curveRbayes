@@ -1,0 +1,27 @@
+{
+    "id": "B2ADAD7A",
+    "path": "~/R-git/curveRbayes/tests/testthat/test-elisa-bayes.R",
+    "project_path": "tests/testthat/test-elisa-bayes.R",
+    "type": "r_source",
+    "hash": "1261450962",
+    "contents": "",
+    "dirty": false,
+    "created": 1780501880358.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "287,21",
+        "scrollLine": "274"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1780766741,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1780766741255,
+    "read_only": false,
+    "read_only_alternatives": []
+}

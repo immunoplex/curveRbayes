@@ -1,0 +1,166 @@
+<table>
+<caption>fit_calibration_bayes() complete argument reference.</caption>
+<colgroup>
+<col width="11%" />
+<col width="13%" />
+<col width="75%" />
+</colgroup>
+<thead>
+<tr>
+<th align="left">Argument</th>
+<th align="left">Default</th>
+<th align="left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">standards</td>
+<td align="left">—</td>
+<td align="left">Data frame. Preprocessed stacked standards with
+curve_id, concentration, and response column — all on the fitting scale.
+Output of preprocess_standards()$data.</td>
+</tr>
+<tr>
+<td align="left">samples</td>
+<td align="left">NULL</td>
+<td align="left">Data frame or NULL. Stacked sample data with curve_id
+and response column on the raw measurement scale.</td>
+</tr>
+<tr>
+<td align="left">response_var</td>
+<td align="left">—</td>
+<td align="left">Character. Name of the response column
+(e.g. ‘mfi’).</td>
+</tr>
+<tr>
+<td align="left">model_names</td>
+<td align="left">c(‘logistic4’, ‘gompertz4’)</td>
+<td align="left">Character vector. Model families to fit. loglogistic4
+is automatically dropped when is_log_independent = TRUE.</td>
+</tr>
+<tr>
+<td align="left">is_log_response</td>
+<td align="left">TRUE</td>
+<td align="left">Logical. Whether the response column is already
+log10-transformed.</td>
+</tr>
+<tr>
+<td align="left">is_log_independent</td>
+<td align="left">TRUE</td>
+<td align="left">Logical. Whether the concentration column is already
+log10-transformed.</td>
+</tr>
+<tr>
+<td align="left">std_curve_conc</td>
+<td align="left">—</td>
+<td align="left">Numeric. Undiluted standard concentration used to build
+the prediction grid.</td>
+</tr>
+<tr>
+<td align="left">fixed_a</td>
+<td align="left">NULL</td>
+<td align="left">Numeric or NULL. Soft informative prior on population
+mean of log(A). NULL = data-adaptive only.</td>
+</tr>
+<tr>
+<td align="left">cv_x_max</td>
+<td align="left">150</td>
+<td align="left">Numeric. Cap for percent CV in CDAN grid (prevents
+infinite CV at asymptotes).</td>
+</tr>
+<tr>
+<td align="left">pcov_threshold</td>
+<td align="left">20</td>
+<td align="left">Numeric. Percent CV threshold for LLOQ/ULOQ
+determination and dynamic-range gate.</td>
+</tr>
+<tr>
+<td align="left">min_dynamic_range_log10</td>
+<td align="left">0.5</td>
+<td align="left">Numeric. Minimum log10 dynamic range for
+eligibility.</td>
+</tr>
+<tr>
+<td align="left">max_rel_se</td>
+<td align="left">5.0</td>
+<td align="left">Numeric. Maximum rel_se (posterior SD / |mean|)
+permitted for any parameter.</td>
+</tr>
+<tr>
+<td align="left">n_grid</td>
+<td align="left">200L</td>
+<td align="left">Integer. Number of concentration points in the CDAN
+precision grid.</td>
+</tr>
+<tr>
+<td align="left">grid_min_conc</td>
+<td align="left">1e-4</td>
+<td align="left">Numeric. Lower bound of the prediction grid on the raw
+concentration scale.</td>
+</tr>
+<tr>
+<td align="left">grid_max_conc</td>
+<td align="left">NULL</td>
+<td align="left">Numeric or NULL. Upper bound of the grid. NULL uses
+std_curve_conc.</td>
+</tr>
+<tr>
+<td align="left">chains</td>
+<td align="left">4L</td>
+<td align="left">Integer. Number of independent Markov chains.</td>
+</tr>
+<tr>
+<td align="left">warmup</td>
+<td align="left">1000L</td>
+<td align="left">Integer. Warm-up iterations discarded before
+inference.</td>
+</tr>
+<tr>
+<td align="left">sampling</td>
+<td align="left">1000L</td>
+<td align="left">Integer. Post-warmup sampling iterations used for
+inference.</td>
+</tr>
+<tr>
+<td align="left">adapt_delta</td>
+<td align="left">0.9</td>
+<td align="left">Numeric. Stan adapt_delta. Increase toward 0.99 if
+divergences appear.</td>
+</tr>
+<tr>
+<td align="left">seed</td>
+<td align="left">NULL</td>
+<td align="left">Integer or NULL. RNG seed passed to Stan for
+reproducibility.</td>
+</tr>
+<tr>
+<td align="left">n_draws_predict</td>
+<td align="left">500L</td>
+<td align="left">Integer. Posterior draws for best-model CDAN grid and
+sample predictions.</td>
+</tr>
+<tr>
+<td align="left">n_draws_ensemble</td>
+<td align="left">260L</td>
+<td align="left">Integer. Posterior draws for non-best-model CDAN
+grids.</td>
+</tr>
+<tr>
+<td align="left">compute_all_grids</td>
+<td align="left">FALSE</td>
+<td align="left">Logical. Forced TRUE automatically when &gt; 1 model is
+fitted (required for eligibility gating).</td>
+</tr>
+<tr>
+<td align="left">run_loo</td>
+<td align="left">NULL</td>
+<td align="left">Logical or NULL. NULL = auto (TRUE when &gt; 1 model).
+Run PSIS-LOO after fitting.</td>
+</tr>
+<tr>
+<td align="left">verbose</td>
+<td align="left">FALSE</td>
+<td align="left">Logical. Emit progress messages.</td>
+</tr>
+</tbody>
+</table>

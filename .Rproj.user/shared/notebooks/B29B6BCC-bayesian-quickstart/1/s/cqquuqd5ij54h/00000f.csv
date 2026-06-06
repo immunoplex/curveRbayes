@@ -1,0 +1,5 @@
+"0","stacking_weights |>"
+"0","  tibble::enframe(name = ""model"", value = ""weight"") |>"
+"0","  dplyr::arrange(dplyr::desc(weight)) |>"
+"0","  knitr::kable(digits = 4,"
+"0","               caption = ""Bayesian stacking weights across candidate models."")"

@@ -1,0 +1,7 @@
+"0","library(curveRcore)   # preprocessing, settings, data helpers"
+"0","library(curveRbayes)  # this package"
+"0","library(dplyr)"
+"0","library(ggplot2)"
+"0","library(posterior)    # summarise_draws, as_draws_df"
+"0","library(bayesplot)    # mcmc_pairs, mcmc_nuts_treedepth"
+"0","library(loo)          # loo_compare"

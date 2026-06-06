@@ -1,0 +1,27 @@
+"0","tibble::tribble("
+"0","  ~Parameter,        ~`Population mean prior`,          ~`Population SD prior`,    ~Rationale,"
+"0","  ""log(A)"",          ""Normal(log(0.01 × MFI_max), 1)"",  ""Half-Normal(0, 1)"","
+"0","    ""Lower asymptote near background; broad on log scale."","
+"0","  ""log(B)"",          ""Normal(log(1.5), 0.5)"",            ""Half-Normal(0, 0.5)"","
+"0","    ""Hill slope near 1.5; constrained positive."","
+"0","  ""C (log10 scale)"", ""Normal(mid-range log10(x), 1)"",    ""Half-Normal(0, 1)"","
+"0","    ""Inflection at geometric centre of concentration range."","
+"0","  ""log(D)"",          ""Normal(log(MFI_max), 0.5)"",        ""Half-Normal(0, 0.5)"","
+"0","    ""Upper asymptote near observed maximum."","
+"0","  ""sigma_obs"",       ""Half-Normal(0, 0.1 × MFI_range)"", ""—"","
+"0","    ""Noise scaled relative to signal range."""
+"0",") |>"
+"0","  knitr::kable("
+"0","    caption = ""Data-adaptive prior structure. MFI_max and MFI_range are computed from the preprocessed standards for the current curve_id set."""
+"0","  )"
+"2","Error in gsub(""^\\s+|(?<!\\\\)\\s+$"", """", x, perl = TRUE) : 
+  input string 6 is invalid UTF-8
+"
+"2","G2;H2;Warningh in grepl(""^py_call_impl\\("", func) :
+  unable to translate 'knitr::kable(tibble::tribble(~Parameter, ~`Population mean prior`, 
+    ~`Population SD prior`, ~Rationale, ""log(A)"", ""Normal(log(0.01 <d7> MFI_max), 1)"", 
+    ""Half-Normal(0, 1)"", ""Lower asymptote near background; broad on log scale."", 
+    ""log(B)"", ...' to a wide stringg
+"
+"2","G2;H2;Warningh in grepl(""^py_call_impl\\("", func) : input string 1 is invalidg
+"

@@ -1,0 +1,49 @@
+<table>
+<caption>Columns in ensemble[[model]]$grid.</caption>
+<colgroup>
+<col width="12%" />
+<col width="87%" />
+</colgroup>
+<thead>
+<tr>
+<th align="left">Column</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">curve_id</td>
+<td align="left">Integer FK — identifies which calibration curve this
+row belongs to.</td>
+</tr>
+<tr>
+<td align="left">concentration</td>
+<td align="left">log10(AU/mL) grid point — the x-axis value on the
+preprocessed scale.</td>
+</tr>
+<tr>
+<td align="left">pred_mean</td>
+<td align="left">Posterior mean of the forward-predicted response at
+this concentration.</td>
+</tr>
+<tr>
+<td align="left">pred_sd</td>
+<td align="left">Posterior SD of the forward-predicted response
+(parameter uncertainty only).</td>
+</tr>
+<tr>
+<td align="left">pred_noise_sd</td>
+<td align="left">Total predictive SD after Student-t noise injection
+(parameter uncertainty + measurement noise).</td>
+</tr>
+<tr>
+<td align="left">cv_pct</td>
+<td align="left">% CV of back-calculated concentration at this grid
+point.</td>
+</tr>
+<tr>
+<td align="left">model</td>
+<td align="left">Model identifier.</td>
+</tr>
+</tbody>
+</table>

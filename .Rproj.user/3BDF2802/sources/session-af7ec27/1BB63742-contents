@@ -1,0 +1,437 @@
+# =============================================================================
+# test-reference-bayes.R
+#
+# Regression test: fit_calibration_bayes() on bead_assay_example
+# curve_ids 1,2,3 versus a frozen reference RDS snapshot.
+#
+# REFACTORED for multiplate return format: fit_calibration_bayes() now
+# returns calibration_result_multiplate with $plates named list, where
+# each plate is a calibration_result with $grid, $samples, $ensemble,
+# $selection, $meta.  This matches the curveRfreq multiplate structure.
+#
+# Bayesian tolerances are wider than frequentist due to MCMC noise.
+#
+# Generate the reference with:
+#   Rscript data-raw/generate_reference_bayes.R
+# =============================================================================
+
+library(curveRcore)
+
+# ---- Tolerance constants ----
+TOL_PARAM_MEAN <- 0.05
+TOL_PARAM_SD   <- 0.05
+TOL_RESPONSE   <- 0.02
+TOL_CONC       <- 0.05
+TOL_PCOV       <- 2.0
+TOL_SAMPLE_REL <- 0.30
+
+# ---- Expected curve_ids ----
+EXPECTED_CIDS <- c("1", "2", "3")
+
+
+# ============================================================================
+# Helpers
+# ============================================================================
+
+cmdstanr_available <- function() {
+  requireNamespace("cmdstanr", quietly = TRUE) &&
+    tryCatch({ cmdstanr::cmdstan_version(); TRUE }, error = function(e) FALSE)
+}
+
+ref_path <- function() {
+  testthat::test_path("fixtures", "reference_bayes_curve123.rds")
+}
+
+run_bayes_curve123 <- function() {
+  data("bead_assay_example", package = "curveRcore", envir = environment())
+
+  std_raw <- bead_assay_example$standards[
+    bead_assay_example$standards$curve_id %in% c(1, 2, 3), ]
+
+  prepped <- curveRcore::preprocess_standards(
+    data                 = std_raw,
+    antigen_settings     = list(standard_curve_concentration = 10000),
+    response_variable    = "mfi",
+    independent_variable = "concentration",
+    is_log_response      = TRUE,
+    is_log_independent   = TRUE,
+    apply_prozone        = TRUE
+  )
+
+  samples <- bead_assay_example$samples[
+    bead_assay_example$samples$curve_id %in% c(1, 2, 3), ]
+
+  curveRbayes::fit_calibration_bayes(
+    standards          = prepped$data,
+    samples            = samples,
+    response_var       = "mfi",
+    model_names        = c("logistic4", "gompertz4"),
+    is_log_response    = TRUE,
+    is_log_independent = TRUE,
+    std_curve_conc     = 10000,
+    chains             = 4,
+    warmup             = 1000,
+    sampling           = 1000,
+    adapt_delta        = 0.9,
+    seed               = 20260529,
+    run_loo            = TRUE,
+    n_draws_predict    = 500,
+    verbose            = FALSE
+  )
+}
+
+
+# ============================================================================
+# 0. Smoke test
+# ============================================================================
+
+test_that("fit_calibration_bayes runs on curve_ids 1,2,3 without error", {
+  skip_if_not(cmdstanr_available(), "cmdstanr/CmdStan not available")
+
+  result <- run_bayes_curve123()
+
+  expect_s3_class(result, "calibration_result_multiplate")
+  expect_equal(length(result$plates), 3)
+  expect_equal(sort(names(result$plates)), EXPECTED_CIDS)
+
+  # Spot-check one plate
+  cr1 <- result$plates[["1"]]
+  expect_s3_class(cr1, "calibration_result")
+  expect_equal(cr1$meta$method, "bayesian")
+  expect_equal(cr1$meta$curve_id, "1")
+})
+
+
+# ============================================================================
+# 1. Reference file
+# ============================================================================
+
+test_that("reference RDS file exists", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()),
+              "Reference not found. Run: Rscript data-raw/generate_reference_bayes.R")
+
+  ref <- readRDS(ref_path())
+  expect_s3_class(ref, "calibration_result_multiplate")
+  expect_equal(length(ref$plates), 3)
+
+  ref_cr1 <- ref$plates[["1"]]
+  expect_s3_class(ref_cr1, "calibration_result")
+  expect_equal(ref_cr1$meta$method, "bayesian")
+})
+
+
+# ============================================================================
+# 2. Model selection — per plate
+# ============================================================================
+
+test_that("best model matches reference for each curve_id", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    expect_equal(
+      result$plates[[cid]]$selection$best_model_name,
+      ref$plates[[cid]]$selection$best_model_name,
+      info = paste("Best model selection changed for curve_id", cid))
+  }
+})
+
+
+# ============================================================================
+# 3. Parameter posterior means match reference — per plate
+# ============================================================================
+
+test_that("posterior parameter means match reference for each curve_id", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    cr     <- result$plates[[cid]]
+    ref_cr <- ref$plates[[cid]]
+    best   <- cr$selection$best_model_name
+
+    cur_params <- cr$ensemble[[best]]$parameters
+    ref_params <- ref_cr$ensemble[[best]]$parameters
+
+    expect_false(is.null(ref_params),
+                 info = paste("Reference has no params for curve_id", cid))
+    expect_false(is.null(cur_params),
+                 info = paste("Result has no params for curve_id", cid))
+
+    ref_params <- ref_params[order(ref_params$term), ]
+    cur_params <- cur_params[order(cur_params$term), ]
+
+    expect_equal(cur_params$term, ref_params$term,
+                 info = paste("Parameter names differ for curve_id", cid))
+    expect_equal(cur_params$mean, ref_params$mean,
+                 tolerance = TOL_PARAM_MEAN,
+                 info = paste("Posterior means shifted for curve_id", cid))
+    expect_equal(cur_params$sd, ref_params$sd,
+                 tolerance = TOL_PARAM_SD,
+                 info = paste("Posterior SDs shifted for curve_id", cid))
+  }
+})
+
+
+# ============================================================================
+# 4. All curve_ids have parameters
+# ============================================================================
+
+test_that("all 3 curve_ids have posterior parameters", {
+  skip_if_not(cmdstanr_available())
+
+  result <- run_bayes_curve123()
+
+  expect_equal(length(result$plates), 3)
+
+  for (cid in EXPECTED_CIDS) {
+    cr   <- result$plates[[cid]]
+    best <- cr$selection$best_model_name
+    params <- cr$ensemble[[best]]$parameters
+
+    expect_true(nrow(params) >= 4,
+                info = paste("curve_id", cid, "has too few parameters"))
+  }
+})
+
+
+# ============================================================================
+# 5. Grid predictions match reference — per plate
+# ============================================================================
+
+test_that("grid predicted_response matches reference for each curve_id", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    cr     <- result$plates[[cid]]
+    ref_cr <- ref$plates[[cid]]
+
+    expect_equal(nrow(cr$grid), nrow(ref_cr$grid),
+                 info = paste("Grid row count differs for curve_id", cid))
+    expect_equal(cr$grid$predicted_response,
+                 ref_cr$grid$predicted_response,
+                 tolerance = TOL_RESPONSE,
+                 info = paste("Grid predicted_response shifted for curve_id", cid))
+  }
+})
+
+test_that("grid predicted_concentration matches reference for each curve_id", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    cr     <- result$plates[[cid]]
+    ref_cr <- ref$plates[[cid]]
+
+    ref_pc <- ref_cr$grid$predicted_concentration
+    cur_pc <- cr$grid$predicted_concentration
+    both_ok <- is.finite(ref_pc) & is.finite(cur_pc)
+
+    if (any(both_ok)) {
+      expect_equal(cur_pc[both_ok], ref_pc[both_ok],
+                   tolerance = TOL_CONC,
+                   info = paste("Predicted conc shifted for curve_id", cid))
+    }
+    expect_equal(is.na(cur_pc), is.na(ref_pc),
+                 info = paste("NA pattern changed for curve_id", cid))
+  }
+})
+
+
+# ============================================================================
+# 6. Sample predictions match reference — per plate
+# ============================================================================
+
+test_that("sample predictions match reference for each curve_id", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    cr     <- result$plates[[cid]]
+    ref_cr <- ref$plates[[cid]]
+
+    # Skip plates where reference has no samples
+    if (is.null(ref_cr$samples)) {
+      expect_null(cr$samples,
+                  info = paste("Samples appeared for curve_id", cid,
+                               "but reference has none"))
+      next
+    }
+
+    expect_equal(nrow(cr$samples), nrow(ref_cr$samples),
+                 info = paste("Sample row count differs for curve_id", cid))
+
+    # predicted_log10_concentration
+    if ("predicted_log10_concentration" %in% names(ref_cr$samples)) {
+      ref_plc <- ref_cr$samples$predicted_log10_concentration
+      cur_plc <- cr$samples$predicted_log10_concentration
+      both_ok <- is.finite(ref_plc) & is.finite(cur_plc)
+      if (any(both_ok)) {
+        expect_equal(cur_plc[both_ok], ref_plc[both_ok],
+                     tolerance = TOL_CONC,
+                     info = paste("log10 conc shifted for curve_id", cid))
+      }
+    }
+
+    # final_concentration
+    if ("final_concentration" %in% names(ref_cr$samples)) {
+      ref_fc <- ref_cr$samples$final_concentration
+      cur_fc <- cr$samples$final_concentration
+      both_ok <- is.finite(ref_fc) & is.finite(cur_fc) & ref_fc > 0
+      if (any(both_ok)) {
+        rel_diff <- abs(cur_fc[both_ok] - ref_fc[both_ok]) / ref_fc[both_ok]
+        expect_true(all(rel_diff < TOL_SAMPLE_REL),
+                    info = sprintf("curve_id %s: max relative diff: %.6f",
+                                   cid, max(rel_diff)))
+      }
+    }
+  }
+})
+
+
+# ============================================================================
+# 7. Metadata — per plate
+# ============================================================================
+
+test_that("per-plate metadata matches reference (excluding volatile fields)", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    cr     <- result$plates[[cid]]
+    ref_cr <- ref$plates[[cid]]
+
+    expect_equal(cr$meta$method,             ref_cr$meta$method,
+                 info = paste("method differs for curve_id", cid))
+    expect_equal(cr$meta$package,            ref_cr$meta$package,
+                 info = paste("package differs for curve_id", cid))
+    expect_equal(cr$meta$curve_id,           ref_cr$meta$curve_id,
+                 info = paste("curve_id differs for curve_id", cid))
+    expect_equal(cr$meta$response_var,       ref_cr$meta$response_var,
+                 info = paste("response_var differs for curve_id", cid))
+    expect_equal(cr$meta$is_log_response,    ref_cr$meta$is_log_response,
+                 info = paste("is_log_response differs for curve_id", cid))
+    expect_equal(cr$meta$is_log_independent, ref_cr$meta$is_log_independent,
+                 info = paste("is_log_independent differs for curve_id", cid))
+  }
+})
+
+
+# ============================================================================
+# 8. Ensemble convergence pattern — per plate
+# ============================================================================
+
+test_that("ensemble convergence pattern matches reference for each curve_id", {
+  skip_if_not(cmdstanr_available())
+  skip_if_not(file.exists(ref_path()))
+
+  ref    <- readRDS(ref_path())
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    cr     <- result$plates[[cid]]
+    ref_cr <- ref$plates[[cid]]
+
+    ref_conv <- vapply(ref_cr$ensemble,
+                       function(e) isTRUE(e$converged), logical(1))
+    cur_conv <- vapply(cr$ensemble,
+                       function(e) isTRUE(e$converged), logical(1))
+
+    expect_equal(sort(names(ref_conv)), sort(names(cur_conv)),
+                 info = paste("Model names differ for curve_id", cid))
+
+    for (nm in names(ref_conv)) {
+      expect_equal(cur_conv[[nm]], ref_conv[[nm]],
+                   info = paste("Convergence changed for", nm,
+                                "on curve_id", cid))
+    }
+  }
+})
+
+
+# ============================================================================
+# 9. Structural invariants — per plate
+# ============================================================================
+
+test_that("grid predicted_response is monotonically non-decreasing", {
+  skip_if_not(cmdstanr_available())
+
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    y <- result$plates[[cid]]$grid$predicted_response
+    if (all(is.finite(y))) {
+      expect_true(all(diff(y) >= -0.01),
+                  info = paste("Monotonicity violated for curve_id", cid))
+    }
+  }
+})
+
+test_that("pcov_pass is consistent with pcov < cv_x_max", {
+  skip_if_not(cmdstanr_available())
+
+  result <- run_bayes_curve123()
+
+  for (cid in EXPECTED_CIDS) {
+    grid <- result$plates[[cid]]$grid
+    finite_pcov <- !is.na(grid$pcov)
+    if (any(finite_pcov)) {
+      expected_pass <- grid$pcov < 150
+      expect_equal(grid$pcov_pass[finite_pcov],
+                   expected_pass[finite_pcov],
+                   info = paste("pcov_pass inconsistent for curve_id", cid))
+    }
+  }
+})
+
+test_that("summary_table_bayes returns one row per curve_id", {
+  skip_if_not(cmdstanr_available())
+
+  result <- run_bayes_curve123()
+  tbl <- curveRbayes::summary_table_bayes(result)
+
+  expect_equal(nrow(tbl), 3)
+  expect_true("curve_id" %in% names(tbl))
+  expect_true("a_mean" %in% names(tbl))
+  expect_false("antigen" %in% names(tbl))
+  expect_equal(sort(tbl$curve_id), EXPECTED_CIDS)
+})
+
+test_that("all plates have expected grid columns", {
+  skip_if_not(cmdstanr_available())
+
+  result <- run_bayes_curve123()
+
+  grid_cols <- c("log10_concentration", "concentration", "x_fit",
+                 "predicted_response", "ci_lower", "ci_upper",
+                 "predicted_concentration", "se_concentration",
+                 "pcov", "pcov_pass")
+
+  for (cid in EXPECTED_CIDS) {
+    grid <- result$plates[[cid]]$grid
+    for (col in grid_cols) {
+      expect_true(col %in% names(grid),
+                  info = paste("Missing", col, "in grid for curve_id", cid))
+    }
+  }
+})

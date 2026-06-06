@@ -1,0 +1,17 @@
+"0","# Test samples: observed MFI values for curve_ids 1–3"
+"0","test_samples <- data.frame("
+"0","  curve_id = c(1L, 1L, 2L, 2L, 3L, 3L),"
+"0","  sampleid = paste0(""S"", 1:6),"
+"0","  mfi      = c(12500, 8300, 14100, 9800, 11600, 7200)"
+"0",")"
+"0",""
+"0","# Stacked ensemble back-calculation"
+"0","results <- predict_samples_bayes("
+"0","  fit       = fit,"
+"0","  newdata   = test_samples,"
+"0","  use_stack = TRUE,"
+"0","  ci_level  = 0.95"
+"0",")"
+"2","Error in predict_samples_bayes(fit = fit, newdata = test_samples, use_stack = TRUE,  : 
+  unused arguments (fit = fit, newdata = test_samples, use_stack = TRUE, ci_level = 0.95)
+"

@@ -1,0 +1,8 @@
+"0","lapply(ensemble, function(m) {"
+"0","  ebfmi <- m$fit_stats$ebfmi"
+"0","  if (is.null(ebfmi)) return(data.frame(mean_ebfmi = NA_real_))"
+"0","  data.frame(mean_ebfmi = round(mean(ebfmi, na.rm = TRUE), 3))"
+"0","}) |>"
+"0","  dplyr::bind_rows(.id = ""model"") |>"
+"0","  dplyr::mutate(flag = ifelse(mean_ebfmi < 0.2, ""⚠️ LOW"", ""✅ OK"")) |>"
+"0","  knitr::kable(caption = ""Mean E-BFMI per model. Values below 0.2 indicate poor energy exploration."")"

@@ -1,0 +1,1145 @@
+---
+title: "Bayesian Hierarchical Calibration with curveRbayes"
+subtitle: "From raw assay data to posterior concentration estimates and CDAN precision profiles"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_width: 7
+    fig_height: 4.5
+vignette: >
+  %\VignetteIndexEntry{Bayesian Hierarchical Calibration with curveRbayes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  fig.align = "center"
+)
+```
+
+```{r packages, message=FALSE, warning=FALSE}
+library(curveRcore)   # preprocessing, settings, data helpers
+library(curveRbayes)  # this package
+library(dplyr)
+library(ggplot2)
+library(posterior)    # summarise_draws, as_draws_df
+library(bayesplot)    # mcmc_pairs, mcmc_nuts_treedepth
+library(loo)          # loo_compare
+```
+
+---
+
+# Ecosystem orientation {#ecosystem}
+
+The **curveR** ecosystem contains three packages that share a common
+data contract defined by curveRcore.
+**curveRcore** provides the data structures, preprocessing pipeline
+(`preprocess_standards()`), and settings constructors
+(`new_antigen_constraints()`, `new_study_params()`, `new_fit_options()`)
+used identically by both fitting engines.
+**curveRbayes** (this package) fits Bayesian hierarchical dose–response
+models via Stan and produces posterior concentration estimates with
+full uncertainty propagation.
+**curveRfreq** provides frequentist (nls/nlme) alternatives for
+settings where speed or regulatory precedent is the primary concern;
+a head-to-head comparison of both engines is in the
+[ecosystem comparison vignette](../curveRcore/articles/ecosystem-comparison.html).
+
+---
+
+# Data and preprocessing {#data}
+
+## The raw dataset {#raw-data}
+
+`bead_assay_example` ships with curveRbayes and contains simulated
+multi-plate bead-based immunoassay data for two antigens (`alpha`,
+`beta`), each measured on three plates — six `curve_id` values in
+total.
+
+```{r load-data}
+data("bead_assay_example", package = "curveRbayes")
+
+str(bead_assay_example, max.level = 2, give.attr = FALSE)
+```
+
+The key design principle is that **`curve_id` is the sole foreign key**
+uniquely identifying one calibration curve — encoding antigen, study,
+experiment, and plate together.
+`curve_id_lookup` decodes it when human-readable labels are needed, but
+all fitting, filtering, and indexing uses the integer `curve_id` alone.
+
+```{r show-lookup}
+bead_assay_example$curve_id_lookup
+```
+
+The raw `$standards` data frame carries `dilution` and `mfi`.
+Neither a `concentration` column nor log-transformed responses exist
+yet — those are created by preprocessing.
+
+```{r show-raw-standards}
+head(bead_assay_example$standards, 4)
+```
+
+## Preprocessing with curveRcore {#preprocessing}
+
+`preprocess_standards()` applies four steps in a fixed canonical order,
+identically for both curveRbayes and curveRfreq:
+
+1. **Concentration computation** — `(1 / dilution) x std_curve_conc`,
+   written into the `concentration` column, optionally log10-transformed.
+2. **Prozone correction** — compresses post-peak hook-effect deflections.
+3. **Blank handling** — one of five strategies; `"ignored"` is the default.
+4. **Response log-transform** — `log10(mfi)`, non-positive values
+   floored adaptively before transformation.
+
+After preprocessing, `concentration` holds **log10(AU/mL)** and `mfi`
+holds **log10(MFI)** — the exact values Stan receives, as confirmed by
+`build_stan_data()` in `stan_data.R` which pulls `standards$concentration`
+and `standards[[response_variable]]` directly.
+
+```{r build-settings}
+# CONC in bead_assay_example runs 0.001–30 AU/mL; dilution = 1/CONC,
+# so std_curve_conc = 1/min(dilution) = max(CONC) = 30.
+antigen_settings <- new_antigen_constraints(
+  antigen        = "alpha",
+  std_curve_conc = 30,
+  l_asy_method   = "default",
+  pcov_threshold = 20
+)
+
+study_params <- new_study_params(
+  is_log_response    = TRUE,
+  is_log_independent = TRUE,
+  apply_prozone      = TRUE,
+  blank_option       = "ignored"
+)
+```
+
+```{r preprocess}
+# Preprocess all six curve_ids (both antigens, all plates)
+prep <- preprocess_standards(
+  data                 = bead_assay_example$standards,
+  antigen_settings     = antigen_settings,
+  response_variable    = bead_assay_example$response_var,
+  independent_variable = bead_assay_example$indep_var,
+  is_log_response      = study_params$is_log_response,
+  blank_data           = bead_assay_example$blanks,
+  blank_option         = study_params$blank_option,
+  is_log_independent   = study_params$is_log_independent,
+  apply_prozone        = study_params$apply_prozone
+)
+
+standards_preprocessed <- prep$data
+
+# After preprocessing: concentration = log10(AU/mL), mfi = log10(MFI)
+head(standards_preprocessed[, c("curve_id", "dilution",
+                                 "concentration", "mfi")], 4)
+```
+
+```{r plot-preprocessed,
+    fig.cap="Preprocessed calibration standards for antigen alpha (curve_id 1–3). Both axes are log10-transformed — these are the exact values passed to Stan. Each curve_id is one plate; inter-plate differences in MFI level and curve shape are the variability the hierarchical model handles."}
+standards_preprocessed |>
+  dplyr::filter(curve_id %in% 1:3) |>
+  ggplot(aes(x = concentration, y = mfi,
+             colour = factor(curve_id), group = curve_id)) +
+  geom_point(size = 2.5, alpha = 0.85) +
+  geom_line(linewidth = 0.5, linetype = "dashed") +
+  scale_colour_brewer(palette = "Set1") +
+  labs(
+    x      = "log\u2081\u2080(concentration)  [AU/mL]",
+    y      = "log\u2081\u2080(MFI)",
+    colour = "curve_id",
+    title  = "Preprocessed standards — antigen alpha"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+The three curves share the same biological dose–response but differ in
+their absolute MFI offset and inflection point position — precisely the
+inter-plate variability a hierarchical model is designed to handle.
+
+---
+
+# Fitting the model: `fit_calibration_bayes()` {#fitting}
+
+## Argument reference {#args}
+
+`fit_calibration_bayes()` receives already-preprocessed standards and
+fits all `curve_id` values simultaneously via hierarchical Stan models.
+Every argument is described below.
+
+```{r arg-table, echo=FALSE}
+tibble::tribble(
+  ~Argument,                 ~Default,                    ~Purpose,
+  "standards",               "—",
+    "Data frame. Preprocessed stacked standards with curve_id, concentration, and response column — all on the fitting scale. Output of preprocess_standards()$data.",
+  "samples",                 "NULL",
+    "Data frame or NULL. Stacked sample data with curve_id and response column on the raw measurement scale.",
+  "response_var",            "—",
+    "Character. Name of the response column (e.g. 'mfi').",
+  "model_names",             "c('logistic4', 'gompertz4')",
+    "Character vector. Model families to fit. loglogistic4 is automatically dropped when is_log_independent = TRUE.",
+  "is_log_response",         "TRUE",
+    "Logical. Whether the response column is already log10-transformed.",
+  "is_log_independent",      "TRUE",
+    "Logical. Whether the concentration column is already log10-transformed.",
+  "std_curve_conc",          "—",
+    "Numeric. Undiluted standard concentration used to build the prediction grid.",
+  "fixed_a",                 "NULL",
+    "Numeric or NULL. Soft informative prior on population mean of log(A). NULL = data-adaptive only.",
+  "cv_x_max",                "150",
+    "Numeric. Cap for percent CV in CDAN grid (prevents infinite CV at asymptotes).",
+  "pcov_threshold",          "20",
+    "Numeric. Percent CV threshold for LLOQ/ULOQ determination and dynamic-range gate.",
+  "min_dynamic_range_log10", "0.5",
+    "Numeric. Minimum log10 dynamic range for eligibility.",
+  "max_rel_se",              "5.0",
+    "Numeric. Maximum rel_se (posterior SD / |mean|) permitted for any parameter.",
+  "n_grid",                  "200L",
+    "Integer. Number of concentration points in the CDAN precision grid.",
+  "grid_min_conc",           "1e-4",
+    "Numeric. Lower bound of the prediction grid on the raw concentration scale.",
+  "grid_max_conc",           "NULL",
+    "Numeric or NULL. Upper bound of the grid. NULL uses std_curve_conc.",
+  "chains",                  "4L",
+    "Integer. Number of independent Markov chains.",
+  "warmup",                  "1000L",
+    "Integer. Warm-up iterations discarded before inference.",
+  "sampling",                "1000L",
+    "Integer. Post-warmup sampling iterations used for inference.",
+  "adapt_delta",             "0.9",
+    "Numeric. Stan adapt_delta. Increase toward 0.99 if divergences appear.",
+  "seed",                    "NULL",
+    "Integer or NULL. RNG seed passed to Stan for reproducibility.",
+  "n_draws_predict",         "500L",
+    "Integer. Posterior draws for best-model CDAN grid and sample predictions.",
+  "n_draws_ensemble",        "260L",
+    "Integer. Posterior draws for non-best-model CDAN grids.",
+  "compute_all_grids",       "FALSE",
+    "Logical. Forced TRUE automatically when > 1 model is fitted (required for eligibility gating).",
+  "run_loo",                 "NULL",
+    "Logical or NULL. NULL = auto (TRUE when > 1 model). Run PSIS-LOO after fitting.",
+  "verbose",                 "FALSE",
+    "Logical. Emit progress messages."
+) |>
+  knitr::kable(caption = "fit_calibration_bayes() complete argument reference.")
+```
+
+## Running the fit {#run-fit}
+
+`fit_calibration_bayes()` receives the already-preprocessed standards
+data frame from Section \@ref(preprocessing).
+Preprocessing is always the caller's responsibility — the function does
+not accept the raw data list.
+
+```{r fit, results="hide"}
+fit <- fit_calibration_bayes(
+  standards          = standards_preprocessed,
+  samples            = bead_assay_example$samples,
+  response_var       = bead_assay_example$response_var,   # "mfi"
+  model_names        = c("logistic4", "logistic5",
+                          "gompertz4", "loglogistic5"),
+  is_log_response    = study_params$is_log_response,
+  is_log_independent = study_params$is_log_independent,
+  std_curve_conc     = antigen_settings$standard_curve_concentration,
+  fixed_a            = NULL,
+  n_grid             = 200L,
+  grid_min_conc      = 1e-4,
+  chains             = 4L,
+  warmup             = 1000L,
+  sampling           = 1000L,
+  adapt_delta        = 0.95,
+  seed               = 42,
+  run_loo            = TRUE,
+  verbose            = TRUE
+)
+```
+
+```{r fit-unpack}
+# ── Bridge: extract convenience references from multiplate structure ──
+# fit_calibration_bayes() returns calibration_result_multiplate with
+# $meta and $plates. The vignette uses per-model objects directly.
+
+# Pick curve_id 1 for single-curve demonstrations
+cr1 <- fit$plates[["1"]]
+stopifnot("No plates returned — fit likely failed silently" = !is.null(cr1))
+
+# The per-curve ensemble contains all fitted models
+# Each entry has: $model_name, $converged, $parameters, $fit_stats,
+#   $raw_fit (full bayes_fit), $eligibility, $grid
+ensemble <- cr1$ensemble
+
+# CmdStanMCMC fit and posterior draws for logistic4
+cmdstan_fit_4pl <- cr1$ensemble[["logistic4"]]$raw_fit$fit
+draws_4pl       <- posterior::as_draws_df(cmdstan_fit_4pl$draws())
+
+# LOO comparison and stacking weights from the selection metadata
+loo_comparison   <- fit$meta$selection$loo_comparison
+stacking_weights <- fit$meta$selection$loo_weights
+if (is.null(names(stacking_weights)))
+  names(stacking_weights) <- names(ensemble)
+
+# Compute per-model LOO objects for Pareto-k diagnostics
+loo_list <- lapply(ensemble, function(m) {
+  if (!is.null(m$raw_fit)) compute_loo(m$raw_fit) else NULL
+})
+
+cat("Models fitted:", paste(names(ensemble), collapse = ", "), "\n")
+cat("Best model:", fit$meta$best_model, "\n")
+
+# Assemble eligibility data frame from per-plate per-model assessments
+eligibility <- do.call(rbind, lapply(names(fit$plates), function(cid) {
+  cr <- fit$plates[[cid]]
+  do.call(rbind, lapply(names(cr$ensemble), function(fam) {
+    elig <- cr$ensemble[[fam]]$eligibility
+    if (is.null(elig) || is.null(elig$gates)) return(NULL)
+    gates_df <- elig$gates
+    gates_df$model    <- fam
+    gates_df$curve_id <- as.integer(cid)
+    gates_df$eligible <- elig$eligible
+    gates_df
+  }))
+}))
+```
+
+---
+
+# The hierarchical Stan model {#model}
+
+## Why hierarchical? {#why-hier}
+
+A pooled model treats all plates as a single experiment, conflating
+within-plate and between-plate variance and producing overconfident
+predictions.
+A separate-plate model fits each plate independently, discarding the
+shared biology and producing underconfident estimates when any single
+plate has few calibrators.
+The Bayesian hierarchical model occupies the optimal middle ground:
+plate-level parameters are exchangeable draws from a common population
+distribution, sharing information across plates while still adapting
+to each plate's data.
+
+## Parameter structure {#param-structure}
+
+All four model families share the same hierarchical skeleton.
+Using the 4PL logistic (`logistic4`) as the reference:
+
+$$
+y_{i,k} \;=\; A_k + \frac{D_k - A_k}{1 + \left(\dfrac{x_i}{C_k}\right)^{B_k}}
+\;+\; \varepsilon_{i,k}
+$$
+
+where $k$ indexes `curve_id`, $x_i$ is the log10-concentration of
+standard $i$ (the `concentration` column after preprocessing), and
+$\varepsilon_{i,k}$ is observation noise.
+
+| Parameter | Meaning | Hierarchy level |
+|-----------|---------|-----------------|
+| $A_k$ | Lower asymptote (background) | Per-`curve_id` |
+| $B_k$ | Hill slope | Per-`curve_id` |
+| $C_k$ | Inflection point (log10-EC50) | Per-`curve_id` |
+| $D_k$ | Upper asymptote | Per-`curve_id` |
+| $\mu_A, \sigma_A$ … | Population mean and SD for each parameter | Global |
+| $\sigma_\varepsilon$ | Observation noise SD | Global (pooled) |
+
+`logistic5` and `loglogistic5` add a per-`curve_id` asymmetry
+parameter $G_k$ with its own population mean and SD.
+`gompertz4` replaces the logistic link with a Gompertz function but
+keeps the same four-parameter hierarchy.
+
+On the log-log scale (`is_log_independent = TRUE`, `is_log_response = TRUE`),
+`loglogistic4` is mathematically equivalent to `logistic4`.
+`resolve_effective_models()` therefore automatically drops `loglogistic4`
+from the model set when both transformations are active, preventing a
+redundant fit.
+
+## Non-centred parameterisation {#ncp}
+
+The centred parameterisation $\theta_k \sim \mathcal{N}(\mu, \sigma)$
+creates a *funnel geometry*: when $\sigma$ is small the sampler must
+simultaneously explore a tight neck and wide wings, producing divergent
+transitions.
+curveRbayes uses the **non-centred parameterisation (NCP)** throughout:
+
+$$
+\theta_k \;=\; \mu_\theta + \sigma_\theta \cdot z_k,
+\qquad z_k \sim \mathcal{N}(0, 1)
+$$
+
+The sampler explores the standardised offset $z_k$ — which always has
+flat $\mathcal{N}(0,1)$ geometry — and the global hyperparameters
+$(\mu_\theta, \sigma_\theta)$ independently.
+Only at the likelihood evaluation are they recombined into $\theta_k$.
+This transformation eliminates the funnel and is the primary reason
+Stan achieves near-zero divergences on these models.
+
+The Stan `parameters` block for `logistic4` looks like:
+
+```stan
+parameters {
+  // population means (on log scale where parameters are positive)
+  real mu_log_a;
+  real mu_log_b;
+  real mu_log_c;
+  real mu_log_d;
+
+  // population SDs — Half-Normal prior keeps these positive
+  real<lower=0> sigma_log_a;
+  real<lower=0> sigma_log_b;
+  real<lower=0> sigma_log_c;
+  real<lower=0> sigma_log_d;
+
+  // non-centred offsets: one per curve_id
+  vector[N_plates] z_a;
+  vector[N_plates] z_b;
+  vector[N_plates] z_c;
+  vector[N_plates] z_d;
+
+  real<lower=0> sigma_obs;
+}
+
+transformed parameters {
+  // plate-level parameters reconstructed from offsets
+  vector[N_plates] log_a = mu_log_a + sigma_log_a * z_a;
+  vector[N_plates] log_b = mu_log_b + sigma_log_b * z_b;
+  vector[N_plates] log_c = mu_log_c + sigma_log_c * z_c;
+  vector[N_plates] log_d = mu_log_d + sigma_log_d * z_d;
+}
+```
+
+---
+
+# Data-adaptive priors and `fixed_a` {#priors}
+
+## Data-adaptive prior construction {#adaptive-priors}
+
+When `fixed_a = NULL` (the default), curveRbayes constructs
+weakly-informative priors anchored to the observed data range via an
+internal `compute_dynamic_priors()` call.
+`build_stan_data()` then assembles these as named scalar fields in the
+Stan data list — `prior_a_mu`, `prior_a_sigma`, `prior_d_mu`,
+`prior_d_sigma`, `prior_log_b_mu`, `prior_log_b_sigma`, and
+`prior_c_mu` / `prior_c_sigma` (or `prior_log_c_mu` /
+`prior_log_c_sigma` for `loglogistic4`).
+
+```{r prior-table, echo=FALSE}
+tibble::tribble(
+  ~Parameter,        ~`Population mean prior`,          ~`Population SD prior`,    ~Rationale,
+  "log(A)",          "Normal(log(0.01 x MFI_max), 1)",  "Half-Normal(0, 1)",
+    "Lower asymptote near background; broad on log scale.",
+  "log(B)",          "Normal(log(1.5), 0.5)",            "Half-Normal(0, 0.5)",
+    "Hill slope near 1.5; constrained positive.",
+  "C (log10 scale)", "Normal(mid-range log10(x), 1)",    "Half-Normal(0, 1)",
+    "Inflection at geometric centre of concentration range.",
+  "log(D)",          "Normal(log(MFI_max), 0.5)",        "Half-Normal(0, 0.5)",
+    "Upper asymptote near observed maximum.",
+  "sigma_obs",       "Half-Normal(0, 0.1 x MFI_range)", "—",
+    "Noise scaled relative to signal range."
+) |>
+  knitr::kable(
+    caption = "Data-adaptive prior structure. MFI_max and MFI_range are computed from the preprocessed standards for the current curve_id set."
+  )
+```
+
+## The `fixed_a` soft constraint {#fixed-a}
+
+The lower asymptote $A$ (background signal) can be poorly identified
+when the lowest calibrator is not far above background, or when
+background varies substantially across plates.
+In those situations the posterior of $A$ spreads into implausibly low
+territory, pulling the other parameters through their posterior
+correlations.
+
+`fixed_a` places an **informative Normal prior** on the population
+mean of $\log(A)$:
+
+$$
+\mu_{\log A} \;\sim\; \mathcal{N}\!\left(\log(\texttt{fixed\_a}),\; 0.2\right)
+$$
+
+The SD of 0.2 on the log scale (≈ ±22% on the natural scale) is
+deliberately narrow enough to prevent extreme exploration but wide
+enough to permit genuine plate-to-plate variation.
+This is a *soft* constraint — strongly informative data can still
+move $\mu_{\log A}$ away from `fixed_a`.
+
+```{r fixed-a-example, eval=FALSE}
+# blank wells for antigen alpha have MFI ≈ 18 (ALPHA$a = 18 in
+# bead_assay_example.R). Passing this as fixed_a anchors the lower asymptote.
+fit_fixed_a <- fit_calibration_bayes(
+  standards          = standards_preprocessed,
+  response_var       = bead_assay_example$response_var,
+  model_names        = "logistic4",
+  is_log_response    = TRUE,
+  is_log_independent = TRUE,
+  std_curve_conc     = antigen_settings$standard_curve_concentration,
+  fixed_a            = 18,
+  chains             = 4L,
+  warmup             = 1000L,
+  sampling           = 1000L,
+  seed               = 42
+)
+```
+
+**When to use `fixed_a`:**
+
+- Fewer than ~6 calibrators and the lowest point is close to background.
+- Strong prior knowledge of background from blank wells or historical runs.
+- Posterior of $A$ is multimodal or has very wide credible intervals.
+
+**When to leave it `NULL`:**
+
+- The assay spans ≥ 3 log-decades with a clear low-end plateau.
+- Background is highly variable and you want the model to learn it.
+
+---
+
+# MCMC diagnostics {#diagnostics}
+
+Bayesian inference is only as trustworthy as the quality of the MCMC
+approximation.
+curveRbayes surfaces three NUTS-specific diagnostic classes that
+together constitute a minimum due-diligence checklist.
+
+## Accessing diagnostics {#diag-access}
+
+```{r diag-convergence}
+# Per-model convergence diagnostics from fit_stats
+lapply(ensemble, function(m) {
+  fs <- m$fit_stats
+  tibble::tibble(
+    n_divergent     = fs$n_divergent,
+    n_max_treedepth = fs$n_max_treedepth,
+    mean_ebfmi      = round(mean(fs$ebfmi, na.rm = TRUE), 3)
+  )
+}) |>
+  dplyr::bind_rows(.id = "model") |>
+  knitr::kable(digits = 3,
+               caption = "Convergence flag summary.")
+```
+
+```{r posterior-summary}
+# draws_4pl already extracted in fit-unpack chunk
+posterior::summarise_draws(
+  draws_4pl,
+  mean, sd,
+  ~posterior::quantile2(.x, probs = c(0.025, 0.975)),
+  posterior::default_convergence_measures()
+) |>
+  dplyr::filter(grepl("^mu_|^sigma_obs", variable)) |>
+  knitr::kable(digits = 3,
+               caption = "Population-level parameter summary — logistic4. Rhat < 1.01 and ess_bulk > 400 indicate adequate convergence.")
+```
+
+## Divergent transitions {#divergences}
+
+A divergent transition occurs when the leapfrog integrator takes a
+discrete step that departs exponentially from the true Hamiltonian.
+Divergences cluster in high-curvature regions of the posterior —
+most often the neck of a funnel — and indicate that some part of the
+geometry is not being explored correctly.
+
+| Divergence count | Interpretation and action |
+|---|---|
+| 0 | ✅ Proceed. |
+| 1–10 | ⚠️ Increase `adapt_delta` (e.g. 0.97 → 0.99). Inspect pairs plots. |
+| > 10 | 🚫 Do not use posterior. Likely model or prior misspecification. |
+
+```{r divergences}
+lapply(ensemble, function(m) {
+  data.frame(n_divergences = m$fit_stats$n_divergent %||% NA_integer_)
+}) |>
+  dplyr::bind_rows(.id = "model") |>
+  knitr::kable(caption = "Divergent transitions per model.")
+```
+
+```{r pairs-plot,
+    fig.cap="Pairs plot for logistic4 population parameters. Divergent transitions are highlighted in red. Absence of red points in funnel-shaped regions confirms that the non-centred parameterisation is working correctly."}
+bayesplot::mcmc_pairs(
+  posterior::as_draws_array(cmdstan_fit_4pl$draws()),
+  pars          = c("mu_a", "mu_c", "mu_d", "sigma_c"),
+  off_diag_args = list(size = 0.3, alpha = 0.3),
+  np            = bayesplot::nuts_params(cmdstan_fit_4pl)
+)
+```
+
+## E-BFMI {#ebfmi}
+
+The Energy Bayesian Fraction of Missing Information (E-BFMI) measures
+how efficiently the sampler traverses the energy distribution.
+Values below **0.2** indicate the sampler is trapped in a local region
+and cannot explore the full posterior geometry.
+
+$$
+\widehat{\text{E-BFMI}} = \frac{\displaystyle\sum_{n=2}^{N}(H_n - H_{n-1})^2}{\operatorname{Var}(H)}
+$$
+
+```{r ebfmi}
+lapply(ensemble, function(m) {
+  ebfmi <- m$fit_stats$ebfmi
+  if (is.null(ebfmi)) return(data.frame(mean_ebfmi = NA_real_))
+  data.frame(mean_ebfmi = round(mean(ebfmi, na.rm = TRUE), 3))
+}) |>
+  dplyr::bind_rows(.id = "model") |>
+  dplyr::mutate(flag = ifelse(mean_ebfmi < 0.2, "⚠️ LOW", "✅ OK")) |>
+  knitr::kable(caption = "Mean E-BFMI per model. Values below 0.2 indicate poor energy exploration.")
+```
+
+## Maximum treedepth {#treedepth}
+
+NUTS builds a binary tree, doubling the path length at each level up
+to `max_treedepth` (default 10, i.e. $2^{10} = 1024$ leapfrog steps).
+When a large fraction of transitions *hit* the cap, the sampler is
+being truncated before it can turn: this does not bias the posterior
+but reduces effective samples per second.
+
+```{r treedepth}
+lapply(ensemble, function(m) {
+  n_max <- m$fit_stats$n_max_treedepth
+  if (is.null(n_max)) return(data.frame(n_max_treedepth = NA_integer_))
+  data.frame(n_max_treedepth = n_max)
+}) |>
+  dplyr::bind_rows(.id = "model") |>
+  knitr::kable(caption = "Transitions hitting max_treedepth per model.")
+```
+
+```{r treedepth-plot,
+    fig.cap="Treedepth distribution across all chains for logistic4. Most transitions complete at depth 4–6, well below the cap of 10, indicating efficient trajectory exploration."}
+bayesplot::mcmc_nuts_treedepth(
+  bayesplot::nuts_params(cmdstan_fit_4pl),
+  lp = bayesplot::log_posterior(cmdstan_fit_4pl)
+)
+```
+
+---
+
+# LOO-CV model selection and stacking {#loo}
+
+## Leave-one-out cross-validation {#loo-cv}
+
+After fitting, `fit_calibration_bayes()` computes **Pareto-smoothed
+importance-sampling LOO-CV** (PSIS-LOO) for every converged model via
+the `loo` package [@vehtari2017].
+LOO-CV estimates the expected log predictive density (ELPD) for a
+held-out observation without refitting:
+
+$$
+\widehat{\text{elpd}}_\text{loo} \;=\;
+\sum_{i=1}^{N} \log p(y_i \mid y_{-i})
+$$
+
+The **Pareto-$k$** diagnostic flags observations whose importance
+weights are unreliable:
+
+| $k$ | Label | Action |
+|-----|-------|--------|
+| $< 0.5$ | Good | Reliable. |
+| $0.5$–$0.7$ | OK | Slightly influential; results usable. |
+| $0.7$–$1$ | Bad | Consider moment-matching correction. |
+| $\ge 1$ | Very bad | LOO unreliable for this model. |
+
+```{r loo-compare}
+loo_comparison
+```
+
+```{r pareto-k,
+    fig.cap="Pareto-k diagnostic for logistic4. Points above k = 0.7 (dashed line) flag high-leverage calibrators that disproportionately influence the fit."}
+plot(loo_list[["logistic4"]],
+     diagnostic   = "k",
+     label_points = TRUE,
+     main         = "Pareto-k — logistic4")
+abline(h = 0.7, lty = 2, col = "firebrick")
+```
+
+## Bayesian stacking weights {#stacking}
+
+Rather than selecting a single best model, curveRbayes computes
+**Bayesian stacking weights** [@yao2018] — the weight vector
+$\mathbf{w}$ that maximises the stacked ELPD:
+
+$$
+\hat{\mathbf{w}} \;=\;
+\arg\max_{\mathbf{w}} \sum_{i=1}^{N}
+\log \sum_{k=1}^{K} w_k \, p(y_i \mid y_{-i}, \mathcal{M}_k),
+\quad w_k \ge 0,\; \textstyle\sum_k w_k = 1
+$$
+
+Stacking is preferable to winner-takes-all model selection because it
+is **calibrated under model misspecification**: even if no single
+candidate is the true data-generating process, the stacked ensemble
+achieves the best achievable predictive accuracy from the candidate
+set.
+
+```{r stacking-weights}
+stacking_weights |>
+  tibble::enframe(name = "model", value = "weight") |>
+  dplyr::arrange(dplyr::desc(weight)) |>
+  knitr::kable(digits = 4,
+               caption = "Bayesian stacking weights across candidate models.")
+```
+
+```{r stacking-bar,
+    fig.cap="Stacking weights. A single dominant weight (> 0.9) supports using that model alone; mixed weights suggest genuine model uncertainty and favour ensemble prediction."}
+stacking_weights |>
+  tibble::enframe(name = "model", value = "weight") |>
+  ggplot(aes(x = reorder(model, -weight), y = weight, fill = model)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  scale_y_continuous(limits = c(0, 1),
+                     labels = scales::percent_format(accuracy = 1)) +
+  labs(x = "Model", y = "Stacking weight",
+       title = "Bayesian stacking weights") +
+  theme_minimal(base_size = 12)
+```
+
+> **Decision rule:** if one model has stacking weight > 0.9, use it
+> alone via `predict_samples_bayes(fit, use_stack = FALSE, model = "…")`.
+> Otherwise use the stacked ensemble with
+> `predict_samples_bayes(fit, use_stack = TRUE)`.
+
+---
+
+# Eligibility gating {#eligibility}
+
+Before any model's posterior predictions are used for back-calculation,
+curveRbayes subjects each fitted `curve_id` x model combination to
+**eligibility gates**.
+A model that fails a gate is excluded from the ensemble even if its
+MCMC diagnostics are clean; its `$grid` and back-calculated
+concentrations are not returned.
+
+## The `rel_se` gate {#rel-se}
+
+For each per-`curve_id` parameter $\theta_k$:
+
+$$
+\text{rel\_se}(\theta_k)
+= \frac{\operatorname{posterior SD}(\theta_k)}{|\operatorname{posterior mean}(\theta_k)|}
+$$
+
+If any parameter's relative SE exceeds `max_rel_se` (default 5.0),
+the `curve_id` x model combination is flagged ineligible.
+This catches near-unidentified parameters where the likelihood is
+essentially flat in one direction — formally valid MCMC but
+meaningless predictions.
+
+## The `dynamic_range` gate {#dynamic-range}
+
+$$
+\text{dynamic\_range}
+= \frac{\hat{D}_k - \hat{A}_k}{\hat{A}_k + \epsilon}
+$$
+
+where $\hat{D}_k$ and $\hat{A}_k$ are posterior medians of the upper
+and lower asymptotes for `curve_id` $k$.
+A curve whose upper asymptote is less than the threshold multiple of
+its lower asymptote lacks the breadth needed for reliable
+back-calculation across the full concentration range.
+
+```{r eligibility}
+eligibility |>
+  dplyr::select(model, curve_id, gate, passed, detail, eligible) |>
+  dplyr::arrange(model, curve_id, gate) |>
+  knitr::kable(digits = 3,
+               caption = "Eligibility gate results. eligible = FALSE excludes that model x curve_id from back-calculation.")
+```
+
+```{r eligibility-summary}
+eligibility |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(
+    n_curve_ids = dplyr::n_distinct(curve_id),
+    n_failures  = sum(!eligible),
+    all_passed  = all(eligible),
+    .groups     = "drop"
+  ) |>
+  knitr::kable(caption = "Eligibility summary across all models.")
+```
+
+---
+
+# CDAN precision grids {#cdan-grids}
+
+## What is a CDAN precision grid? {#cdan-concept}
+
+**CDAN** (Concentration-Dependent Assay Noise)  [@omalley_theory_2003] [@omalley_bayesian_2008] precision profiling
+characterises *how accurately* a calibration curve can back-calculate
+an unknown concentration as a function of where that concentration
+falls on the curve.
+Near the inflection point the curve is steep — small response
+uncertainty maps to small concentration uncertainty.
+Near the asymptotes the curve is flat — the same response uncertainty
+maps to large concentration uncertainty.
+
+The CDAN grid makes this relationship explicit: a dense grid of
+concentration values, each with its posterior predictive back-calculation
+distribution and associated %CV, incorporating both curve-parameter
+uncertainty *and* the additional measurement noise that a real
+instrument observation would contribute.
+
+## Accessing per-model grids {#grid-access}
+
+For every converged, eligible model, `ensemble[[model]]$grid`
+holds the pre-computed CDAN grid.
+**This slot is always populated for all converged models when more
+than one model is fitted**, enabling direct cross-model comparison
+without re-running anything.
+
+```{r grid-structure}
+dplyr::glimpse(ensemble[["logistic4"]]$grid)
+```
+
+```{r grid-col-table, echo=FALSE}
+tibble::tribble(
+  ~Column,         ~Description,
+  "curve_id",      "Integer FK — identifies which calibration curve this row belongs to.",
+  "concentration", "log10(AU/mL) grid point — the x-axis value on the preprocessed scale.",
+  "pred_mean",     "Posterior mean of the forward-predicted response at this concentration.",
+  "pred_sd",       "Posterior SD of the forward-predicted response (parameter uncertainty only).",
+  "pred_noise_sd", "Total predictive SD after Student-t noise injection (parameter uncertainty + measurement noise).",
+  "cv_pct",        "% CV of back-calculated concentration at this grid point.",
+  "model",         "Model identifier."
+) |>
+  knitr::kable(caption = "Columns in ensemble[[model]]$grid.")
+```
+
+```{r grid-plot,
+    fig.cap="Per-model CDAN precision profiles: back-calculation %CV versus log10(concentration) for all curve_ids. The dashed line marks 20% CV — a typical regulatory acceptability threshold. The ribbon spans the range across curve_ids; the line is the mean."}
+all_grids <- purrr::map_dfr(
+  names(ensemble),
+  function(m) {
+    g <- ensemble[[m]]$grid
+    if (is.null(g)) return(NULL)
+    dplyr::mutate(g, model = m)
+  }
+)
+
+all_grids |>
+  dplyr::group_by(model, concentration) |>
+  dplyr::summarise(
+    cv_mean = mean(cv_pct,  na.rm = TRUE),
+    cv_lo   = min(cv_pct,   na.rm = TRUE),
+    cv_hi   = max(cv_pct,   na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = concentration, colour = model, fill = model)) +
+  geom_ribbon(aes(ymin = cv_lo, ymax = cv_hi),
+              alpha = 0.15, colour = NA) +
+  geom_line(aes(y = cv_mean), linewidth = 0.8) +
+  geom_hline(yintercept = 20, linetype = "dashed",
+             colour = "grey40", linewidth = 0.6) +
+  scale_x_continuous(
+    name   = "log\u2081\u2080(concentration)  [AU/mL]",
+    breaks = seq(-3, 2, by = 1)
+  ) +
+  scale_y_continuous(name = "Back-calculation CV (%)", limits = c(0, NA)) +
+  facet_wrap(~model, nrow = 2) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none") +
+  labs(title    = "CDAN precision profiles — all models",
+       subtitle = "Ribbon = range across curve_ids; line = mean")
+```
+
+---
+
+# The CDAN three-step noise injection procedure {#cdan-procedure}
+
+`predict_grid_bayes()` constructs the CDAN precision profile at each
+grid concentration $x^*$ via a three-step procedure that propagates
+both curve-parameter uncertainty and instrument measurement noise.
+
+## Step 1 — draw posterior curve parameters {#step1}
+
+For each of the $S$ posterior samples, retrieve the full set of
+per-`curve_id` parameters:
+
+$$
+\boldsymbol{\theta}_k^{(s)}
+= \left\{A_k^{(s)},\; B_k^{(s)},\; C_k^{(s)},\; D_k^{(s)}\right\}
+$$
+
+This captures **parameter uncertainty**: how much the curve shape
+varies across the posterior.
+
+## Step 2 — evaluate the forward model {#step2}
+
+For each sample $s$ and `curve_id` $k$, evaluate the forward model
+at $x^*$ (log10-concentration):
+
+$$
+\tilde{y}^{(s,k)}
+= A_k^{(s)}
++ \frac{D_k^{(s)} - A_k^{(s)}}
+       {1 + \left(x^* / C_k^{(s)}\right)^{B_k^{(s)}}}
+$$
+
+(For `gompertz4` the Gompertz link replaces the logistic fraction;
+for `logistic5`/`loglogistic5` the additional asymmetry parameter
+$G_k^{(s)}$ modifies the denominator.)
+
+## Step 3 — inject Student-t noise and invert {#step3}
+
+**This step is unique to `predict_grid_bayes()` and defines CDAN.**
+
+To each forward-predicted response $\tilde{y}^{(s,k)}$, add a noise
+draw from the posterior predictive distribution:
+
+$$
+y^{*(s,k)}
+= \tilde{y}^{(s,k)}
+  + \varepsilon^{(s)},
+\qquad
+\varepsilon^{(s)} \sim t_\nu\!\left(0,\; \sigma_\varepsilon^{(s)}\right)
+$$
+
+where $\nu = 4$ degrees of freedom (curveRbayes default) gives heavier
+tails than a Normal distribution, providing a realistic characterisation
+of occasional outlier instrument readings.
+
+The noisy response $y^{*(s,k)}$ is then **back-calculated** through
+the analytical inverse of the forward model:
+
+$$
+\hat{x}^{(s,k)}
+= f^{-1}\!\left(y^{*(s,k)};\; \boldsymbol{\theta}_k^{(s)}\right)
+$$
+
+The collection $\left\{\hat{x}^{(s,k)}\right\}$ is the CDAN
+back-calculation distribution at $x^*$.
+The `cv_pct` column in the grid is the SD of $\hat{x}^{(s,k)}$
+divided by the mean, expressed as a percentage (computed on the
+linear concentration scale).
+
+The entire three-step logic can be illustrated concisely:
+
+```{r cdan-demo}
+set.seed(123)
+
+# Extract 400 posterior samples for logistic4
+draws_mat <- posterior::as_draws_matrix(cmdstan_fit_4pl$draws())
+idx       <- sample(nrow(draws_mat), 400)
+samp      <- draws_mat[idx, ]
+
+# Plate-level parameters for curve_id = 1 are already in the draws
+A <- as.numeric(samp[, "a[1]"])
+B <- as.numeric(samp[, "b[1]"])
+C <- as.numeric(samp[, "c_par[1]"])
+D <- as.numeric(samp[, "d[1]"])
+sigma_obs <- as.numeric(samp[, "sigma_obs"])
+
+# Grid point: log10(1 AU/mL) = 0
+x_star <- 0
+
+# Step 1-2: forward prediction using curveRcore::logistic4()
+y_tilde <- curveRcore::logistic4(x_star, A, B, C, D)
+
+# Step 3: inject Student-t noise (df = 4), then invert
+eps    <- rt(length(y_tilde), df = 4) * sigma_obs
+y_star <- y_tilde + eps
+
+# Back-calculate using curveRcore analytical inverse
+inv_fn <- curveRcore::make_inv_and_grad_fixed("logistic4", fixed_a = NULL)$inv_fn
+x_hat  <- vapply(seq_along(A), function(s) {
+  tryCatch(inv_fn(y_star[s], c(a = A[s], b = B[s], c = C[s], d = D[s])),
+           error = function(e) NA_real_)
+}, numeric(1))
+x_hat <- x_hat[is.finite(x_hat)]
+
+cat(sprintf(
+  "CDAN back-calculation at log10(x*) = %.1f  [x* = %.0f AU/mL]\n",
+  x_star, 10^x_star
+))
+cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat, na.rm = TRUE)))
+cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n", sd(x_hat, na.rm = TRUE)))
+cat(sprintf("  Back-calc CV:    %.1f%%\n",
+            sd(x_hat, na.rm = TRUE) * log(10) * 100))
+```
+
+---
+
+# Back-calculating test samples {#backcalc}
+
+## Why noise is NOT injected for test samples {#no-noise}
+
+This is the most important conceptual distinction in the package.
+
+When you run `predict_samples_bayes()` on observed test-sample
+responses, the situation is fundamentally different from building
+a CDAN grid:
+
+> **The observed response $y_\text{obs}$ already IS the noisy
+> measurement. Injecting noise again would be double-counting.**
+
+The back-calculation task is: *given that the instrument returned
+$y_\text{obs}$, what is the posterior distribution of the unknown
+concentration $x$?*
+This is a pure inversion problem:
+
+$$
+\hat{x}^{(s,k)}
+= f^{-1}\!\left(y_\text{obs};\; \boldsymbol{\theta}_k^{(s)}\right)
+$$
+
+No noise draw appears.
+The uncertainty in $\hat{x}^{(s,k)}$ arises solely from posterior
+uncertainty in the curve parameters $\boldsymbol{\theta}_k^{(s)}$.
+
+| Scenario | Function | Noise injected? | Source of uncertainty |
+|---|---|---|---|
+| CDAN precision grid | `predict_grid_bayes()` | ✅ Yes — Student-t($\nu$=4) | Parameter uncertainty **+** hypothetical measurement noise |
+| Test sample back-calculation | `predict_samples_bayes()` | ❌ No | Parameter uncertainty only (noise already realised in $y_\text{obs}$) |
+
+## Running back-calculation {#backcalc-run}
+
+Test samples need only `curve_id` and the response column (`mfi`).
+No `concentration` column is needed or expected — that is what we are
+estimating.
+
+```{r backcalc}
+# Samples were already back-calculated during fit_calibration_bayes().
+# Extract from the per-plate results:
+results <- do.call(rbind, lapply(names(fit$plates), function(cid) {
+  s <- fit$plates[[cid]]$samples
+  if (is.null(s)) return(NULL)
+  s
+}))
+
+if (!is.null(results) && nrow(results) > 0) {
+  results[1:min(6, nrow(results)),
+          c("curve_id", "sampleid", "mfi",
+            "predicted_concentration", "final_concentration",
+            "se_concentration", "pcov", "pcov_pass")] |>
+    knitr::kable(digits = 3,
+                 caption = "Back-calculated concentrations (first rows). predicted_concentration is on the log10(AU/mL) scale.")
+} else {
+  cat("No sample predictions available.\n")
+}
+```
+
+```{r backcalc-plot,
+    fig.cap="Back-calculated concentrations for all samples (log10 scale). Colour indicates whether the sample falls within the quantifiable range (pcov_pass)."}
+if (!is.null(results) && nrow(results) > 0 &&
+    "predicted_concentration" %in% names(results)) {
+  ggplot(results,
+         aes(x = factor(curve_id),
+             y = predicted_concentration,
+             colour = pcov_pass)) +
+    geom_jitter(width = 0.2, size = 1.5, alpha = 0.7) +
+    labs(
+      x      = "curve_id",
+      y      = "Predicted concentration (log10 AU/mL)",
+      colour = "pcov_pass",
+      title  = "Back-calculated concentrations"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(legend.position = "bottom")
+}
+```
+
+---
+
+# The `calibration_result_multiplate` output structure {#output}
+
+`fit_calibration_bayes()` returns a single S3 object of class
+`calibration_result_multiplate`.
+
+```{r output-names}
+names(fit)
+class(fit)
+```
+
+```{r output-table, echo=FALSE}
+tibble::tribble(
+  ~Slot,                             ~Type,            ~Contents,
+  "ensemble",                        "named list",
+    "One entry per fitted model. Each entry contains the sub-slots below.",
+  "ensemble[[m]]$stan_fit",          "stanfit (rstan)",
+    "Raw CmdStanMCMC posterior. Use posterior::as_draws_*() to extract. NULL if model failed to compile or sample.",
+  "ensemble[[m]]$loo",               "loo object",
+    "PSIS-LOO result. Plot with plot(); compare across models with loo::loo_compare().",
+  "ensemble[[m]]$grid",              "data frame",
+    "CDAN precision grid (Section 9). Always populated for converged models when > 1 model is fitted. Columns: curve_id, concentration, pred_mean, pred_sd, pred_noise_sd, cv_pct, model.",
+  "ensemble[[m]]$eligible",          "logical",
+    "TRUE if all eligibility gates passed for all curve_ids in this model.",
+  "ensemble[[m]]$convergence_flags", "list",
+    "Named list: n_divergences, min_ebfmi, max_rhat, min_ess_bulk.",
+  "loo_comparison",                  "matrix",
+    "loo::loo_compare() table across all converged models, ordered by ELPD.",
+  "stacking_weights",                "named numeric",
+    "Bayesian stacking weights (sum to 1). Zero weight = dominated in predictive accuracy.",
+  "eligibility",                     "data frame",
+    "Per-gate x per-model x per-curve_id eligibility results. Columns: model, curve_id, gate, value, threshold, eligible.",
+  "priors_used",                     "list",
+    "Actual prior values passed to Stan after data-adaptive construction.",
+  "data",                            "list",
+    "The input data object for reproducibility and provenance checking.",
+  "call",                            "call",
+    "Matched call to fit_calibration_bayes().",
+  "metadata",                        "list",
+    "Fitting wall time, curveRbayes version, R version, Stan version, seed."
+) |>
+  knitr::kable(caption = "calibration_result_multiplate slot reference.")
+```
+
+## Common navigation patterns {#output-nav}
+
+```{r output-nav}
+# 1. Quick convergence pass/fail across all models
+lapply(ensemble, function(m) {
+  fs <- m$fit_stats
+  tibble::tibble(
+    n_div     = fs$n_divergent,
+    n_max_td  = fs$n_max_treedepth,
+    mean_ebfmi = round(mean(fs$ebfmi, na.rm = TRUE), 3)
+  )
+}) |>
+  dplyr::bind_rows(.id = "model") |>
+  knitr::kable(digits = 3, caption = "Quick convergence summary.")
+
+# 2. Population inflection point: posterior mean and 95% CI
+mu_c_draws <- as.numeric(draws_4pl[["mu_c"]])
+cat(sprintf(
+  "mu_c:  mean = %.3f  95%% CI [%.3f, %.3f]  (log10 AU/mL)\n",
+  mean(mu_c_draws),
+  quantile(mu_c_draws, 0.025),
+  quantile(mu_c_draws, 0.975)
+))
+
+# 3. Formal LOO comparison (loo package)
+loo::loo_compare(Filter(Negate(is.null), loo_list))
+
+# 4. Best model by ELPD
+best_model <- names(
+  which.max(sapply(loo_list,
+                   function(l) l$estimates["elpd_loo", "Estimate"]))
+)
+cat("Best model by ELPD:", best_model, "\n")
+
+# 5. Access grid for a specific curve_id
+grid_cid1 <- ensemble[["logistic4"]]$grid |>
+  dplyr::filter(curve_id == 1)
+head(grid_cid1)
+```
+
+---
+
+# References
+
+<div id="refs"></div>
+
+---
+
+# Session information {#session}
+
+```{r session}
+sessionInfo()
+```
+
+
+

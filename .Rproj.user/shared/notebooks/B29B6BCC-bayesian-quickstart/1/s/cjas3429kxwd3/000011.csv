@@ -1,0 +1,16 @@
+"0",""
+"0","# 2. Population inflection point: posterior mean and 95% CI"
+"0","mu_c_draws <- as.numeric(draws_4pl[[""mu_c""]])"
+"0","cat(sprintf("
+"0","  ""mu_c:  mean = %.3f  95%% CI [%.3f, %.3f]  (log10 AU/mL)\n"","
+"0","  mean(mu_c_draws),"
+"0","  quantile(mu_c_draws, 0.025),"
+"0","  quantile(mu_c_draws, 0.975)"
+"0","))"
+"1","mu_c:  mean = 0.057  95% CI [-0.622, 0.827]  (log10 AU/mL)
+"
+"0","# 3. Formal LOO comparison (loo package)"
+"0","do.call(loo::loo_compare, Filter(Negate(is.null), loo_list))"
+"2","Error in loo_compare.default(logistic4 = list(estimates = c(58.3875718457852,  : 
+  argument ""x"" is missing, with no default
+"

@@ -1,0 +1,1 @@
+{"frames":[],"message":"Error in predict_samples_bayes(fit = fit, newdata = test_samples, use_stack = TRUE,  : \n  unused arguments (fit = fit, newdata = test_samples, use_stack = TRUE, ci_level = 0.95)\n"}

@@ -1,0 +1,10 @@
+"0","eligibility |>"
+"0","  dplyr::select(model, curve_id, gate, value, threshold, eligible) |>"
+"0","  dplyr::arrange(model, curve_id, gate) |>"
+"0","  knitr::kable(digits = 3,"
+"0","               caption = ""Eligibility gate results. eligible = FALSE excludes that model × curve_id from back-calculation."")"
+"1","[1m[33mError[39m in `dplyr::select()`:[22m
+[33m![39m Can't select columns that don't exist.
+[31m✖[39m Column `value` doesn't exist.
+[90mRun `]8;;x-r-run:rlang::last_trace()rlang::last_trace()]8;;` to see where the error occurred.[39m
+"

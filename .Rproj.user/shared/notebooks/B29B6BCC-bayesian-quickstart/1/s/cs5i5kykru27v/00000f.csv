@@ -1,0 +1,8 @@
+"0","library(curveRcore)    # data structures and preprocessing"
+"0","library(curveRbayes)   # this package"
+"0","library(dplyr)"
+"0","library(tidyr)"
+"0","library(ggplot2)"
+"0","library(posterior)     # tidy MCMC summaries (rvar, summarise_draws)"
+"0","library(bayesplot)     # diagnostic plots"
+"0","library(loo)           # LOO-CV infrastructure"

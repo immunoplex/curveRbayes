@@ -1,0 +1,53 @@
+<table>
+<caption>Data-adaptive prior structure. MFI_max and MFI_range are
+computed from the preprocessed standards for the current curve_id
+set.</caption>
+<colgroup>
+<col width="13%" />
+<col width="26%" />
+<col width="16%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Population mean prior</th>
+<th align="left">Population SD prior</th>
+<th align="left">Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">log(A)</td>
+<td align="left">Normal(log(0.01 × MFI_max), 1)</td>
+<td align="left">Half-Normal(0, 1)</td>
+<td align="left">Lower asymptote near background; broad on log
+scale.</td>
+</tr>
+<tr>
+<td align="left">log(B)</td>
+<td align="left">Normal(log(1.5), 0.5)</td>
+<td align="left">Half-Normal(0, 0.5)</td>
+<td align="left">Hill slope near 1.5; constrained positive.</td>
+</tr>
+<tr>
+<td align="left">C (log10 scale)</td>
+<td align="left">Normal(mid-range log10(x), 1)</td>
+<td align="left">Half-Normal(0, 1)</td>
+<td align="left">Inflection at geometric centre of concentration
+range.</td>
+</tr>
+<tr>
+<td align="left">log(D)</td>
+<td align="left">Normal(log(MFI_max), 0.5)</td>
+<td align="left">Half-Normal(0, 0.5)</td>
+<td align="left">Upper asymptote near observed maximum.</td>
+</tr>
+<tr>
+<td align="left">sigma_obs</td>
+<td align="left">Half-Normal(0, 0.1 × MFI_range)</td>
+<td align="left">—</td>
+<td align="left">Noise scaled relative to signal range.</td>
+</tr>
+</tbody>
+</table>

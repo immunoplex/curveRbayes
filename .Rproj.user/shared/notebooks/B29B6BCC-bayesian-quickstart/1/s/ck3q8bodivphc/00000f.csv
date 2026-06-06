@@ -1,0 +1,12 @@
+"0","set.seed(123)"
+"0",""
+"0","# Extract 400 posterior samples for logistic4"
+"0","draws_mat <- posterior::as_draws_matrix(cmdstan_fit_4pl$draws())"
+"0","idx       <- sample(nrow(draws_mat), 400)"
+"0","samp      <- draws_mat[idx, ]"
+"0",""
+"0","# Reconstruct curve_id = 1 parameters from NCP offsets"
+"0","log_a_k1 <- samp[, ""mu_log_a""] + samp[, ""sigma_log_a""] * samp[, ""z_a[1]""]"
+"2","Error in `[.default`(samp, , ""mu_log_a"", drop = FALSE) : 
+  subscript out of bounds
+"

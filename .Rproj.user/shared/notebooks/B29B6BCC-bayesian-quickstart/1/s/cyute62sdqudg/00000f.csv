@@ -1,0 +1,7 @@
+"0","lapply(ensemble, function(m) {"
+"0","  n_max <- m$fit_stats$n_max_treedepth"
+"0","  if (is.null(n_max)) return(data.frame(n_max_treedepth = NA_integer_))"
+"0","  data.frame(n_max_treedepth = n_max)"
+"0","}) |>"
+"0","  dplyr::bind_rows(.id = ""model"") |>"
+"0","  knitr::kable(caption = ""Transitions hitting max_treedepth per model."")"

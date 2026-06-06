@@ -1,0 +1,41 @@
+Package: curveRbayes
+Title: Bayesian Immunoassay Standard Curve Fitting
+Version: 0.2.0
+Authors@R: c(
+    person("Hardik", "Gupta",
+           email = "Hardik.Gupta@dartmouth.edu",
+           role = "aut"),
+    person("Michael Scot", "Zens",
+           email = "michael.s.zens@dartmouth.edu",
+           role = c("aut", "cre")),
+    person("Anne G.", "Hoen",
+           email = "anne.g.hoen@dartmouth.edu",
+           role = "aut")
+  )
+Description: Bayesian hierarchical standard curve fitting for immunoassay
+    data. Fits logistic, Gompertz, and Richards models across multiple
+    curve_ids using Stan, with data-adaptive priors, robust Student-t
+    likelihood, LOO-CV model selection, and posterior predictive
+    concentration estimation with full uncertainty propagation.
+    Receives preprocessed data from curveRcore and produces
+    calibration_result objects directly comparable to curveRfreq output.
+URL: https://github.com/immunoplex/curveRbayes
+BugReports: https://github.com/immunoplex/curveRbayes/issues
+Imports:
+    curveRcore,
+    cmdstanr,
+    posterior,
+    loo (>= 2.7.0),
+    stats
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Additional_repositories: https://stan-dev.r-universe.dev
+License: AGPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Config/testthat/edition: 3
+Depends:
+    R (>= 4.1)
