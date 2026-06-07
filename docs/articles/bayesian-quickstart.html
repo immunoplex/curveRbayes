@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Bayesian Hierarchical Calibration with curveRbayes • curveRbayes</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -42,7 +47,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/immunoplex/curveRbayes"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/immunoplex/curveRbayes" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -55,8 +60,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Bayesian Hierarchical Calibration with curveRbayes</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Bayesian Hierarchical Calibration with curveRbayes</h1>
             <h3 data-toc-skip class="subtitle">From preprocessed
 standards to posterior concentration estimates and CDAN precision
 profiles</h3>
@@ -83,9 +87,9 @@ profiles</h3>
 <p>The <strong>curveR</strong> ecosystem contains three packages that
 share a common data contract defined by curveRcore.</p>
 <p><strong>curveRcore</strong> provides data structures, the
-preprocessing pipeline (<code><a href="https://rdrr.io/pkg/curveRcore/man/preprocess_standards.html" class="external-link">preprocess_standards()</a></code>), and
-settings constructors (<code><a href="https://rdrr.io/pkg/curveRcore/man/new_antigen_constraints.html" class="external-link">new_antigen_constraints()</a></code>,
-<code><a href="https://rdrr.io/pkg/curveRcore/man/new_study_params.html" class="external-link">new_study_params()</a></code>, <code><a href="https://rdrr.io/pkg/curveRcore/man/new_fit_options.html" class="external-link">new_fit_options()</a></code>) used
+preprocessing pipeline (<code><a href="https://immunoplex.github.io/curveRcore/reference/preprocess_standards.html" class="external-link">preprocess_standards()</a></code>), and
+settings constructors (<code><a href="https://immunoplex.github.io/curveRcore/reference/new_antigen_constraints.html" class="external-link">new_antigen_constraints()</a></code>,
+<code><a href="https://immunoplex.github.io/curveRcore/reference/new_study_params.html" class="external-link">new_study_params()</a></code>, <code><a href="https://immunoplex.github.io/curveRcore/reference/new_fit_options.html" class="external-link">new_fit_options()</a></code>) used
 identically by both fitting engines.</p>
 <p><strong>curveRbayes</strong> (this package) fits Bayesian
 hierarchical dose–response models via Stan and produces posterior
@@ -184,7 +188,7 @@ yet — those are created by preprocessing.</p>
 <div class="section level3">
 <h3 id="preprocessing">Preprocessing with curveRcore<a class="anchor" aria-label="anchor" href="#preprocessing"></a>
 </h3>
-<p><code><a href="https://rdrr.io/pkg/curveRcore/man/preprocess_standards.html" class="external-link">preprocess_standards()</a></code> applies four steps in a fixed
+<p><code><a href="https://immunoplex.github.io/curveRcore/reference/preprocess_standards.html" class="external-link">preprocess_standards()</a></code> applies four steps in a fixed
 canonical order, identically for both curveRbayes and curveRfreq:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -210,14 +214,14 @@ confirmed by <code><a href="../reference/build_stan_data.html">build_stan_data()
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># CONC in bead_assay_example runs 0.001–30 AU/mL; dilution = 1/CONC,</span></span>
 <span><span class="co"># so std_curve_conc = 1/min(dilution) = max(CONC) = 30.</span></span>
-<span><span class="va">antigen_settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/curveRcore/man/new_antigen_constraints.html" class="external-link">new_antigen_constraints</a></span><span class="op">(</span></span>
+<span><span class="va">antigen_settings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://immunoplex.github.io/curveRcore/reference/new_antigen_constraints.html" class="external-link">new_antigen_constraints</a></span><span class="op">(</span></span>
 <span>  antigen        <span class="op">=</span> <span class="st">"alpha"</span>,</span>
 <span>  std_curve_conc <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  l_asy_method   <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  pcov_threshold <span class="op">=</span> <span class="fl">20</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">study_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/curveRcore/man/new_study_params.html" class="external-link">new_study_params</a></span><span class="op">(</span></span>
+<span><span class="va">study_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://immunoplex.github.io/curveRcore/reference/new_study_params.html" class="external-link">new_study_params</a></span><span class="op">(</span></span>
 <span>  is_log_response    <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  is_log_independent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  apply_prozone      <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -225,7 +229,7 @@ confirmed by <code><a href="../reference/build_stan_data.html">build_stan_data()
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Preprocess all six curve_ids (both antigens, all plates)</span></span>
-<span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/curveRcore/man/preprocess_standards.html" class="external-link">preprocess_standards</a></span><span class="op">(</span></span>
+<span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://immunoplex.github.io/curveRcore/reference/preprocess_standards.html" class="external-link">preprocess_standards</a></span><span class="op">(</span></span>
 <span>  data                 <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">standards</span>,</span>
 <span>  antigen_settings     <span class="op">=</span> <span class="va">antigen_settings</span>,</span>
 <span>  response_variable    <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">response_var</span>,</span>
@@ -479,7 +483,7 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
 <span><span class="co">#&gt; Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182dd347f.stan', line 114, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)</span></span>
 <span><span class="co">#&gt; Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 3</span></span>
@@ -487,7 +491,7 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 4   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 4   Stan can't start sampling from this initial value.</span></span>
 <span><span class="co">#&gt; Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182dd347f.stan', line 114, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)</span></span>
 <span><span class="co">#&gt; Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 4</span></span>
@@ -502,12 +506,12 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
 <span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182db0539d.stan', line 87, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)</span></span>
 <span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 1</span></span>
 <span><span class="co">#&gt; Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182db0539d.stan', line 87, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)</span></span>
 <span><span class="co">#&gt; Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 4</span></span>
@@ -516,18 +520,18 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; ── Fitting loglogistic5 ──</span></span>
 <span><span class="co">#&gt; [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...</span></span>
 <span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d187a98ada.stan', line 98, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)</span></span>
 <span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 1</span></span>
 <span><span class="co">#&gt; Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d187a98ada.stan', line 98, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)</span></span>
 <span><span class="co">#&gt; Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 3</span></span>
 <span><span class="co">#&gt; [fit_bayes] Done. Divergences: 0  Max treedepth: 0</span></span>
 <span><span class="co">#&gt;   [grids] logistic4 (260 draws)</span></span>
-<span><span class="co">#&gt;   [grids] logistic5 (500 draws)</span></span>
+<span><span class="co">#&gt;   [grids] logistic5 (260 draws)</span></span>
 <span><span class="co">#&gt;   [grids] gompertz4 (260 draws)</span></span>
 <span><span class="co">#&gt;   [grids] loglogistic5 (260 draws)</span></span>
 <span><span class="co">#&gt;   [eligibility] logistic4      ✓ eligible</span></span>
@@ -856,23 +860,27 @@ models when compute_all_grids = TRUE).</td>
 <span></span>
 <span><span class="co"># 3. Formal LOO comparison (if more than one model was fitted)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">loo_comparison</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">loo_comparison</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              elpd_diff se_diff</span></span>
-<span><span class="co">#&gt; logistic5      0.0       0.0  </span></span>
-<span><span class="co">#&gt; loglogistic5  -0.8       0.9  </span></span>
-<span><span class="co">#&gt; logistic4     -6.1       2.3  </span></span>
-<span><span class="co">#&gt; gompertz4    -14.9       6.2</span></span>
+<span><span class="co">#&gt;         model elpd_diff se_diff p_worse diag_diff      diag_elpd</span></span>
+<span><span class="co">#&gt;     logistic5       0.0     0.0      NA           1 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;  loglogistic5      -0.8     0.9    0.83   N &lt; 100 2 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;     logistic4      -6.1     2.3    1.00   N &lt; 100 4 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;     gompertz4     -14.9     6.2    0.99   N &lt; 100 5 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Diagnostic flags present.</span></span>
+<span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
+<span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span>
 <span></span>
 <span><span class="co"># 4. Access CDAN grid for the best model at curve_id 1</span></span>
 <span><span class="va">grid_best</span> <span class="op">&lt;-</span> <span class="va">cr1</span><span class="op">$</span><span class="va">grid</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">grid_best</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x_fit"</span>, <span class="st">"predicted_response"</span>,</span>
 <span>                   <span class="st">"pcov"</span>, <span class="st">"pcov_rmse"</span>, <span class="st">"pcov_pass"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       x_fit predicted_response pcov pcov_rmse pcov_pass</span></span>
-<span><span class="co">#&gt; 1 -4.000000           1.391078  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 2 -3.972477           1.392806  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 3 -3.944954           1.394580  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 4 -3.917430           1.396402  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 5 -3.889907           1.398274  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 6 -3.862384           1.400196  150       150     FALSE</span></span>
+<span><span class="co">#&gt; 1 -4.000000           1.391426  150       150     FALSE</span></span>
+<span><span class="co">#&gt; 2 -3.972477           1.393164  150       150     FALSE</span></span>
+<span><span class="co">#&gt; 3 -3.944954           1.394949  150       150     FALSE</span></span>
+<span><span class="co">#&gt; 4 -3.917430           1.396783  150       150     FALSE</span></span>
+<span><span class="co">#&gt; 5 -3.889907           1.398665  150       150     FALSE</span></span>
+<span><span class="co">#&gt; 6 -3.862384           1.400599  150       150     FALSE</span></span>
 <span></span>
 <span><span class="co"># 5. Access per-model grid for logistic4 specifically</span></span>
 <span><span class="va">grid_4pl</span> <span class="op">&lt;-</span> <span class="va">ensemble</span><span class="op">[[</span><span class="st">"logistic4"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">grid</span></span>
@@ -1619,11 +1627,15 @@ unreliable:</p>
 </table>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">loo_comparison</span><span class="op">)</span><span class="op">)</span> <span class="va">loo_comparison</span></span>
-<span><span class="co">#&gt;              elpd_diff se_diff</span></span>
-<span><span class="co">#&gt; logistic5      0.0       0.0  </span></span>
-<span><span class="co">#&gt; loglogistic5  -0.8       0.9  </span></span>
-<span><span class="co">#&gt; logistic4     -6.1       2.3  </span></span>
-<span><span class="co">#&gt; gompertz4    -14.9       6.2</span></span></code></pre></div>
+<span><span class="co">#&gt;         model elpd_diff se_diff p_worse diag_diff      diag_elpd</span></span>
+<span><span class="co">#&gt;     logistic5       0.0     0.0      NA           1 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;  loglogistic5      -0.8     0.9    0.83   N &lt; 100 2 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;     logistic4      -6.1     2.3    1.00   N &lt; 100 4 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;     gompertz4     -14.9     6.2    0.99   N &lt; 100 5 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Diagnostic flags present.</span></span>
+<span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
+<span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span></code></pre></div>
 <p><code>{r pareto-k,     fig.cap="Pareto-k diagnostic for logistic4. Points above k = 0.7 (dashed line) flag high-leverage calibrators that disproportionately influence the fit."} if (!is.null(loo_list[["logistic4"]])) {   plot(loo_list[["logistic4"]],        diagnostic   = "k",        label_points = TRUE,        main         = "Pareto-k — logistic4")   abline(h = 0.7, lty = 2, col = "firebrick") }</code></p>
 </div>
 <div class="section level3">
@@ -1660,7 +1672,7 @@ candidate set.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">logistic5</td>
+<td align="left"></td>
 <td align="right">1</td>
 </tr>
 <tr class="even">
@@ -1668,10 +1680,14 @@ candidate set.</p>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">gompertz4</td>
+<td align="left">logistic5</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
+<td align="left">gompertz4</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
 <td align="left">loglogistic5</td>
 <td align="right">0</td>
 </tr>
@@ -1759,7 +1775,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">1</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 0.972 log10</td>
+<td align="left">dynamic range = 0.986 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1775,7 +1791,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">2</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.12 log10</td>
+<td align="left">dynamic range = 1.04 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1791,7 +1807,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">3</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 0.921 log10</td>
+<td align="left">dynamic range = 1.08 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1807,7 +1823,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">4</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.31 log10</td>
+<td align="left">dynamic range = 1.4 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1823,7 +1839,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">5</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.42 log10</td>
+<td align="left">dynamic range = 1.47 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1951,7 +1967,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">1</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.69 log10</td>
+<td align="left">dynamic range = 1.75 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1964,6 +1980,102 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 </tr>
 <tr class="even">
 <td align="left">logistic5</td>
+<td align="right">2</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.94 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
+<td align="right">3</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">3</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.69 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
+<td align="right">4</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">4</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.64 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
+<td align="right">5</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">5</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.65 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
+<td align="right">6</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">6</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.66 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">loglogistic5</td>
+<td align="right">1</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">loglogistic5</td>
+<td align="right">1</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.69 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">loglogistic5</td>
+<td align="right">2</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">loglogistic5</td>
 <td align="right">2</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
@@ -1971,7 +2083,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">logistic5</td>
+<td align="left">loglogistic5</td>
 <td align="right">3</td>
 <td align="left">rel_se</td>
 <td align="left">TRUE</td>
@@ -1979,15 +2091,15 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">logistic5</td>
+<td align="left">loglogistic5</td>
 <td align="right">3</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.71 log10</td>
+<td align="left">dynamic range = 1.91 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">logistic5</td>
+<td align="left">loglogistic5</td>
 <td align="right">4</td>
 <td align="left">rel_se</td>
 <td align="left">TRUE</td>
@@ -1995,15 +2107,15 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">logistic5</td>
+<td align="left">loglogistic5</td>
 <td align="right">4</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.61 log10</td>
+<td align="left">dynamic range = 1.65 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">logistic5</td>
+<td align="left">loglogistic5</td>
 <td align="right">5</td>
 <td align="left">rel_se</td>
 <td align="left">TRUE</td>
@@ -2011,7 +2123,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">logistic5</td>
+<td align="left">loglogistic5</td>
 <td align="right">5</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
@@ -2019,102 +2131,6 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">logistic5</td>
-<td align="right">6</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">logistic5</td>
-<td align="right">6</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.69 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">1</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">1</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.81 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">2</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">2</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.77 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">3</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">3</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.72 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">4</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">4</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.64 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">5</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">5</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.58 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
 <td align="left">loglogistic5</td>
 <td align="right">6</td>
 <td align="left">rel_se</td>
@@ -2127,7 +2143,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">6</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.64 log10</td>
+<td align="left">dynamic range = 1.68 log10</td>
 <td align="left">TRUE</td>
 </tr>
 </tbody>
@@ -2274,15 +2290,15 @@ LLOQ/ULOQ.</td>
 <span><span class="co">#&gt; $ log10_concentration     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -4.000000<span style="color: #949494;">, </span>-3.972477<span style="color: #949494;">, </span>-3.944954<span style="color: #949494;">, </span>-3.917430<span style="color: #949494;">, </span>-3…</span></span>
 <span><span class="co">#&gt; $ concentration           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.0001000000<span style="color: #949494;">, </span>0.0001065426<span style="color: #949494;">, </span>0.0001135132<span style="color: #949494;">, </span>0.00…</span></span>
 <span><span class="co">#&gt; $ x_fit                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -4.000000<span style="color: #949494;">, </span>-3.972477<span style="color: #949494;">, </span>-3.944954<span style="color: #949494;">, </span>-3.917430<span style="color: #949494;">, </span>-3…</span></span>
-<span><span class="co">#&gt; $ predicted_response      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.391078<span style="color: #949494;">, </span>1.392806<span style="color: #949494;">, </span>1.394580<span style="color: #949494;">, </span>1.396402<span style="color: #949494;">, </span>1.3982…</span></span>
-<span><span class="co">#&gt; $ ci_lower                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.224418<span style="color: #949494;">, </span>1.226446<span style="color: #949494;">, </span>1.229702<span style="color: #949494;">, </span>1.232603<span style="color: #949494;">, </span>1.2355…</span></span>
-<span><span class="co">#&gt; $ ci_upper                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.676348<span style="color: #949494;">, </span>1.676786<span style="color: #949494;">, </span>1.677241<span style="color: #949494;">, </span>1.677714<span style="color: #949494;">, </span>1.6782…</span></span>
-<span><span class="co">#&gt; $ predicted_concentration <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.861070<span style="color: #949494;">, </span>-3.815626<span style="color: #949494;">, </span>-3.777963<span style="color: #949494;">, </span>-3.818445<span style="color: #949494;">, </span>-3…</span></span>
-<span><span class="co">#&gt; $ se_concentration        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.8874223<span style="color: #949494;">, </span>0.7754478<span style="color: #949494;">, </span>0.9168759<span style="color: #949494;">, </span>0.7724030<span style="color: #949494;">, </span>0.…</span></span>
+<span><span class="co">#&gt; $ predicted_response      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.391426<span style="color: #949494;">, </span>1.393164<span style="color: #949494;">, </span>1.394949<span style="color: #949494;">, </span>1.396783<span style="color: #949494;">, </span>1.3986…</span></span>
+<span><span class="co">#&gt; $ ci_lower                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.232767<span style="color: #949494;">, </span>1.235067<span style="color: #949494;">, </span>1.237425<span style="color: #949494;">, </span>1.239843<span style="color: #949494;">, </span>1.2423…</span></span>
+<span><span class="co">#&gt; $ ci_upper                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.708375<span style="color: #949494;">, </span>1.708640<span style="color: #949494;">, </span>1.708917<span style="color: #949494;">, </span>1.709205<span style="color: #949494;">, </span>1.7095…</span></span>
+<span><span class="co">#&gt; $ predicted_concentration <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.922594<span style="color: #949494;">, </span>-3.802136<span style="color: #949494;">, </span>-3.814621<span style="color: #949494;">, </span>-3.805984<span style="color: #949494;">, </span>-3…</span></span>
+<span><span class="co">#&gt; $ se_concentration        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.7825477<span style="color: #949494;">, </span>0.8010372<span style="color: #949494;">, </span>0.7374550<span style="color: #949494;">, </span>0.7870443<span style="color: #949494;">, </span>0.…</span></span>
 <span><span class="co">#&gt; $ pcov                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.00…</span></span>
 <span><span class="co">#&gt; $ pcov_rmse               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.00…</span></span>
 <span><span class="co">#&gt; $ pcov_pass               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALS…</span></span>
-<span><span class="co">#&gt; $ d2y_dx2                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>0.06160868<span style="color: #949494;">, </span>0.06332111<span style="color: #949494;">, </span>0.06508251<span style="color: #949494;">, </span>0.0668…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ d2y_dx2                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>0.06179685<span style="color: #949494;">, </span>0.06350562<span style="color: #949494;">, </span>0.06526292<span style="color: #949494;">, </span>0.0670…</span></span></code></pre></div>
 <p>```{r grid-plot, fig.cap=“Per-model CDAN precision profiles:
 back-calculation %CV versus log10(concentration) for all curve_ids. The
 dashed line marks 20% CV — a typical regulatory acceptability threshold.
@@ -2548,50 +2564,50 @@ correction.</caption>
 <td align="left">1</td>
 <td align="left">a001</td>
 <td align="right">18323.4</td>
-<td align="right">1.123</td>
-<td align="right">26570.844</td>
-<td align="right">0.194</td>
-<td align="right">44.567</td>
+<td align="right">1.125</td>
+<td align="right">26657.467</td>
+<td align="right">0.186</td>
+<td align="right">42.888</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">a002</td>
 <td align="right">19414.7</td>
-<td align="right">1.342</td>
-<td align="right">43999.475</td>
-<td align="right">0.310</td>
-<td align="right">71.286</td>
+<td align="right">1.335</td>
+<td align="right">43283.085</td>
+<td align="right">0.343</td>
+<td align="right">79.068</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">a003</td>
 <td align="right">20098.5</td>
-<td align="right">1.497</td>
-<td align="right">62818.943</td>
-<td align="right">0.353</td>
-<td align="right">81.330</td>
+<td align="right">1.486</td>
+<td align="right">61221.043</td>
+<td align="right">0.394</td>
+<td align="right">90.696</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">a004</td>
 <td align="right">19556.0</td>
-<td align="right">1.367</td>
-<td align="right">46581.735</td>
-<td align="right">0.309</td>
-<td align="right">71.130</td>
+<td align="right">1.369</td>
+<td align="right">46791.961</td>
+<td align="right">0.342</td>
+<td align="right">78.736</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">a005</td>
 <td align="right">20177.5</td>
-<td align="right">1.515</td>
-<td align="right">65488.473</td>
-<td align="right">0.376</td>
-<td align="right">86.633</td>
+<td align="right">1.500</td>
+<td align="right">63215.513</td>
+<td align="right">0.366</td>
+<td align="right">84.288</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
@@ -2599,9 +2615,9 @@ correction.</caption>
 <td align="left">a006</td>
 <td align="right">70.1</td>
 <td align="right">-1.857</td>
-<td align="right">27.805</td>
-<td align="right">0.147</td>
-<td align="right">33.920</td>
+<td align="right">27.796</td>
+<td align="right">0.158</td>
+<td align="right">36.292</td>
 <td align="left">TRUE</td>
 </tr>
 </tbody>
@@ -2820,17 +2836,17 @@ Distributions.”</span> <em>Bayesian Analysis</em> 13 (3): 917–1007. <a href=
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] loo_2.9.0         bayesplot_1.15.0  posterior_1.7.0   ggplot2_4.0.3    </span></span>
+<span><span class="co">#&gt; [1] loo_2.9.0.9000    bayesplot_1.15.0  posterior_1.7.0   ggplot2_4.0.3    </span></span>
 <span><span class="co">#&gt; [5] dplyr_1.2.1       curveRbayes_0.2.0 curveRcore_0.2.0 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      </span></span>
 <span><span class="co">#&gt;  [4] digest_0.6.39        magrittr_2.0.5       evaluate_1.0.5      </span></span>
 <span><span class="co">#&gt;  [7] grid_4.5.1           RColorBrewer_1.1-3   fastmap_1.2.0       </span></span>
-<span><span class="co">#&gt; [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.0     </span></span>
+<span><span class="co">#&gt; [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.1     </span></span>
 <span><span class="co">#&gt; [13] ps_1.9.3             scales_1.4.0         textshaping_1.0.5   </span></span>
 <span><span class="co">#&gt; [16] jquerylib_0.1.4      abind_1.4-8          cli_3.6.6           </span></span>
-<span><span class="co">#&gt; [19] rlang_1.2.0          cmdstanr_0.9.0       withr_3.0.2         </span></span>
+<span><span class="co">#&gt; [19] rlang_1.2.0          cmdstanr_0.9.0.9000  withr_3.0.2         </span></span>
 <span><span class="co">#&gt; [22] cachem_1.1.0         yaml_2.3.12          otel_0.2.0          </span></span>
 <span><span class="co">#&gt; [25] parallel_4.5.1       tools_4.5.1          checkmate_2.3.4     </span></span>
 <span><span class="co">#&gt; [28] vctrs_0.7.3          R6_2.6.1             matrixStats_1.5.0   </span></span>

@@ -30,6 +30,7 @@ navbar:
     github:
       icon: fa-github
       href: https://github.com/immunoplex/curveRbayes
+      aria-label: GitHub
 
 reference:
 - title: Main Entry Point

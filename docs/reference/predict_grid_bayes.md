@@ -24,7 +24,7 @@ predict_grid_bayes(
 - grid:
 
   Data frame from
-  [`curveRcore::generate_prediction_grid()`](https://rdrr.io/pkg/curveRcore/man/generate_prediction_grid.html).
+  [`curveRcore::generate_prediction_grid()`](https://immunoplex.github.io/curveRcore/reference/generate_prediction_grid.html).
 
 - bayes_fit:
 
@@ -54,7 +54,7 @@ predict_grid_bayes(
 - is_log_response:
 
   Logical. Whether the response is log10-transformed. Passed to
-  [`curveRcore::enrich_grid_with_d2y()`](https://rdrr.io/pkg/curveRcore/man/enrich_grid_with_d2y.html)
+  [`curveRcore::enrich_grid_with_d2y()`](https://immunoplex.github.io/curveRcore/reference/enrich_grid_with_d2y.html)
   for second-derivative enrichment. Default TRUE.
 
 ## Value

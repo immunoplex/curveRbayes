@@ -19,8 +19,11 @@ Description: Bayesian hierarchical standard curve fitting for immunoassay
     concentration estimation with full uncertainty propagation.
     Receives preprocessed data from curveRcore and produces
     calibration_result objects directly comparable to curveRfreq output.
-URL: https://github.com/immunoplex/curveRbayes
+URL: https://github.com/immunoplex/curveRbayes, https://immunoplex.github.io/curveRbayes
 BugReports: https://github.com/immunoplex/curveRbayes/issues
+Remotes:
+    immunoplex/curveRcore,
+    stan-dev/cmdstanr
 Imports:
     curveRcore,
     cmdstanr,

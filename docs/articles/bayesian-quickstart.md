@@ -18,11 +18,11 @@ The **curveR** ecosystem contains three packages that share a common
 data contract defined by curveRcore.
 
 **curveRcore** provides data structures, the preprocessing pipeline
-([`preprocess_standards()`](https://rdrr.io/pkg/curveRcore/man/preprocess_standards.html)),
+([`preprocess_standards()`](https://immunoplex.github.io/curveRcore/reference/preprocess_standards.html)),
 and settings constructors
-([`new_antigen_constraints()`](https://rdrr.io/pkg/curveRcore/man/new_antigen_constraints.html),
-[`new_study_params()`](https://rdrr.io/pkg/curveRcore/man/new_study_params.html),
-[`new_fit_options()`](https://rdrr.io/pkg/curveRcore/man/new_fit_options.html))
+([`new_antigen_constraints()`](https://immunoplex.github.io/curveRcore/reference/new_antigen_constraints.html),
+[`new_study_params()`](https://immunoplex.github.io/curveRcore/reference/new_study_params.html),
+[`new_fit_options()`](https://immunoplex.github.io/curveRcore/reference/new_fit_options.html))
 used identically by both fitting engines.
 
 **curveRbayes** (this package) fits Bayesian hierarchical dose–response
@@ -126,7 +126,7 @@ head(bead_assay_example$standards, 4)
 
 ### Preprocessing with curveRcore
 
-[`preprocess_standards()`](https://rdrr.io/pkg/curveRcore/man/preprocess_standards.html)
+[`preprocess_standards()`](https://immunoplex.github.io/curveRcore/reference/preprocess_standards.html)
 applies four steps in a fixed canonical order, identically for both
 curveRbayes and curveRfreq:
 
@@ -285,7 +285,7 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182dd347f.stan', line 114, column 4 to column 42)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
@@ -293,7 +293,7 @@ fit <- fit_calibration_bayes(
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182dd347f.stan', line 114, column 4 to column 42)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -308,12 +308,12 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182db0539d.stan', line 87, column 4 to column 42)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d182db0539d.stan', line 87, column 4 to column 42)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -322,18 +322,18 @@ fit <- fit_calibration_bayes(
 #> ── Fitting loglogistic5 ──
 #> [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d187a98ada.stan', line 98, column 4 to column 42)
+#> Chain 1 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmpu43bMk/model-2d187a98ada.stan', line 98, column 4 to column 42)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> [fit_bayes] Done. Divergences: 0  Max treedepth: 0
 #>   [grids] logistic4 (260 draws)
-#>   [grids] logistic5 (500 draws)
+#>   [grids] logistic5 (260 draws)
 #>   [grids] gompertz4 (260 draws)
 #>   [grids] loglogistic5 (260 draws)
 #>   [eligibility] logistic4      ✓ eligible
@@ -502,23 +502,27 @@ cat(sprintf(
 
 # 3. Formal LOO comparison (if more than one model was fitted)
 if (!is.null(loo_comparison)) print(loo_comparison)
-#>              elpd_diff se_diff
-#> logistic5      0.0       0.0  
-#> loglogistic5  -0.8       0.9  
-#> logistic4     -6.1       2.3  
-#> gompertz4    -14.9       6.2
+#>         model elpd_diff se_diff p_worse diag_diff      diag_elpd
+#>     logistic5       0.0     0.0      NA           1 k_psis > 0.7
+#>  loglogistic5      -0.8     0.9    0.83   N < 100 2 k_psis > 0.7
+#>     logistic4      -6.1     2.3    1.00   N < 100 4 k_psis > 0.7
+#>     gompertz4     -14.9     6.2    0.99   N < 100 5 k_psis > 0.7
+#> 
+#> Diagnostic flags present.
+#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+#> or https://mc-stan.org/loo/reference/loo-glossary.html.
 
 # 4. Access CDAN grid for the best model at curve_id 1
 grid_best <- cr1$grid
 head(grid_best[, c("x_fit", "predicted_response",
                    "pcov", "pcov_rmse", "pcov_pass")])
 #>       x_fit predicted_response pcov pcov_rmse pcov_pass
-#> 1 -4.000000           1.391078  150       150     FALSE
-#> 2 -3.972477           1.392806  150       150     FALSE
-#> 3 -3.944954           1.394580  150       150     FALSE
-#> 4 -3.917430           1.396402  150       150     FALSE
-#> 5 -3.889907           1.398274  150       150     FALSE
-#> 6 -3.862384           1.400196  150       150     FALSE
+#> 1 -4.000000           1.391426  150       150     FALSE
+#> 2 -3.972477           1.393164  150       150     FALSE
+#> 3 -3.944954           1.394949  150       150     FALSE
+#> 4 -3.917430           1.396783  150       150     FALSE
+#> 5 -3.889907           1.398665  150       150     FALSE
+#> 6 -3.862384           1.400599  150       150     FALSE
 
 # 5. Access per-model grid for logistic4 specifically
 grid_4pl <- ensemble[["logistic4"]]$grid
@@ -960,11 +964,15 @@ weights are unreliable:
 
 ``` r
 if (!is.null(loo_comparison)) loo_comparison
-#>              elpd_diff se_diff
-#> logistic5      0.0       0.0  
-#> loglogistic5  -0.8       0.9  
-#> logistic4     -6.1       2.3  
-#> gompertz4    -14.9       6.2
+#>         model elpd_diff se_diff p_worse diag_diff      diag_elpd
+#>     logistic5       0.0     0.0      NA           1 k_psis > 0.7
+#>  loglogistic5      -0.8     0.9    0.83   N < 100 2 k_psis > 0.7
+#>     logistic4      -6.1     2.3    1.00   N < 100 4 k_psis > 0.7
+#>     gompertz4     -14.9     6.2    0.99   N < 100 5 k_psis > 0.7
+#> 
+#> Diagnostic flags present.
+#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+#> or https://mc-stan.org/loo/reference/loo-glossary.html.
 ```
 
 `{r pareto-k, fig.cap="Pareto-k diagnostic for logistic4. Points above k = 0.7 (dashed line) flag high-leverage calibrators that disproportionately influence the fit."} if (!is.null(loo_list[["logistic4"]])) { plot(loo_list[["logistic4"]], diagnostic = "k", label_points = TRUE, main = "Pareto-k — logistic4") abline(h = 0.7, lty = 2, col = "firebrick") }`
@@ -999,8 +1007,9 @@ if (!is.null(stacking_weights)) {
 
 | model        | weight |
 |:-------------|-------:|
-| logistic5    |      1 |
+|              |      1 |
 | logistic4    |      0 |
+| logistic5    |      0 |
 | gompertz4    |      0 |
 | loglogistic5 |      0 |
 
@@ -1059,15 +1068,15 @@ if (!is.null(eligibility) && nrow(eligibility) > 0) {
 | model | curve_id | gate | passed | detail | eligible |
 |:---|---:|:---|:---|:---|:---|
 | gompertz4 | 1 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 1 | dynamic_range | TRUE | dynamic range = 0.972 log10 | TRUE |
+| gompertz4 | 1 | dynamic_range | TRUE | dynamic range = 0.986 log10 | TRUE |
 | gompertz4 | 2 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 2 | dynamic_range | TRUE | dynamic range = 1.12 log10 | TRUE |
+| gompertz4 | 2 | dynamic_range | TRUE | dynamic range = 1.04 log10 | TRUE |
 | gompertz4 | 3 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 3 | dynamic_range | TRUE | dynamic range = 0.921 log10 | TRUE |
+| gompertz4 | 3 | dynamic_range | TRUE | dynamic range = 1.08 log10 | TRUE |
 | gompertz4 | 4 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 4 | dynamic_range | TRUE | dynamic range = 1.31 log10 | TRUE |
+| gompertz4 | 4 | dynamic_range | TRUE | dynamic range = 1.4 log10 | TRUE |
 | gompertz4 | 5 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 5 | dynamic_range | TRUE | dynamic range = 1.42 log10 | TRUE |
+| gompertz4 | 5 | dynamic_range | TRUE | dynamic range = 1.47 log10 | TRUE |
 | gompertz4 | 6 | rel_se | TRUE |  | TRUE |
 | gompertz4 | 6 | dynamic_range | TRUE | dynamic range = 1.4 log10 | TRUE |
 | logistic4 | 1 | rel_se | TRUE |  | TRUE |
@@ -1083,29 +1092,29 @@ if (!is.null(eligibility) && nrow(eligibility) > 0) {
 | logistic4 | 6 | rel_se | TRUE |  | TRUE |
 | logistic4 | 6 | dynamic_range | TRUE | dynamic range = 1.58 log10 | TRUE |
 | logistic5 | 1 | rel_se | TRUE |  | TRUE |
-| logistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
+| logistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.75 log10 | TRUE |
 | logistic5 | 2 | rel_se | TRUE |  | TRUE |
-| logistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.68 log10 | TRUE |
+| logistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.94 log10 | TRUE |
 | logistic5 | 3 | rel_se | TRUE |  | TRUE |
-| logistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.71 log10 | TRUE |
+| logistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
 | logistic5 | 4 | rel_se | TRUE |  | TRUE |
-| logistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.61 log10 | TRUE |
+| logistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.64 log10 | TRUE |
 | logistic5 | 5 | rel_se | TRUE |  | TRUE |
-| logistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
+| logistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.65 log10 | TRUE |
 | logistic5 | 6 | rel_se | TRUE |  | TRUE |
-| logistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
+| logistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
 | loglogistic5 | 1 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.81 log10 | TRUE |
+| loglogistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
 | loglogistic5 | 2 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.77 log10 | TRUE |
+| loglogistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.68 log10 | TRUE |
 | loglogistic5 | 3 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.72 log10 | TRUE |
+| loglogistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.91 log10 | TRUE |
 | loglogistic5 | 4 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.64 log10 | TRUE |
+| loglogistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.65 log10 | TRUE |
 | loglogistic5 | 5 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.58 log10 | TRUE |
+| loglogistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
 | loglogistic5 | 6 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.64 log10 | TRUE |
+| loglogistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.68 log10 | TRUE |
 
 Eligibility gate results. eligible = FALSE excludes that model ×
 curve_id from back-calculation.
@@ -1179,15 +1188,15 @@ dplyr::glimpse(cr1$grid)
 #> $ log10_concentration     <dbl> -4.000000, -3.972477, -3.944954, -3.917430, -3…
 #> $ concentration           <dbl> 0.0001000000, 0.0001065426, 0.0001135132, 0.00…
 #> $ x_fit                   <dbl> -4.000000, -3.972477, -3.944954, -3.917430, -3…
-#> $ predicted_response      <dbl> 1.391078, 1.392806, 1.394580, 1.396402, 1.3982…
-#> $ ci_lower                <dbl> 1.224418, 1.226446, 1.229702, 1.232603, 1.2355…
-#> $ ci_upper                <dbl> 1.676348, 1.676786, 1.677241, 1.677714, 1.6782…
-#> $ predicted_concentration <dbl> -3.861070, -3.815626, -3.777963, -3.818445, -3…
-#> $ se_concentration        <dbl> 0.8874223, 0.7754478, 0.9168759, 0.7724030, 0.…
+#> $ predicted_response      <dbl> 1.391426, 1.393164, 1.394949, 1.396783, 1.3986…
+#> $ ci_lower                <dbl> 1.232767, 1.235067, 1.237425, 1.239843, 1.2423…
+#> $ ci_upper                <dbl> 1.708375, 1.708640, 1.708917, 1.709205, 1.7095…
+#> $ predicted_concentration <dbl> -3.922594, -3.802136, -3.814621, -3.805984, -3…
+#> $ se_concentration        <dbl> 0.7825477, 0.8010372, 0.7374550, 0.7870443, 0.…
 #> $ pcov                    <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
 #> $ pcov_rmse               <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
 #> $ pcov_pass               <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
-#> $ d2y_dx2                 <dbl> NA, 0.06160868, 0.06332111, 0.06508251, 0.0668…
+#> $ d2y_dx2                 <dbl> NA, 0.06179685, 0.06350562, 0.06526292, 0.0670…
 ```
 
 \`\`\`{r grid-plot, fig.cap=“Per-model CDAN precision profiles:
@@ -1401,12 +1410,12 @@ if (!is.null(results) && nrow(results) > 0) {
 
 | curve_id | sampleid | mfi | predicted_concentration | final_concentration | se_concentration | pcov | pcov_pass |
 |:---|:---|---:|---:|---:|---:|---:|:---|
-| 1 | a001 | 18323.4 | 1.123 | 26570.844 | 0.194 | 44.567 | TRUE |
-| 1 | a002 | 19414.7 | 1.342 | 43999.475 | 0.310 | 71.286 | TRUE |
-| 1 | a003 | 20098.5 | 1.497 | 62818.943 | 0.353 | 81.330 | TRUE |
-| 1 | a004 | 19556.0 | 1.367 | 46581.735 | 0.309 | 71.130 | TRUE |
-| 1 | a005 | 20177.5 | 1.515 | 65488.473 | 0.376 | 86.633 | TRUE |
-| 1 | a006 | 70.1 | -1.857 | 27.805 | 0.147 | 33.920 | TRUE |
+| 1 | a001 | 18323.4 | 1.125 | 26657.467 | 0.186 | 42.888 | TRUE |
+| 1 | a002 | 19414.7 | 1.335 | 43283.085 | 0.343 | 79.068 | TRUE |
+| 1 | a003 | 20098.5 | 1.486 | 61221.043 | 0.394 | 90.696 | TRUE |
+| 1 | a004 | 19556.0 | 1.369 | 46791.961 | 0.342 | 78.736 | TRUE |
+| 1 | a005 | 20177.5 | 1.500 | 63215.513 | 0.366 | 84.288 | TRUE |
+| 1 | a006 | 70.1 | -1.857 | 27.796 | 0.158 | 36.292 | TRUE |
 
 Back-calculated concentrations (first rows). predicted_concentration is
 on the log10(AU/mL) fitting scale; final_concentration is on the natural
@@ -1498,17 +1507,17 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] loo_2.9.0         bayesplot_1.15.0  posterior_1.7.0   ggplot2_4.0.3    
+#> [1] loo_2.9.0.9000    bayesplot_1.15.0  posterior_1.7.0   ggplot2_4.0.3    
 #> [5] dplyr_1.2.1       curveRbayes_0.2.0 curveRcore_0.2.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      
 #>  [4] digest_0.6.39        magrittr_2.0.5       evaluate_1.0.5      
 #>  [7] grid_4.5.1           RColorBrewer_1.1-3   fastmap_1.2.0       
-#> [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.0     
+#> [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.1     
 #> [13] ps_1.9.3             scales_1.4.0         textshaping_1.0.5   
 #> [16] jquerylib_0.1.4      abind_1.4-8          cli_3.6.6           
-#> [19] rlang_1.2.0          cmdstanr_0.9.0       withr_3.0.2         
+#> [19] rlang_1.2.0          cmdstanr_0.9.0.9000  withr_3.0.2         
 #> [22] cachem_1.1.0         yaml_2.3.12          otel_0.2.0          
 #> [25] parallel_4.5.1       tools_4.5.1          checkmate_2.3.4     
 #> [28] vctrs_0.7.3          R6_2.6.1             matrixStats_1.5.0   

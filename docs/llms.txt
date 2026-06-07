@@ -135,7 +135,7 @@ for the full worked example.
 
 The function most users call directly. Expects preprocessed standards on
 the fitting scale (use
-[`curveRcore::preprocess_standards()`](https://rdrr.io/pkg/curveRcore/man/preprocess_standards.html)
+[`curveRcore::preprocess_standards()`](https://immunoplex.github.io/curveRcore/reference/preprocess_standards.html)
 upstream). Fits all `curve_id` values simultaneously via hierarchical
 Stan models and returns a `calibration_result_multiplate`.
 
