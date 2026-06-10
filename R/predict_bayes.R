@@ -267,6 +267,9 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
   # pcov_rmse: for samples, no known truth, so RMSE = SE (bias undefined)
   samples$pcov_rmse <- samples$pcov
 
-  samples$pcov_pass <- !is.na(samples$pcov) & samples$pcov < cv_x_max
+  # pcov_pass uses pcov_threshold (precision budget), NOT cv_x_max (hard cap).
+  # cv_x_max is an overflow guard; marking everything below 150 % as "pass"
+  # would be misleading — the usable range is defined by pcov_threshold.
+  samples$pcov_pass <- !is.na(samples$pcov) & samples$pcov < pcov_threshold
   samples
 }
