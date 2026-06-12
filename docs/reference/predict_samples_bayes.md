@@ -15,6 +15,7 @@ predict_samples_bayes(
   is_log_response = TRUE,
   n_draws = NULL,
   cv_x_max = 150,
+  pcov_threshold = 20,
   is_log_x = TRUE
 )
 ```
@@ -49,6 +50,10 @@ predict_samples_bayes(
 - cv_x_max:
 
   Numeric. Default 150.
+
+- pcov_threshold:
+
+  Numeric. Percent CV threshold for pcov_pass. Default 20.
 
 - is_log_x:
 

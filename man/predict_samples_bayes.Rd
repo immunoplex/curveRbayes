@@ -12,6 +12,7 @@ predict_samples_bayes(
   is_log_response = TRUE,
   n_draws = NULL,
   cv_x_max = 150,
+  pcov_threshold = 20,
   is_log_x = TRUE
 )
 }
@@ -29,6 +30,8 @@ predict_samples_bayes(
 \item{n_draws}{Integer or NULL.}
 
 \item{cv_x_max}{Numeric. Default 150.}
+
+\item{pcov_threshold}{Numeric. Percent CV threshold for pcov_pass. Default 20.}
 
 \item{is_log_x}{Logical. Default TRUE.}
 }

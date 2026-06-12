@@ -7,6 +7,7 @@
 fit_calibration_bayes(
   standards,
   samples = NULL,
+  blanks = NULL,
   response_var,
   model_names = c("logistic4", "gompertz4"),
   is_log_response = TRUE,
@@ -28,6 +29,7 @@ fit_calibration_bayes(
   n_draws_predict = 500L,
   n_draws_ensemble = 260L,
   compute_all_grids = FALSE,
+  use_heteroscedastic_noise = FALSE,
   run_loo = NULL,
   verbose = FALSE
 )
@@ -39,6 +41,12 @@ column — all on the fitting scale.}
 
 \item{samples}{Data frame or NULL. Stacked sample data with \code{curve_id}
 and the response column (on the raw measurement scale).}
+
+\item{blanks}{Data frame or NULL. Blank well data with \code{curve_id} and
+the response column (on the fitting scale). When supplied, blanks are
+passed to Stan to anchor the lower asymptote via a separate likelihood
+term, and are stored in each per-curve \code{calibration_result$blanks}
+slot for downstream QA. Default NULL.}
 
 \item{response_var}{Character. Name of the response column.}
 
@@ -86,9 +94,19 @@ best-model grid and sample predictions. Default 500.}
 \item{n_draws_ensemble}{Integer. Number of posterior draws for
 non-best-model precision grids. Default 260.}
 
-\item{compute_all_grids}{Logical. If TRUE, compute CDAN precision
+\item{compute_all_grids}{Logical. If TRUE, compute precision
 grids for every converged model. Required for eligibility gating
 when more than one model is fitted. Default FALSE.}
+
+\item{use_heteroscedastic_noise}{Logical. If TRUE, the Stan models use
+a power-of-mean variance function
+\verb{sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))} in the
+likelihood, and the same sigma_i is injected when generating the
+CDAN noisy observations in \code{predict_grid_bayes()}. This restores the
+O'Malley (2008) CDAN precision profile interpretation. If FALSE
+(default), a constant \code{sigma_obs} is used and the precision profiles
+reflect posterior-predictive uncertainty driven mainly by inverse-
+curve geometry.}
 
 \item{run_loo}{Logical or NULL. Default NULL (auto).}
 
@@ -97,7 +115,9 @@ when more than one model is fitted. Default FALSE.}
 \value{
 A \code{calibration_result_multiplate} object (from curveRcore).
 Each per-plate \verb{$selection} contains \verb{$assessments}, \verb{$eligible_models},
-and \verb{$fallback} from the eligibility gating.
+and \verb{$fallback} from the eligibility gating. Each per-plate
+\code{calibration_result} carries \verb{$standards} and \verb{$blanks} slots with
+the per-curve subsets of the input data.
 }
 \description{
 Fits a hierarchical Bayesian model to preprocessed standard curve data

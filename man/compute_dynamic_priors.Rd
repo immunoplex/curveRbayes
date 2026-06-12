@@ -25,7 +25,10 @@ fitting scale).}
 Default \code{"logistic4"}.}
 }
 \value{
-Named list of hyperprior values matching the Stan \code{data} block.
+Named list of hyperprior values matching the Stan \code{data} block,
+including \code{prior_log_sigma0_mu}, \code{prior_log_sigma0_sigma},
+\code{prior_log_sigma_slope_mu}, and \code{prior_log_sigma_slope_sigma} for
+the heteroscedastic noise path.
 }
 \description{
 Inspects preprocessed standard curve data and produces all hyperprior

@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_bayes.R
 \name{predict_grid_bayes}
 \alias{predict_grid_bayes}
-\title{Predict Grid Response from Posterior Draws (Bayesian, CDAN)}
+\title{Predict Grid Response from Posterior Draws (Bayesian)}
 \usage{
 predict_grid_bayes(
   grid,
@@ -37,10 +37,18 @@ enrichment. Default TRUE.}
 \value{
 \code{grid} with added columns: \code{predicted_response}, \code{ci_lower},
 \code{ci_upper}, \code{predicted_concentration}, \code{se_concentration}, \code{pcov},
-\code{pcov_rmse}, \code{pcov_pass}.
+\code{pcov_rmse}, \code{pcov_pass}, \code{noise_mode}.
 }
 \description{
 For each grid point, evaluates the forward model at every posterior
-draw, adds observation noise (CDAN approach), then back-calculates
-concentration. This produces a proper precision profile.
+draw, adds observation noise, then back-calculates concentration to
+produce a precision profile.
+}
+\details{
+When the model was fitted with \code{use_heteroscedastic_noise = TRUE},
+the noise injected at Step 2 scales with the predicted response
+magnitude (\verb{sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))}),
+giving the O'Malley (2008) CDAN precision profile. When
+\code{use_heteroscedastic_noise = FALSE}, a constant \code{sigma_obs} is used
+and the profile reflects posterior-predictive uncertainty.
 }

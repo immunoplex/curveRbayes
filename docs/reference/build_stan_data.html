@@ -50,6 +50,8 @@ expected by the Stan model's <code>data {}</code> block.</p>
 <span>  <span class="va">priors</span>,</span>
 <span>  model_family <span class="op">=</span> <span class="st">"logistic4"</span>,</span>
 <span>  <span class="va">curve_id_map</span>,</span>
+<span>  blanks <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  use_heteroscedastic_noise <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  grainsize <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -80,8 +82,24 @@ expected by the Stan model's <code>data {}</code> block.</p>
 1-based Stan indices.</p></dd>
 
 
+<dt id="arg-blanks">blanks<a class="anchor" aria-label="anchor" href="#arg-blanks"></a></dt>
+<dd><p>Data frame or NULL. Blank well data. Must contain <code>curve_id</code>
+and the response column (on the fitting scale). Passed directly to Stan
+to anchor the lower asymptote.</p></dd>
+
+
+<dt id="arg-use-heteroscedastic-noise">use_heteroscedastic_noise<a class="anchor" aria-label="anchor" href="#arg-use-heteroscedastic-noise"></a></dt>
+<dd><p>Logical. If TRUE, passes
+<code>use_heteroscedastic_noise = 1L</code> to Stan, enabling the power-of-mean
+noise model <code>sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))</code>.
+If FALSE (default), the homoscedastic <code>sigma_obs</code> path is used.</p></dd>
+
+
 <dt id="arg-grainsize">grainsize<a class="anchor" aria-label="anchor" href="#arg-grainsize"></a></dt>
-<dd><p>Integer. reduce_sum grain size. Default 1.</p></dd>
+<dd><p>Integer. reduce_sum grain size. Default 1.
+NOTE: grainsize is declared in the Stan data block but reduce_sum is
+not yet active in the model bodies; this field is reserved for a future
+threading implementation and is currently ignored by Stan.</p></dd>
 
 </dl></div>
     <div class="section level2">

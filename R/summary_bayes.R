@@ -46,6 +46,10 @@ summary_table_bayes <- function(cr) {
         row$n_max_treedepth <- ens$fit_stats$n_max_treedepth
       }
 
+      row$n_standards <- if (!is.null(plate$standards)) nrow(plate$standards) else NA_integer_
+      row$n_blanks    <- if (!is.null(plate$blanks))    nrow(plate$blanks)    else NA_integer_
+      row$noise_mode  <- plate$meta$use_heteroscedastic_noise %||% FALSE
+
       row
     })
     return(do.call(rbind, rows))
@@ -128,4 +132,75 @@ collect_samples_bayes <- function(cr) {
   s <- cr$samples
   s$best_model <- cr$selection$best_model_name
   s
+}
+
+
+#' Collect All Standard Data from Bayesian Results
+#'
+#' Extracts the per-curve standards data frames stored in each
+#' `calibration_result$standards` slot and stacks them into a single
+#' data frame. Useful for verifying standard coverage or plotting
+#' observed data alongside the fitted curve.
+#'
+#' @param cr A `calibration_result_multiplate` or `calibration_result`.
+#' @return Data frame with a `curve_id` column prepended, or NULL if no
+#'   standards are stored in any plate.
+#' @export
+collect_standards_bayes <- function(cr) {
+
+  if (inherits(cr, "calibration_result_multiplate")) {
+    dfs <- lapply(seq_along(cr$plates), function(i) {
+      plate <- cr$plates[[i]]
+      if (is.null(plate) || is.null(plate$standards) || nrow(plate$standards) == 0)
+        return(NULL)
+      s <- plate$standards
+      # Ensure curve_id column is present (it should be, but guard anyway)
+      if (!("curve_id" %in% names(s))) s$curve_id <- names(cr$plates)[i]
+      s
+    })
+    dfs <- Filter(Negate(is.null), dfs)
+    if (length(dfs) == 0) return(NULL)
+    return(do.call(rbind, dfs))
+  }
+
+  stopifnot(inherits(cr, "calibration_result"))
+  if (is.null(cr$standards) || nrow(cr$standards) == 0) return(NULL)
+  s <- cr$standards
+  if (!("curve_id" %in% names(s))) s$curve_id <- cr$meta$curve_id
+  s
+}
+
+
+#' Collect All Blank Data from Bayesian Results
+#'
+#' Extracts the per-curve blank data frames stored in each
+#' `calibration_result$blanks` slot and stacks them into a single
+#' data frame. Useful for QA checks on blank signal levels and for
+#' verifying that blanks were available for every plate.
+#'
+#' @param cr A `calibration_result_multiplate` or `calibration_result`.
+#' @return Data frame with a `curve_id` column prepended, or NULL if no
+#'   blanks are stored in any plate.
+#' @export
+collect_blanks_bayes <- function(cr) {
+
+  if (inherits(cr, "calibration_result_multiplate")) {
+    dfs <- lapply(seq_along(cr$plates), function(i) {
+      plate <- cr$plates[[i]]
+      if (is.null(plate) || is.null(plate$blanks) || nrow(plate$blanks) == 0)
+        return(NULL)
+      b <- plate$blanks
+      if (!("curve_id" %in% names(b))) b$curve_id <- names(cr$plates)[i]
+      b
+    })
+    dfs <- Filter(Negate(is.null), dfs)
+    if (length(dfs) == 0) return(NULL)
+    return(do.call(rbind, dfs))
+  }
+
+  stopifnot(inherits(cr, "calibration_result"))
+  if (is.null(cr$blanks) || nrow(cr$blanks) == 0) return(NULL)
+  b <- cr$blanks
+  if (!("curve_id" %in% names(b))) b$curve_id <- cr$meta$curve_id
+  b
 }

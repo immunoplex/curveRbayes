@@ -154,6 +154,10 @@ format.
   : Extract a Per-Curve Summary Table from Bayesian Results
 - [`collect_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/collect_samples_bayes.md)
   : Collect All Sample Predictions from Bayesian Results
+- [`collect_standards_bayes()`](https://immunoplex.github.io/curveRbayes/reference/collect_standards_bayes.md)
+  : Collect All Standard Data from Bayesian Results
+- [`collect_blanks_bayes()`](https://immunoplex.github.io/curveRbayes/reference/collect_blanks_bayes.md)
+  : Collect All Blank Data from Bayesian Results
 
 ## Stan Compilation and MCMC Fitting
 
@@ -212,7 +216,7 @@ back-calculates observed test-sample responses without noise injection,
 since the observed response is already the noisy measurement.
 
 - [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md)
-  : Predict Grid Response from Posterior Draws (Bayesian, CDAN)
+  : Predict Grid Response from Posterior Draws (Bayesian)
 - [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md)
   : Back-Calculate Sample Concentrations from Posterior Draws
 

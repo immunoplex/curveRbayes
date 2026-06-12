@@ -50,6 +50,8 @@ reference:
   contents:
   - summary_table_bayes
   - collect_samples_bayes
+  - collect_standards_bayes
+  - collect_blanks_bayes
 
 - title: Stan Compilation and MCMC Fitting
   desc: >

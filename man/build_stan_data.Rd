@@ -10,6 +10,8 @@ build_stan_data(
   priors,
   model_family = "logistic4",
   curve_id_map,
+  blanks = NULL,
+  use_heteroscedastic_noise = FALSE,
   grainsize = 1L
 )
 }
@@ -26,7 +28,19 @@ build_stan_data(
 \item{curve_id_map}{Named integer vector mapping curve_id values to
 1-based Stan indices.}
 
-\item{grainsize}{Integer. reduce_sum grain size. Default 1.}
+\item{blanks}{Data frame or NULL. Blank well data. Must contain \code{curve_id}
+and the response column (on the fitting scale). Passed directly to Stan
+to anchor the lower asymptote.}
+
+\item{use_heteroscedastic_noise}{Logical. If TRUE, passes
+\code{use_heteroscedastic_noise = 1L} to Stan, enabling the power-of-mean
+noise model \verb{sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))}.
+If FALSE (default), the homoscedastic \code{sigma_obs} path is used.}
+
+\item{grainsize}{Integer. reduce_sum grain size. Default 1.
+NOTE: grainsize is declared in the Stan data block but reduce_sum is
+not yet active in the model bodies; this field is reserved for a future
+threading implementation and is currently ignored by Stan.}
 }
 \value{
 Named list suitable for \code{cmdstanr::sample(data = ...)}.

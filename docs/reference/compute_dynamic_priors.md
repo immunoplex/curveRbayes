@@ -36,4 +36,7 @@ compute_dynamic_priors(
 
 ## Value
 
-Named list of hyperprior values matching the Stan `data` block.
+Named list of hyperprior values matching the Stan `data` block,
+including `prior_log_sigma0_mu`, `prior_log_sigma0_sigma`,
+`prior_log_sigma_slope_mu`, and `prior_log_sigma_slope_sigma` for the
+heteroscedastic noise path.

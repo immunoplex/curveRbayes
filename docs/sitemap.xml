@@ -7,7 +7,9 @@
 <url><loc>https://immunoplex.github.io/curveRbayes/news/index.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/bead_assay_example.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/build_stan_data.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/collect_blanks_bayes.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/collect_samples_bayes.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/collect_standards_bayes.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/compare_models_loo.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/compile_stan_model.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/compute_dynamic_priors.html</loc></url>

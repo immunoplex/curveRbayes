@@ -52,6 +52,7 @@ draw to produce a full posterior distribution of predicted concentration.</p>
 <span>  is_log_response <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  n_draws <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cv_x_max <span class="op">=</span> <span class="fl">150</span>,</span>
+<span>  pcov_threshold <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  is_log_x <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -86,6 +87,10 @@ draw to produce a full posterior distribution of predicted concentration.</p>
 
 <dt id="arg-cv-x-max">cv_x_max<a class="anchor" aria-label="anchor" href="#arg-cv-x-max"></a></dt>
 <dd><p>Numeric. Default 150.</p></dd>
+
+
+<dt id="arg-pcov-threshold">pcov_threshold<a class="anchor" aria-label="anchor" href="#arg-pcov-threshold"></a></dt>
+<dd><p>Numeric. Percent CV threshold for pcov_pass. Default 20.</p></dd>
 
 
 <dt id="arg-is-log-x">is_log_x<a class="anchor" aria-label="anchor" href="#arg-is-log-x"></a></dt>

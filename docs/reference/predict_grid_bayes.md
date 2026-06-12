@@ -1,8 +1,8 @@
-# Predict Grid Response from Posterior Draws (Bayesian, CDAN)
+# Predict Grid Response from Posterior Draws (Bayesian)
 
 For each grid point, evaluates the forward model at every posterior
-draw, adds observation noise (CDAN approach), then back-calculates
-concentration. This produces a proper precision profile.
+draw, adds observation noise, then back-calculates concentration to
+produce a precision profile.
 
 ## Usage
 
@@ -61,4 +61,13 @@ predict_grid_bayes(
 
 `grid` with added columns: `predicted_response`, `ci_lower`, `ci_upper`,
 `predicted_concentration`, `se_concentration`, `pcov`, `pcov_rmse`,
-`pcov_pass`.
+`pcov_pass`, `noise_mode`.
+
+## Details
+
+When the model was fitted with `use_heteroscedastic_noise = TRUE`, the
+noise injected at Step 2 scales with the predicted response magnitude
+(`sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))`), giving
+the O'Malley (2008) CDAN precision profile. When
+`use_heteroscedastic_noise = FALSE`, a constant `sigma_obs` is used and
+the profile reflects posterior-predictive uncertainty.

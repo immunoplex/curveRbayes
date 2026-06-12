@@ -7,6 +7,12 @@
 #
 # When fixed_a is supplied, the prior on a is tightened to act as a
 # Bayesian soft constraint.
+#
+# Heteroscedastic noise priors (for use_heteroscedastic_noise = 1):
+#   log_sigma0     — intercept of log(sigma) vs log(|mu|) line.
+#                    Initialised from the observed residual SD.
+#   log_sigma_slope — slope. Prior centred on 1 (proportional noise)
+#                    with SD 0.5 to allow sub- or super-proportional noise.
 # =============================================================================
 
 
@@ -24,7 +30,10 @@
 #' @param model_family Character. One of the curveRcore model names.
 #'   Default `"logistic4"`.
 #'
-#' @return Named list of hyperprior values matching the Stan `data` block.
+#' @return Named list of hyperprior values matching the Stan `data` block,
+#'   including `prior_log_sigma0_mu`, `prior_log_sigma0_sigma`,
+#'   `prior_log_sigma_slope_mu`, and `prior_log_sigma_slope_sigma` for
+#'   the heteroscedastic noise path.
 #' @export
 compute_dynamic_priors <- function(data, response_variable,
                                    fixed_a = NULL,
@@ -69,13 +78,32 @@ compute_dynamic_priors <- function(data, response_variable,
   prior_log_g_sd       <- 0.5
   prior_log_g_plate_sd <- 0.3
 
+  # ── Heteroscedastic noise priors ──
+  # log_sigma0: intercept of log(sigma) ~ log(|mu|) line.
+  # Anchored to log of a robust estimate of the residual SD.
+  # We use the IQR / 1.35 of y as a scale-invariant noise estimate.
+  y_noise_est <- max(stats::IQR(y) / 1.35, 1e-6)
+  prior_log_sigma0_mu    <- log(y_noise_est * 0.3)  # expect noise < IQR
+  prior_log_sigma0_sigma <- 1.5                       # wide — data will dominate
+
+  # log_sigma_slope: 1 = proportional noise (CV constant), 0 = additive,
+  # 2 = strongly heteroscedastic. Prior centred on 1, SD = 0.5.
+  prior_log_sigma_slope_mu    <- 1.0
+  prior_log_sigma_slope_sigma <- 0.5
+
   priors <- list(
     prior_a_mu         = prior_a_mu,
     prior_a_sigma      = prior_a_sigma,
     prior_d_mu         = prior_d_mu,
     prior_d_sigma      = prior_d_sigma,
     prior_log_b_mu     = prior_log_b_mu,
-    prior_log_b_sigma  = prior_log_b_sigma
+    prior_log_b_sigma  = prior_log_b_sigma,
+    # Heteroscedastic noise hypers (always included; used by Stan
+    # when use_heteroscedastic_noise = 1)
+    prior_log_sigma0_mu         = prior_log_sigma0_mu,
+    prior_log_sigma0_sigma      = prior_log_sigma0_sigma,
+    prior_log_sigma_slope_mu    = prior_log_sigma_slope_mu,
+    prior_log_sigma_slope_sigma = prior_log_sigma_slope_sigma
   )
 
   # c-parameter priors differ by family

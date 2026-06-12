@@ -7,6 +7,11 @@
 //
 // This is logistic5 with g fixed at 1. Separate model for proper
 // LOO-CV comparison (fewer parameters = different effective complexity).
+//
+// Noise model (controlled by use_heteroscedastic_noise):
+//   0 = homoscedastic:     sigma_i = sigma_obs   (constant)
+//   1 = heteroscedastic:   sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))
+//                          (power-of-mean; CDAN as in O'Malley 2008)
 
 data {
   int<lower=1> N_obs;
@@ -28,6 +33,14 @@ data {
   int<lower=0> N_blanks;
   array[N_blanks] int<lower=1, upper=N_plates> blank_plate_idx;
   vector[N_blanks] blank_response;
+
+  // Noise model switch: 0 = homoscedastic, 1 = heteroscedastic (CDAN)
+  int<lower=0, upper=1> use_heteroscedastic_noise;
+  // Heteroscedastic priors (used only when use_heteroscedastic_noise = 1)
+  real prior_log_sigma0_mu;
+  real<lower=0> prior_log_sigma0_sigma;
+  real prior_log_sigma_slope_mu;
+  real<lower=0> prior_log_sigma_slope_sigma;
 }
 
 parameters {
@@ -48,6 +61,10 @@ parameters {
   real<lower=0> sigma_obs;
   real<lower=2> nu;
   real<lower=0> sigma_blank;
+  // Heteroscedastic noise parameters (estimated always; used in likelihood
+  // only when use_heteroscedastic_noise = 1)
+  real log_sigma0;
+  real log_sigma_slope;
 }
 
 transformed parameters {
@@ -77,12 +94,24 @@ model {
   nu ~ gamma(2, 0.1);
   sigma_blank ~ normal(0, prior_a_sigma);
 
+  // Heteroscedastic noise parameters — always given priors so the
+  // sampler stays well-behaved regardless of the switch value.
+  log_sigma0       ~ normal(prior_log_sigma0_mu,     prior_log_sigma0_sigma);
+  log_sigma_slope  ~ normal(prior_log_sigma_slope_mu, prior_log_sigma_slope_sigma);
+
   // curveRcore logistic4: y = a + (d - a) / (1 + exp(-(x - c) / b))
   for (i in 1:N_obs) {
     int p = plate_idx[i];
     real z = -(x[i] - c_par[p]) / b[p];
     real mu_i = a[p] + (d[p] - a[p]) / (1.0 + exp(z));
-    y[i] ~ student_t(nu, mu_i, sigma_obs);
+    real sigma_i;
+    if (use_heteroscedastic_noise) {
+      real log_abs_mu = log(abs(mu_i) + 1e-10);
+      sigma_i = exp(log_sigma0 + log_sigma_slope * log_abs_mu);
+    } else {
+      sigma_i = sigma_obs;
+    }
+    y[i] ~ student_t(nu, mu_i, sigma_i);
   }
 
   if (N_blanks > 0)
@@ -97,7 +126,14 @@ generated quantities {
     int p = plate_idx[i];
     real z = -(x[i] - c_par[p]) / b[p];
     real mu_val = a[p] + (d[p] - a[p]) / (1.0 + exp(z));
-    y_pred[i] = student_t_rng(nu, mu_val, sigma_obs);
-    log_lik[i] = student_t_lpdf(y[i] | nu, mu_val, sigma_obs);
+    real sigma_i;
+    if (use_heteroscedastic_noise) {
+      real log_abs_mu = log(abs(mu_val) + 1e-10);
+      sigma_i = exp(log_sigma0 + log_sigma_slope * log_abs_mu);
+    } else {
+      sigma_i = sigma_obs;
+    }
+    y_pred[i]   = student_t_rng(nu, mu_val, sigma_i);
+    log_lik[i]  = student_t_lpdf(y[i] | nu, mu_val, sigma_i);
   }
 }

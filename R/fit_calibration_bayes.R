@@ -30,6 +30,11 @@
 #'   column — all on the fitting scale.
 #' @param samples Data frame or NULL. Stacked sample data with `curve_id`
 #'   and the response column (on the raw measurement scale).
+#' @param blanks Data frame or NULL. Blank well data with `curve_id` and
+#'   the response column (on the fitting scale). When supplied, blanks are
+#'   passed to Stan to anchor the lower asymptote via a separate likelihood
+#'   term, and are stored in each per-curve `calibration_result$blanks`
+#'   slot for downstream QA. Default NULL.
 #' @param response_var Character. Name of the response column.
 #' @param model_names Character vector. Models to fit.
 #'   Default `c("logistic4", "gompertz4")`.
@@ -56,19 +61,31 @@
 #'   best-model grid and sample predictions. Default 500.
 #' @param n_draws_ensemble Integer. Number of posterior draws for
 #'   non-best-model precision grids. Default 260.
-#' @param compute_all_grids Logical. If TRUE, compute CDAN precision
+#' @param compute_all_grids Logical. If TRUE, compute precision
 #'   grids for every converged model. Required for eligibility gating
 #'   when more than one model is fitted. Default FALSE.
+#' @param use_heteroscedastic_noise Logical. If TRUE, the Stan models use
+#'   a power-of-mean variance function
+#'   `sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))` in the
+#'   likelihood, and the same sigma_i is injected when generating the
+#'   CDAN noisy observations in `predict_grid_bayes()`. This restores the
+#'   O'Malley (2008) CDAN precision profile interpretation. If FALSE
+#'   (default), a constant `sigma_obs` is used and the precision profiles
+#'   reflect posterior-predictive uncertainty driven mainly by inverse-
+#'   curve geometry.
 #' @param run_loo Logical or NULL. Default NULL (auto).
 #' @param verbose Logical. Default FALSE.
 #'
 #' @return A `calibration_result_multiplate` object (from curveRcore).
 #'   Each per-plate `$selection` contains `$assessments`, `$eligible_models`,
-#'   and `$fallback` from the eligibility gating.
+#'   and `$fallback` from the eligibility gating. Each per-plate
+#'   `calibration_result` carries `$standards` and `$blanks` slots with
+#'   the per-curve subsets of the input data.
 #'
 #' @export
 fit_calibration_bayes <- function(standards,
                                   samples = NULL,
+                                  blanks  = NULL,
                                   response_var,
                                   model_names = c("logistic4", "gompertz4"),
                                   is_log_response = TRUE,
@@ -90,6 +107,7 @@ fit_calibration_bayes <- function(standards,
                                   n_draws_predict = 500L,
                                   n_draws_ensemble = 260L,
                                   compute_all_grids = FALSE,
+                                  use_heteroscedastic_noise = FALSE,
                                   run_loo = NULL,
                                   verbose = FALSE) {
 
@@ -102,6 +120,12 @@ fit_calibration_bayes <- function(standards,
     stop("standards must contain a 'concentration' column (preprocessed)")
   if (!is.null(samples) && !("curve_id" %in% names(samples)))
     stop("samples must contain a 'curve_id' column when provided")
+  if (!is.null(blanks)) {
+    if (!("curve_id" %in% names(blanks)))
+      stop("blanks must contain a 'curve_id' column when provided")
+    if (!(response_var %in% names(blanks)))
+      stop("response_var '", response_var, "' not found in blanks")
+  }
 
   # ── 2. Resolve effective models ── (unchanged)
   if (is_log_independent)
@@ -142,7 +166,9 @@ fit_calibration_bayes <- function(standards,
       response_variable = response_var,
       priors            = priors,
       model_family      = fam,
-      curve_id_map      = curve_id_map
+      curve_id_map      = curve_id_map,
+      blanks            = blanks,
+      use_heteroscedastic_noise = use_heteroscedastic_noise
     )
 
     bayes_fits[[fam]] <- fit_bayes_single(
@@ -403,6 +429,15 @@ fit_calibration_bayes <- function(standards,
     plate_selection <- eligible_selection
     plate_selection$assessments_by_curve <- assessments_by_model
 
+    # ── Subset standards and blanks to this curve_id ──
+    standards_this <- standards[as.character(standards$curve_id) == cid, ,
+                                 drop = FALSE]
+    blanks_this <- if (!is.null(blanks))
+      blanks[as.character(blanks$curve_id) == cid, , drop = FALSE]
+    else NULL
+    # Treat empty blanks subset as NULL for clean slot storage
+    if (!is.null(blanks_this) && nrow(blanks_this) == 0L) blanks_this <- NULL
+
     # Build calibration_result for this curve_id
     meta <- list(
       method             = "bayesian",
@@ -415,7 +450,8 @@ fit_calibration_bayes <- function(standards,
       is_log_response    = is_log_response,
       is_log_independent = is_log_independent,
       n_curves           = n_curves,
-      n_standards        = sum(as.character(standards$curve_id) == cid),
+      n_standards        = nrow(standards_this),
+      n_blanks           = if (!is.null(blanks_this)) nrow(blanks_this) else 0L,
       n_samples          = if (!is.null(samples_out)) nrow(samples_out) else 0L,
       chains             = chains,
       warmup             = warmup,
@@ -423,6 +459,7 @@ fit_calibration_bayes <- function(standards,
       adapt_delta        = adapt_delta,
       seed               = seed,
       compute_all_grids  = compute_all_grids,
+      use_heteroscedastic_noise = use_heteroscedastic_noise,
       n_draws_predict    = n_draws_predict,
       n_draws_ensemble   = n_draws_ensemble,
       pcov_threshold     = pcov_threshold
@@ -433,7 +470,9 @@ fit_calibration_bayes <- function(standards,
       ensemble  = curve_ensemble,
       selection = plate_selection,
       grid      = grid,
-      samples   = samples_out
+      samples   = samples_out,
+      standards = standards_this,
+      blanks    = blanks_this
     )
 
     # Detection limits (LODs, MDC, RDL) for the best eligible model
@@ -454,6 +493,7 @@ fit_calibration_bayes <- function(standards,
     best_model         = best_name,
     selection          = eligible_selection,
     compute_all_grids  = compute_all_grids,
+    use_heteroscedastic_noise = use_heteroscedastic_noise,
     pcov_threshold     = pcov_threshold,
     timestamp          = Sys.time()
   )

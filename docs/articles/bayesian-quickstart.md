@@ -208,8 +208,9 @@ simultaneously via hierarchical Stan models.
 
 | Argument | Default | Purpose |
 |:---|:---|:---|
-| standards | — | Data frame. Preprocessed stacked standards with curve_id, concentration, and response column — all on the fitting scale. Output of preprocess_standards()\$data. |
-| samples | NULL | Data frame or NULL. Stacked sample data with curve_id and response column on the raw measurement scale. |
+| standards | — | Data frame. Preprocessed stacked standards with curve_id, concentration, and response column — all on the fitting scale. Output of preprocess_standards()$`data.                                                                                                                                                                                                                                                                                                                      |
+|samples                   |NULL                        |Data frame or NULL. Stacked sample data with curve_id and response column on the raw measurement scale.                                                                                                                                                                                                                                                                                                                                                                              |
+|blanks                    |NULL                        |Data frame or NULL. Blank well data with curve_id and the response column (on the fitting scale). Passed to Stan to anchor the lower asymptote and stored in each per-curve calibration_result`$blanks slot for downstream QA. |
 | response_var | — | Character. Name of the response column (e.g. ‘mfi’). |
 | model_names | c(‘logistic4’, ‘gompertz4’) | Character vector. Model families to fit. loglogistic4 is automatically dropped when is_log_independent = TRUE. |
 | is_log_response | TRUE | Logical. Whether the response column is already log10-transformed. |
@@ -220,7 +221,7 @@ simultaneously via hierarchical Stan models.
 | pcov_threshold | 20 | Numeric. Percent CV threshold for LLOQ/ULOQ determination and the dynamic-range eligibility gate. |
 | min_dynamic_range_log10 | 0.5 | Numeric. Minimum log10 dynamic range (upper – lower asymptote) for eligibility. |
 | max_rel_se | 5.0 | Numeric. Maximum posterior SD / \|mean\| permitted for any per-curve parameter. |
-| n_grid | 200L | Integer. Number of concentration points in the CDAN precision grid. |
+| n_grid | 200L | Integer. Number of concentration points in the precision grid. |
 | grid_min_conc | 1e-4 | Numeric. Lower bound of the prediction grid on the raw concentration scale. |
 | grid_max_conc | NULL | Numeric or NULL. Upper bound of the grid. NULL uses std_curve_conc. |
 | chains | 4L | Integer. Number of independent Markov chains. |
@@ -228,9 +229,10 @@ simultaneously via hierarchical Stan models.
 | sampling | 1000L | Integer. Post-warmup sampling iterations used for inference. |
 | adapt_delta | 0.9 | Numeric. Stan adapt_delta. Increase toward 0.99 if divergences appear. |
 | seed | NULL | Integer or NULL. RNG seed passed to Stan for reproducibility. |
-| n_draws_predict | 500L | Integer. Posterior draws for best-model CDAN grid and sample predictions. |
-| n_draws_ensemble | 260L | Integer. Posterior draws for non-best-model CDAN grids. |
+| n_draws_predict | 500L | Integer. Posterior draws for best-model precision grid and sample predictions. |
+| n_draws_ensemble | 260L | Integer. Posterior draws for non-best-model precision grids. |
 | compute_all_grids | FALSE | Logical. Forced TRUE automatically when \> 1 model is fitted (required for eligibility gating). |
+| use_heteroscedastic_noise | FALSE | Logical. If TRUE, the Stan models use a power-of-mean noise function sigma_i = exp(log_sigma0 + log_sigma_slope \* log(\|mu_i\|)) in the likelihood and the same sigma_i is injected when generating CDAN noisy observations in predict_grid_bayes(). This restores the O’Malley (2008) CDAN precision profile. If FALSE (default), a constant sigma_obs is used and the precision profiles reflect posterior-predictive uncertainty driven mainly by inverse-curve geometry. |
 | run_loo | NULL | Logical or NULL. NULL = auto (TRUE when \> 1 model). Run PSIS-LOO after fitting. |
 | verbose | FALSE | Logical. Emit progress messages. |
 
@@ -245,24 +247,26 @@ receives the already-preprocessed standards data frame from Section
 
 ``` r
 fit <- fit_calibration_bayes(
-  standards          = standards_preprocessed,
-  samples            = bead_assay_example$samples,
-  response_var       = bead_assay_example$response_var,   # "mfi"
-  model_names        = c("logistic4", "logistic5",
-                          "gompertz4", "loglogistic5"),
-  is_log_response    = study_params$is_log_response,
-  is_log_independent = study_params$is_log_independent,
-  std_curve_conc     = antigen_settings$standard_curve_concentration,
-  fixed_a            = NULL,
-  n_grid             = 200L,
-  grid_min_conc      = 1e-4,
-  chains             = 4L,
-  warmup             = 1000L,
-  sampling           = 1000L,
-  adapt_delta        = 0.95,
-  seed               = 42,
-  run_loo            = TRUE,
-  verbose            = TRUE
+  standards                 = standards_preprocessed,
+  samples                   = bead_assay_example$samples,
+  blanks                    = bead_assay_example$blanks,
+  response_var              = bead_assay_example$response_var,   # "mfi"
+  model_names               = c("logistic4", "logistic5",
+                                 "gompertz4", "loglogistic5"),
+  is_log_response           = study_params$is_log_response,
+  is_log_independent        = study_params$is_log_independent,
+  std_curve_conc            = antigen_settings$standard_curve_concentration,
+  fixed_a                   = NULL,
+  n_grid                    = 200L,
+  grid_min_conc             = 1e-4,
+  chains                    = 4L,
+  warmup                    = 1000L,
+  sampling                  = 1000L,
+  adapt_delta               = 0.95,
+  seed                      = 42,
+  use_heteroscedastic_noise = FALSE,   # TRUE for O'Malley CDAN; see §CDAN
+  run_loo                   = TRUE,
+  verbose                   = TRUE
 )
 #> [fit_calibration_bayes] compute_all_grids forced TRUE for eligibility gating across 4 models
 #> 
@@ -271,9 +275,11 @@ fit <- fit_calibration_bayes(
 #> Chain 1 Rejecting initial value:
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
-#> Chain 1 Rejecting initial value:
-#> Chain 1   Gradient evaluated at the initial value is not finite.
-#> Chain 1   Stan can't start sampling from this initial value.
+#> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf473ee1f0.stan', line 114, column 4 to column 40)
+#> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 1
 #> Chain 4 Rejecting initial value:
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
@@ -284,8 +290,13 @@ fit <- fit_calibration_bayes(
 #> Chain 1 Rejecting initial value:
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
+#> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)
+#> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 1
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
@@ -293,7 +304,7 @@ fit <- fit_calibration_bayes(
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -304,16 +315,18 @@ fit <- fit_calibration_bayes(
 #> Chain 1 Rejecting initial value:
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
-#> Chain 1 Rejecting initial value:
-#> Chain 1   Gradient evaluated at the initial value is not finite.
-#> Chain 1   Stan can't start sampling from this initial value.
-#> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)
-#> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-#> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-#> Chain 1
+#> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 119, column 4 to column 68)
+#> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 2
+#> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 119, column 4 to column 68)
+#> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 115, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -322,15 +335,25 @@ fit <- fit_calibration_bayes(
 #> ── Fitting loglogistic5 ──
 #> [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 130, column 4 to column 68)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
+#> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)
+#> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
+#> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)
+#> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 4
 #> [fit_bayes] Done. Divergences: 0  Max treedepth: 0
 #>   [grids] logistic4 (260 draws)
 #>   [grids] logistic5 (260 draws)
@@ -341,12 +364,12 @@ fit <- fit_calibration_bayes(
 #>   [eligibility] gompertz4      ✓ eligible
 #>   [eligibility] loglogistic5   ✓ eligible
 #>   [selection] best = logistic5
-#> [detection_limits] curve_id=1  LLOD_resp=1.704  ULOD_resp=4.281  MDC=[-2.055, 1.254]  RDL=[-2.039, 0.9247]
-#> [detection_limits] curve_id=2  LLOD_resp=1.561  ULOD_resp=4.256  MDC=[-2.166, 1.315]  RDL=[-2.152, 0.9565]
-#> [detection_limits] curve_id=3  LLOD_resp=1.665  ULOD_resp=4.303  MDC=[-2.13, 1.242]  RDL=[-2.116, 0.9022]
-#> [detection_limits] curve_id=4  LLOD_resp=1.401  ULOD_resp=4.412  MDC=[-0.7033, 2.27]  RDL=[-0.6938, 1.972]
-#> [detection_limits] curve_id=5  LLOD_resp=1.349  ULOD_resp=4.379  MDC=[-0.7132, 2.345]  RDL=[-0.7042, 2.011]
-#> [detection_limits] curve_id=6  LLOD_resp=1.462  ULOD_resp=4.398  MDC=[-0.4906, 2.261]  RDL=[-0.4805, 1.954]
+#> [detection_limits] curve_id=1  LLOD_resp=1.743  ULOD_resp=4.287  MDC=[-2.009, 1.302]  RDL=[-1.997, 0.9788]
+#> [detection_limits] curve_id=2  LLOD_resp=1.653  ULOD_resp=4.258  MDC=[-2.007, 1.355]  RDL=[-1.995, 1.033]
+#> [detection_limits] curve_id=3  LLOD_resp=1.712  ULOD_resp=4.309  MDC=[-2.053, 1.328]  RDL=[-2.043, 0.9972]
+#> [detection_limits] curve_id=4  LLOD_resp=1.387  ULOD_resp=4.426  MDC=[-0.8261, 2.324]  RDL=[-0.8177, 2.063]
+#> [detection_limits] curve_id=5  LLOD_resp=1.320  ULOD_resp=4.387  MDC=[-0.912, 2.37]  RDL=[-0.904, 2.067]
+#> [detection_limits] curve_id=6  LLOD_resp=1.509  ULOD_resp=4.415  MDC=[-0.4905, 2.34]  RDL=[-0.4816, 2.029]
 ```
 
 ``` r
@@ -430,7 +453,8 @@ The object has two top-level slots.
 | is_log_independent | logical | Whether concentration is log10-transformed. |
 | best_model | character | Name of the selected best model after LOO + eligibility. |
 | selection | list | Full eligible-selection object: best_model_name, criterion, assessments, eligible_models, fallback, loo_comparison, loo_weights. |
-| compute_all_grids | logical | Whether CDAN grids were computed for all models. |
+| compute_all_grids | logical | Whether precision grids were computed for all models. |
+| use_heteroscedastic_noise | logical | Whether the heteroscedastic (CDAN) noise path was active at fitting time. |
 | pcov_threshold | numeric | Percent CV threshold used for LLOQ/ULOQ. |
 | timestamp | POSIXct | Wall time at which the function returned. |
 
@@ -441,11 +465,13 @@ is a `calibration_result` with the following slots:
 
 | fit\$plates\[\[“k”\]\] slot | Type | Contents |
 |:---|:---|:---|
-| meta | list | Per-curve metadata: method, curve_id, n_standards, n_samples, chains, warmup, sampling, adapt_delta, seed, n_draws_predict, n_draws_ensemble, pcov_threshold, etc. |
+| meta | list | Per-curve metadata: method, curve_id, n_standards, n_blanks, n_samples, chains, warmup, sampling, adapt_delta, seed, use_heteroscedastic_noise, n_draws_predict, n_draws_ensemble, pcov_threshold, etc. |
 | ensemble | named list | One entry per fitted model family (see below). |
 | selection | list | Eligible-selection result for this plate: best_model_name, criterion, assessments_by_curve, fallback. |
-| grid | data frame | CDAN precision grid for the selected best model at this curve_id. Columns: x_fit, predicted_response, ci_lower, ci_upper, predicted_concentration, se_concentration, pcov, pcov_rmse, pcov_pass, d2y_dx2. |
+| grid | data frame | Precision grid for the selected best model at this curve_id. Columns: x_fit, predicted_response, ci_lower, ci_upper, predicted_concentration, se_concentration, pcov, pcov_rmse, pcov_pass, noise_mode, d2y_dx2. |
 | samples | data frame | Back-calculated test samples for this curve_id, or NULL. |
+| standards | data frame | Preprocessed standards for this curve_id (subset of the standards input), for plotting and QA. |
+| blanks | data frame | Blank data for this curve_id, or NULL if no blanks were provided. |
 
 fit\$plates\[\[‘k’\]\] slot reference.
 
@@ -459,7 +485,7 @@ Each `ensemble[[model_name]]` entry contains:
 | fit_stats | list | NUTS diagnostics: n_divergent, n_max_treedepth, ebfmi. |
 | raw_fit | list | Full fit_bayes_single() output: \$fit (CmdStanMCMC), \$draws (draws_df), \$stan_data, \$model_family. |
 | eligibility | list | assess_model_eligibility() result: eligible (logical), gates (data frame), dynamic_range_log10, lloq, uloq. |
-| grid | data frame | Per-model CDAN grid at this curve_id (populated for all models when compute_all_grids = TRUE). |
+| grid | data frame | Per-model precision grid at this curve_id (populated for all models when compute_all_grids = TRUE). |
 
 ensemble\[\[model\]\] slot reference.
 
@@ -481,10 +507,10 @@ lapply(ensemble, function(m) {
 
 | model        | n_divergent | n_max_treedepth | mean_ebfmi |
 |:-------------|------------:|----------------:|-----------:|
-| logistic4    |           0 |               0 |      0.681 |
-| logistic5    |           0 |               0 |      0.698 |
-| gompertz4    |           0 |               0 |      0.678 |
-| loglogistic5 |           0 |               0 |      0.670 |
+| logistic4    |           0 |               0 |      0.703 |
+| logistic5    |           0 |               0 |      0.671 |
+| gompertz4    |           0 |               0 |      0.736 |
+| loglogistic5 |           0 |               0 |      0.716 |
 
 Quick convergence summary — curve_id 1.
 
@@ -498,42 +524,42 @@ cat(sprintf(
   quantile(mu_c_draws, 0.025),
   quantile(mu_c_draws, 0.975)
 ))
-#> mu_c:  mean = 0.057  95% CI [-0.622, 0.827]  (log10 AU/mL)
+#> mu_c:  mean = 0.073  95% CI [-0.560, 0.760]  (log10 AU/mL)
 
 # 3. Formal LOO comparison (if more than one model was fitted)
 if (!is.null(loo_comparison)) print(loo_comparison)
 #>         model elpd_diff se_diff p_worse diag_diff      diag_elpd
 #>     logistic5       0.0     0.0      NA           1 k_psis > 0.7
-#>  loglogistic5      -0.8     0.9    0.83   N < 100 2 k_psis > 0.7
-#>     logistic4      -6.1     2.3    1.00   N < 100 4 k_psis > 0.7
-#>     gompertz4     -14.9     6.2    0.99   N < 100 5 k_psis > 0.7
+#>  loglogistic5      -0.6     0.6    0.84   N < 100               
+#>     logistic4      -7.6     3.1    0.99   N < 100               
+#>     gompertz4     -25.9     5.9    1.00   N < 100
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
 #> or https://mc-stan.org/loo/reference/loo-glossary.html.
 
-# 4. Access CDAN grid for the best model at curve_id 1
+# 4. Access precision grid for the best model at curve_id 1
 grid_best <- cr1$grid
 head(grid_best[, c("x_fit", "predicted_response",
-                   "pcov", "pcov_rmse", "pcov_pass")])
-#>       x_fit predicted_response pcov pcov_rmse pcov_pass
-#> 1 -4.000000           1.391426  150       150     FALSE
-#> 2 -3.972477           1.393164  150       150     FALSE
-#> 3 -3.944954           1.394949  150       150     FALSE
-#> 4 -3.917430           1.396783  150       150     FALSE
-#> 5 -3.889907           1.398665  150       150     FALSE
-#> 6 -3.862384           1.400599  150       150     FALSE
+                   "pcov", "pcov_rmse", "pcov_pass", "noise_mode")])
+#>       x_fit predicted_response pcov pcov_rmse pcov_pass    noise_mode
+#> 1 -4.000000           1.398742  150       150     FALSE homoscedastic
+#> 2 -3.972477           1.400610  150       150     FALSE homoscedastic
+#> 3 -3.944954           1.402525  150       150     FALSE homoscedastic
+#> 4 -3.917430           1.404490  150       150     FALSE homoscedastic
+#> 5 -3.889907           1.406505  150       150     FALSE homoscedastic
+#> 6 -3.862384           1.408572  150       150     FALSE homoscedastic
 
 # 5. Access per-model grid for logistic4 specifically
 grid_4pl <- ensemble[["logistic4"]]$grid
 head(grid_4pl[, c("x_fit", "predicted_response", "pcov")])
 #>       x_fit predicted_response     pcov
-#> 1 -4.000000           1.651680 146.7610
-#> 2 -3.972477           1.651920 140.8594
-#> 3 -3.944954           1.652173 150.0000
-#> 4 -3.917430           1.652439 150.0000
-#> 5 -3.889907           1.652718 150.0000
-#> 6 -3.862384           1.653011 140.4943
+#> 1 -4.000000           1.834228 143.1775
+#> 2 -3.972477           1.834319 139.6047
+#> 3 -3.944954           1.834415 140.4247
+#> 4 -3.917430           1.834518 142.0317
+#> 5 -3.889907           1.834626 138.1551
+#> 6 -3.862384           1.834740 150.0000
 ```
 
 ------------------------------------------------------------------------
@@ -573,7 +599,8 @@ $`\varepsilon_{i,k}`$ is observation noise.
 | $`C_k`$ | Inflection point (log10-EC50) | Per-`curve_id` |
 | $`D_k`$ | Upper asymptote | Per-`curve_id` |
 | $`\mu_A, \sigma_A`$ … | Population mean and SD for each parameter | Global |
-| $`\sigma_\varepsilon, \nu`$ | Observation noise SD and Student-t d.f. | Global (pooled) |
+| $`\sigma_\varepsilon, \nu`$ | Homoscedastic observation noise SD and Student-t d.f. | Global (pooled) |
+| $`\log\sigma_0, \log\sigma_\text{slope}`$ | Heteroscedastic noise intercept and slope (active when `use_heteroscedastic_noise = TRUE`) | Global (pooled) |
 
 `logistic5` and `loglogistic5` add a per-`curve_id` asymmetry parameter
 $`G_k`$ with its own population mean and SD. `gompertz4` replaces the
@@ -631,50 +658,70 @@ illustrate the pattern:
 
 ``` stan
 parameters {
-  // population hyperparameters (on log scale for positive quantities)
+  // population hyperparameters
+  real mu_a;
   real mu_log_b;
   real mu_c;          // inflection on the fitting scale
-  real mu_log_d;
-  real mu_a;          // lower asymptote (fitting scale)
+  real mu_d;
 
   // population SDs — Half-Normal keeps these positive
   real<lower=0> sigma_a;
   real<lower=0> sigma_log_b;
   real<lower=0> sigma_c;
-  real<lower=0> sigma_log_d;
+  real<lower=0> sigma_d;
 
-  // non-centred offsets: one per curve_id
-  vector[N_plates] z_a;
-  vector[N_plates] z_b;
-  vector[N_plates] z_c;
-  vector[N_plates] z_d;
+  // non-centred offsets: one per curve_id (plate)
+  vector[N_plates] raw_a;
+  vector[N_plates] raw_log_b;
+  vector[N_plates] raw_c;
+  vector[N_plates] raw_d;
 
   // observation noise (pooled across all curve_ids)
-  real<lower=0> sigma_obs;
-  real<lower=1> nu;
+  real<lower=0> sigma_obs;   // homoscedastic SD
+  real<lower=2> nu;           // Student-t degrees of freedom
+  real<lower=0> sigma_blank;
+
+  // heteroscedastic noise — always estimated; active in likelihood
+  // only when use_heteroscedastic_noise = 1
+  real log_sigma0;
+  real log_sigma_slope;
 }
 
 transformed parameters {
   // plate-level parameters reconstructed from NCP offsets
-  vector[N_plates] a     = mu_a      + sigma_a      * z_a;
-  vector[N_plates] b     = exp(mu_log_b + sigma_log_b * z_b);
-  vector[N_plates] c_par = mu_c      + sigma_c      * z_c;
-  vector[N_plates] d     = exp(mu_log_d + sigma_log_d * z_d);
+  vector[N_plates] a     = mu_a     + sigma_a     * raw_a;
+  vector[N_plates] b     = exp(mu_log_b + sigma_log_b * raw_log_b);
+  vector[N_plates] c_par = mu_c     + sigma_c     * raw_c;
+  vector[N_plates] d     = mu_d     + sigma_d     * raw_d;
 }
 ```
 
-Note that `b` and `d` are exponentiated so they remain strictly
-positive. The inflection point `c_par` and lower asymptote `a` are left
-on the fitting scale (already log10 after preprocessing).
+Note that `b` is exponentiated so it remains strictly positive. The
+inflection point `c_par` and asymptotes are left on the fitting scale
+(already log10 after preprocessing).
 
-### The `reduce_sum` likelihood
+### The likelihood loop
 
-The likelihood loop is parallelised via Stan’s `reduce_sum` map-reduce
-construct, controlled by the `grainsize` argument of
+The observation model in each Stan file is a serial `for` loop over all
+calibration points:
+
+``` stan
+for (i in 1:N_obs) {
+  real mu_i = ...; // forward model at x[i] for plate plate_idx[i]
+  real sigma_i = ...; // homoscedastic or heteroscedastic noise
+  y[i] ~ student_t(nu, mu_i, sigma_i);
+}
+```
+
+A `grainsize` field is declared in the Stan `data {}` block and passed
+through
 [`build_stan_data()`](https://immunoplex.github.io/curveRbayes/reference/build_stan_data.md)
-(default `1L`, which lets Stan choose the grain automatically). With
-CmdStan’s threading backend this provides near-linear speedup with the
-number of CPU cores for large datasets.
+(default `1L`), reserving the interface for a future `reduce_sum`
+parallelisation. The threading path is not yet active — `grainsize` is
+accepted by Stan but currently unused. Fitting speed scales with
+`chains × sampling` and dataset size; for typical immunoassay datasets
+(≤ 200 calibrators) wall time is dominated by warm-up, not the
+likelihood evaluation.
 
 ------------------------------------------------------------------------
 
@@ -698,13 +745,17 @@ additionally receive `prior_log_g_sd` and `prior_log_g_plate_sd`.
 | a (lower asymptote) | Normal(y_min, 0.3 × y_range) | Centred on observed minimum; broadly permissive. |
 | log(b) (Hill slope) | Normal(0, 0.7) | Prior median slope = 1.0; log-scale keeps b \> 0. |
 | c (inflection) | Normal(x_mid, 0.5 × x_range) | Centred on geometric midpoint of concentration range. |
-| log(d) (upper asy.) | Normal(y_max + 0.1 × y_range, 0.3 × y_range) | Slightly above observed maximum. |
-| sigma_obs | Half-Normal(0, 0.1 × y_range) | Noise scaled to signal range. |
+| d (upper asy.) | Normal(y_max + 0.1 × y_range, 0.3 × y_range) | Slightly above observed maximum. |
+| sigma_obs | Half-Normal(0, prior_a_sigma) | Noise scaled to signal range. |
 | log(g) (asymmetry) | Normal(0, 0.5) / Normal(0, 0.3) | 5-parameter only. g = 1 recovers the 4PL; regularised toward symmetry. |
+| log_sigma0 | Normal(log(IQR/1.35 × 0.3), 1.5) | Intercept of log(sigma) vs log(\|mu\|) line. Wide prior — data will dominate. Active when use_heteroscedastic_noise = TRUE. |
+| log_sigma_slope | Normal(1.0, 0.5) | Slope of log(sigma) vs log(\|mu\|). 1 = proportional noise; 0 = additive; 2 = strongly heteroscedastic. Active when use_heteroscedastic_noise = TRUE. |
 
-Data-adaptive prior structure for logistic4 / gompertz4. y_min, y_max,
-y_range, x_mid, and x_range are computed from the preprocessed
-standards.
+Data-adaptive prior structure. y_min, y_max, y_range, x_mid, and x_range
+are computed from the preprocessed standards by
+compute_dynamic_priors(). The heteroscedastic noise priors are always
+passed to Stan but only enter the likelihood when
+use_heteroscedastic_noise = TRUE.
 
 You can inspect the actual prior values that were passed to Stan:
 
@@ -716,15 +767,19 @@ priors <- compute_dynamic_priors(
   model_family      = "logistic4"
 )
 str(priors)
-#> List of 8
-#>  $ prior_a_mu       : num 1.27
-#>  $ prior_a_sigma    : num 0.964
-#>  $ prior_d_mu       : num 4.8
-#>  $ prior_d_sigma    : num 0.964
-#>  $ prior_log_b_mu   : num 0
-#>  $ prior_log_b_sigma: num 0.7
-#>  $ prior_c_mu       : num 0.716
-#>  $ prior_c_sigma    : num 2.24
+#> List of 12
+#>  $ prior_a_mu                 : num 1.27
+#>  $ prior_a_sigma              : num 0.964
+#>  $ prior_d_mu                 : num 4.8
+#>  $ prior_d_sigma              : num 0.964
+#>  $ prior_log_b_mu             : num 0
+#>  $ prior_log_b_sigma          : num 0.7
+#>  $ prior_log_sigma0_mu        : num -0.828
+#>  $ prior_log_sigma0_sigma     : num 1.5
+#>  $ prior_log_sigma_slope_mu   : num 1
+#>  $ prior_log_sigma_slope_sigma: num 0.5
+#>  $ prior_c_mu                 : num 0.716
+#>  $ prior_c_sigma              : num 2.24
 ```
 
 ### The `fixed_a` soft constraint
@@ -806,10 +861,10 @@ lapply(ensemble, function(m) {
 
 | model        | n_divergent | n_max_treedepth | mean_ebfmi |
 |:-------------|------------:|----------------:|-----------:|
-| logistic4    |           0 |               0 |      0.681 |
-| logistic5    |           0 |               0 |      0.698 |
-| gompertz4    |           0 |               0 |      0.678 |
-| loglogistic5 |           0 |               0 |      0.670 |
+| logistic4    |           0 |               0 |      0.703 |
+| logistic5    |           0 |               0 |      0.671 |
+| gompertz4    |           0 |               0 |      0.736 |
+| loglogistic5 |           0 |               0 |      0.716 |
 
 Convergence flag summary — curve_id 1.
 
@@ -821,22 +876,25 @@ posterior::summarise_draws(
   ~posterior::quantile2(.x, probs = c(0.025, 0.975)),
   posterior::default_convergence_measures()
 ) |>
-  dplyr::filter(grepl("^mu_|^sigma_obs|^nu$", variable)) |>
+  dplyr::filter(grepl("^mu_|^sigma_obs|^nu$|^log_sigma0$|^log_sigma_slope$", variable)) |>
   knitr::kable(digits = 3,
-               caption = "Population-level parameter summary — logistic4. Rhat < 1.01 and ess_bulk > 400 indicate adequate convergence.")
+               caption = "Population-level parameter summary — logistic4. Rhat < 1.01 and ess_bulk > 400 indicate adequate convergence. log_sigma0 and log_sigma_slope are estimated regardless of noise mode.")
 ```
 
-| variable  |   mean |     sd |   q2.5 |  q97.5 |  rhat | ess_bulk | ess_tail |
-|:----------|-------:|-------:|-------:|-------:|------:|---------:|---------:|
-| mu_a      |  1.440 |  0.137 |  1.215 |  1.733 | 1.004 |  946.535 | 2093.393 |
-| mu_d      |  4.403 |  0.051 |  4.306 |  4.502 | 1.002 | 1675.909 | 2033.096 |
-| mu_log_b  | -0.754 |  0.091 | -0.896 | -0.538 | 1.001 | 1542.517 | 1803.016 |
-| mu_c      |  0.057 |  0.359 | -0.622 |  0.827 | 1.002 | 1503.727 | 1999.230 |
-| sigma_obs |  0.059 |  0.011 |  0.039 |  0.081 | 1.001 | 1308.624 | 2465.664 |
-| nu        | 12.815 | 11.065 |  2.531 | 44.091 | 0.999 | 2143.685 | 2421.404 |
+| variable        |   mean |    sd |   q2.5 |  q97.5 |  rhat | ess_bulk | ess_tail |
+|:----------------|-------:|------:|-------:|-------:|------:|---------:|---------:|
+| mu_a            |  1.526 | 0.154 |  1.241 |  1.860 | 1.001 | 1528.747 | 2083.116 |
+| mu_d            |  4.400 | 0.056 |  4.286 |  4.514 | 1.005 | 1420.359 | 1983.397 |
+| mu_log_b        | -0.808 | 0.063 | -0.910 | -0.663 | 1.001 | 1810.263 | 1581.351 |
+| mu_c            |  0.073 | 0.332 | -0.560 |  0.760 | 1.002 | 1536.730 | 2061.559 |
+| sigma_obs       |  0.040 | 0.007 |  0.028 |  0.057 | 1.000 | 2443.924 | 2647.314 |
+| nu              |  2.232 | 0.256 |  2.006 |  2.891 | 1.000 | 3579.007 | 2431.053 |
+| log_sigma0      | -0.823 | 1.453 | -3.645 |  2.055 | 1.001 | 5218.284 | 3193.687 |
+| log_sigma_slope |  1.011 | 0.500 |  0.020 |  1.969 | 1.000 | 5019.666 | 3156.013 |
 
 Population-level parameter summary — logistic4. Rhat \< 1.01 and
-ess_bulk \> 400 indicate adequate convergence.
+ess_bulk \> 400 indicate adequate convergence. log_sigma0 and
+log_sigma_slope are estimated regardless of noise mode.
 
 ### Divergent transitions
 
@@ -896,10 +954,10 @@ lapply(ensemble, function(m) {
 
 | model        | mean_ebfmi | flag  |
 |:-------------|-----------:|:------|
-| logistic4    |      0.681 | ✅ OK |
-| logistic5    |      0.698 | ✅ OK |
-| gompertz4    |      0.678 | ✅ OK |
-| loglogistic5 |      0.670 | ✅ OK |
+| logistic4    |      0.703 | ✅ OK |
+| logistic5    |      0.671 | ✅ OK |
+| gompertz4    |      0.736 | ✅ OK |
+| loglogistic5 |      0.716 | ✅ OK |
 
 Mean E-BFMI per model. Values below 0.2 indicate poor energy
 exploration.
@@ -966,9 +1024,9 @@ weights are unreliable:
 if (!is.null(loo_comparison)) loo_comparison
 #>         model elpd_diff se_diff p_worse diag_diff      diag_elpd
 #>     logistic5       0.0     0.0      NA           1 k_psis > 0.7
-#>  loglogistic5      -0.8     0.9    0.83   N < 100 2 k_psis > 0.7
-#>     logistic4      -6.1     2.3    1.00   N < 100 4 k_psis > 0.7
-#>     gompertz4     -14.9     6.2    0.99   N < 100 5 k_psis > 0.7
+#>  loglogistic5      -0.6     0.6    0.84   N < 100               
+#>     logistic4      -7.6     3.1    0.99   N < 100               
+#>     gompertz4     -25.9     5.9    1.00   N < 100
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -1045,7 +1103,7 @@ one direction — formally valid MCMC but meaningless predictions.
 
 ### The `dynamic_range` gate
 
-The dynamic range is assessed from the CDAN grid’s `pcov` profile —
+The dynamic range is assessed from the precision grid’s `pcov` profile —
 specifically, the log10-distance between the LLOQ and ULOQ (the
 concentration range where `pcov < pcov_threshold`). A model whose
 quantifiable range spans less than `min_dynamic_range_log10` decades
@@ -1068,53 +1126,53 @@ if (!is.null(eligibility) && nrow(eligibility) > 0) {
 | model | curve_id | gate | passed | detail | eligible |
 |:---|---:|:---|:---|:---|:---|
 | gompertz4 | 1 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 1 | dynamic_range | TRUE | dynamic range = 0.986 log10 | TRUE |
+| gompertz4 | 1 | dynamic_range | TRUE | dynamic range = 0.676 log10 | TRUE |
 | gompertz4 | 2 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 2 | dynamic_range | TRUE | dynamic range = 1.04 log10 | TRUE |
+| gompertz4 | 2 | dynamic_range | TRUE | dynamic range = 0.626 log10 | TRUE |
 | gompertz4 | 3 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 3 | dynamic_range | TRUE | dynamic range = 1.08 log10 | TRUE |
+| gompertz4 | 3 | dynamic_range | TRUE | dynamic range = 0.626 log10 | TRUE |
 | gompertz4 | 4 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 4 | dynamic_range | TRUE | dynamic range = 1.4 log10 | TRUE |
+| gompertz4 | 4 | dynamic_range | TRUE | dynamic range = 1.2 log10 | TRUE |
 | gompertz4 | 5 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 5 | dynamic_range | TRUE | dynamic range = 1.47 log10 | TRUE |
+| gompertz4 | 5 | dynamic_range | TRUE | dynamic range = 1.15 log10 | TRUE |
 | gompertz4 | 6 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 6 | dynamic_range | TRUE | dynamic range = 1.4 log10 | TRUE |
+| gompertz4 | 6 | dynamic_range | TRUE | dynamic range = 1.06 log10 | TRUE |
 | logistic4 | 1 | rel_se | TRUE |  | TRUE |
-| logistic4 | 1 | dynamic_range | TRUE | dynamic range = 1.51 log10 | TRUE |
+| logistic4 | 1 | dynamic_range | TRUE | dynamic range = 1.2 log10 | TRUE |
 | logistic4 | 2 | rel_se | TRUE |  | TRUE |
-| logistic4 | 2 | dynamic_range | TRUE | dynamic range = 1.59 log10 | TRUE |
+| logistic4 | 2 | dynamic_range | TRUE | dynamic range = 1.28 log10 | TRUE |
 | logistic4 | 3 | rel_se | TRUE |  | TRUE |
-| logistic4 | 3 | dynamic_range | TRUE | dynamic range = 1.53 log10 | TRUE |
+| logistic4 | 3 | dynamic_range | TRUE | dynamic range = 1.28 log10 | TRUE |
 | logistic4 | 4 | rel_se | TRUE |  | TRUE |
-| logistic4 | 4 | dynamic_range | TRUE | dynamic range = 1.6 log10 | TRUE |
+| logistic4 | 4 | dynamic_range | TRUE | dynamic range = 1.62 log10 | TRUE |
 | logistic4 | 5 | rel_se | TRUE |  | TRUE |
-| logistic4 | 5 | dynamic_range | TRUE | dynamic range = 1.59 log10 | TRUE |
+| logistic4 | 5 | dynamic_range | TRUE | dynamic range = 1.53 log10 | TRUE |
 | logistic4 | 6 | rel_se | TRUE |  | TRUE |
-| logistic4 | 6 | dynamic_range | TRUE | dynamic range = 1.58 log10 | TRUE |
+| logistic4 | 6 | dynamic_range | TRUE | dynamic range = 1.37 log10 | TRUE |
 | logistic5 | 1 | rel_se | TRUE |  | TRUE |
-| logistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.75 log10 | TRUE |
+| logistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.64 log10 | TRUE |
 | logistic5 | 2 | rel_se | TRUE |  | TRUE |
-| logistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.94 log10 | TRUE |
+| logistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.56 log10 | TRUE |
 | logistic5 | 3 | rel_se | TRUE |  | TRUE |
-| logistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
+| logistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.88 log10 | TRUE |
 | logistic5 | 4 | rel_se | TRUE |  | TRUE |
-| logistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.64 log10 | TRUE |
+| logistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.59 log10 | TRUE |
 | logistic5 | 5 | rel_se | TRUE |  | TRUE |
-| logistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.65 log10 | TRUE |
+| logistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.63 log10 | TRUE |
 | logistic5 | 6 | rel_se | TRUE |  | TRUE |
-| logistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
+| logistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.57 log10 | TRUE |
 | loglogistic5 | 1 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
+| loglogistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
 | loglogistic5 | 2 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.68 log10 | TRUE |
+| loglogistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.71 log10 | TRUE |
 | loglogistic5 | 3 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.91 log10 | TRUE |
+| loglogistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.46 log10 | TRUE |
 | loglogistic5 | 4 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.65 log10 | TRUE |
+| loglogistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.63 log10 | TRUE |
 | loglogistic5 | 5 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
+| loglogistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.62 log10 | TRUE |
 | loglogistic5 | 6 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.68 log10 | TRUE |
+| loglogistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.79 log10 | TRUE |
 
 Eligibility gate results. eligible = FALSE excludes that model ×
 curve_id from back-calculation.
@@ -1145,9 +1203,65 @@ Eligibility summary across all models.
 
 ------------------------------------------------------------------------
 
-## CDAN precision grids
+## Precision grids
 
-### What is a CDAN precision grid?
+### Two precision profile modes
+
+[`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md)
+supports two modes of precision profiling, selected at fitting time via
+`use_heteroscedastic_noise`.
+
+**Mode 0 — Posterior-predictive precision (default,
+`use_heteroscedastic_noise = FALSE`)**
+
+A constant `sigma_obs` is drawn from the posterior at each step. The
+precision profile measures how accurately the curve could back-calculate
+a concentration if the instrument produced a response drawn from a
+homoscedastic Student-t distribution. This is a valid Bayesian precision
+measure but the noise injected in Step 3 (see Section
+@ref(cdan-procedure)) does not vary with signal level — so the profile
+shape is dominated by the inverse-curve geometry (how steeply `inv(y)`
+magnifies small errors) rather than by concentration-dependent noise
+scaling.
+
+**Mode 1 — CDAN precision (`use_heteroscedastic_noise = TRUE`)**
+
+The Stan models additionally estimate two noise parameters —
+`log_sigma0` (intercept) and `log_sigma_slope` (slope) — that define a
+power-of-mean variance function:
+
+``` math
+
+\sigma_i
+= \exp\!\left(\log\sigma_0^{(s)}
+  + \log\sigma_\text{slope}^{(s)} \cdot \log\!\left|\mu_i\right|\right)
+```
+
+This is the variance function $`v(m, \theta) = \theta_1 m^{\theta_2}`$
+of O’Malley (2008) §2, the defining feature of the **Concentration
+Distribution of Assay Noise (CDAN)** precision profile. With
+$`\sigma_i`$ scaling with signal level, the precision profile captures
+both inverse-curve geometry *and* the fact that instrument noise is
+larger at high response values — giving the profile the characteristic
+U-shape where precision degrades near both asymptotes for different
+reasons.
+
+The `noise_mode` column in every grid data frame records which path was
+active (`"heteroscedastic"` or `"homoscedastic"`), making it easy to
+verify in plots and downstream comparisons.
+
+To compare both modes, fit twice:
+
+``` r
+fit_homo   <- fit_calibration_bayes(..., use_heteroscedastic_noise = FALSE)
+fit_hetero <- fit_calibration_bayes(..., use_heteroscedastic_noise = TRUE)
+
+# Both fits store the same structure; the grid$noise_mode column records which is which
+fit_homo$plates[["1"]]$grid$noise_mode[1]   # "homoscedastic"
+fit_hetero$plates[["1"]]$grid$noise_mode[1] # "heteroscedastic"
+```
+
+### What is a precision grid?
 
 **CDAN** (Concentration-Dependent Assay Noise) precision profiling
 (O’Malley and Deely 2003; O’Malley 2008) characterises *how accurately*
@@ -1157,7 +1271,7 @@ inflection point the curve is steep — small response uncertainty maps to
 small concentration uncertainty. Near the asymptotes the curve is flat —
 the same response uncertainty maps to large concentration uncertainty.
 
-The CDAN grid makes this relationship explicit: a dense grid of
+The precision grid makes this relationship explicit: a dense grid of
 concentration values, each with its posterior predictive
 back-calculation distribution and associated %CV, incorporating both
 curve-parameter uncertainty *and* the additional measurement noise that
@@ -1170,36 +1284,41 @@ a real instrument observation would contribute.
 | x_fit | Grid concentration on the fitting scale (log10 AU/mL when is_log_independent = TRUE). |
 | predicted_response | Posterior mean of the forward-predicted response (mean of y_mat across draws). |
 | ci_lower / ci_upper | 2.5th and 97.5th percentiles of forward-predicted response across draws. |
-| predicted_concentration | Posterior median of back-calculated concentration across CDAN draws. |
+| predicted_concentration | Posterior median of back-calculated concentration across precision-grid draws. |
 | se_concentration | Posterior SD of back-calculated concentration. |
 | pcov | % CV of back-calculated concentration. For log-scale x: se_concentration × log(10) × 100, capped at cv_x_max. |
-| pcov_rmse | Relative RMSE of back-calculated concentration versus the true grid point (CDAN precision, O’Malley 2008). |
+| pcov_rmse | Relative RMSE of back-calculated concentration versus the true grid point. When noise_mode = ‘heteroscedastic’ this is the O’Malley (2008) CDAN precision metric; when noise_mode = ‘homoscedastic’ it is a posterior-predictive RMSE. |
 | pcov_pass | Logical: pcov \< pcov_threshold. |
+| noise_mode | Character: ‘heteroscedastic’ or ‘homoscedastic’ — records which noise model was active at fitting time. |
 | d2y_dx2 | Second derivative of the response curve — used by curveRcore::compute_shape_loq_from_grid() to locate shape-based LLOQ/ULOQ. |
 
-Columns in the CDAN grid data frame.
+Columns in the precision grid data frame.
 
 ### Accessing and plotting grids
 
 ``` r
 dplyr::glimpse(cr1$grid)
 #> Rows: 200
-#> Columns: 12
+#> Columns: 13
 #> $ log10_concentration     <dbl> -4.000000, -3.972477, -3.944954, -3.917430, -3…
 #> $ concentration           <dbl> 0.0001000000, 0.0001065426, 0.0001135132, 0.00…
 #> $ x_fit                   <dbl> -4.000000, -3.972477, -3.944954, -3.917430, -3…
-#> $ predicted_response      <dbl> 1.391426, 1.393164, 1.394949, 1.396783, 1.3986…
-#> $ ci_lower                <dbl> 1.232767, 1.235067, 1.237425, 1.239843, 1.2423…
-#> $ ci_upper                <dbl> 1.708375, 1.708640, 1.708917, 1.709205, 1.7095…
-#> $ predicted_concentration <dbl> -3.922594, -3.802136, -3.814621, -3.805984, -3…
-#> $ se_concentration        <dbl> 0.7825477, 0.8010372, 0.7374550, 0.7870443, 0.…
+#> $ predicted_response      <dbl> 1.398742, 1.400610, 1.402525, 1.404490, 1.4065…
+#> $ ci_lower                <dbl> 1.171737, 1.174983, 1.178430, 1.181949, 1.1855…
+#> $ ci_upper                <dbl> 1.784976, 1.785086, 1.785201, 1.785323, 1.7854…
+#> $ predicted_concentration <dbl> -3.880520, -3.862948, -3.856497, -3.881174, -3…
+#> $ se_concentration        <dbl> 0.6794048, 0.6907654, 0.8896030, 0.9149750, 0.…
 #> $ pcov                    <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
 #> $ pcov_rmse               <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
 #> $ pcov_pass               <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
-#> $ d2y_dx2                 <dbl> NA, 0.06179685, 0.06350562, 0.06526292, 0.0670…
+#> $ noise_mode              <chr> "homoscedastic", "homoscedastic", "homoscedast…
+#> $ d2y_dx2                 <dbl> NA, 0.06311380, 0.06477741, 0.06648632, 0.0682…
+# noise_mode column records which precision profile mode was used
+unique(cr1$grid$noise_mode)
+#> [1] "homoscedastic"
 ```
 
-\`\`\`{r grid-plot, fig.cap=“Per-model CDAN precision profiles:
+\`\`\`{r grid-plot, fig.cap=“Per-model precision profiles:
 back-calculation %CV versus log10(concentration) for all curve_ids. The
 dashed line marks 20% CV — a typical regulatory acceptability threshold.
 The ribbon spans the range across curve_ids; the line is the mean.”}
@@ -1218,17 +1337,17 @@ colour = “grey40”, linewidth = 0.6) + scale_x_continuous( name =
 “log081080(concentration) \[AU/mL\]”, breaks = seq(-3, 2, by = 1) ) +
 scale_y_continuous(name = “Back-calculation CV (%)”, limits = c(0,
 NA)) + facet_wrap(~model, nrow = 2) + theme_minimal(base_size = 11) +
-theme(legend.position = “none”) + labs(title = “CDAN precision profiles
-— all models”, subtitle = “Ribbon = range across curve_ids; line =
-mean”) }
+theme(legend.position = “none”) + labs(title = “Precision profiles — all
+models”, subtitle = “Ribbon = range across curve_ids; line = mean”) }
 
     ---
 
-    # The CDAN three-step noise injection procedure {#cdan-procedure}
+    # The three-step noise injection procedure {#cdan-procedure}
 
-    `predict_grid_bayes()` constructs the CDAN precision profile at each
+    `predict_grid_bayes()` constructs the precision profile at each
     grid concentration $x^*$ via a three-step procedure that propagates
     both curve-parameter uncertainty and instrument measurement noise.
+    The noise model used in Step 3 depends on `use_heteroscedastic_noise`.
 
     ## Step 1 — draw posterior curve parameters {#step1}
 
@@ -1259,26 +1378,54 @@ mean”) }
     for `logistic5`/`loglogistic5` the asymmetry parameter $G_k^{(s)}$
     modifies the denominator.)
 
-    ## Step 3 — inject Student-t noise and invert {#step3}
+    ## Step 3 — inject noise and invert {#step3}
 
-    **This step is unique to `predict_grid_bayes()` and defines CDAN.**
+    **This step is the defining feature of the precision profile and is
+    where the two noise modes diverge.**
 
     To each forward-predicted response $\tilde{y}^{(s,k)}$, add a noise
-    draw from the posterior predictive distribution:
+    draw scaled by $\sigma_i^{(s)}$:
 
     $$
     y^{*(s,k)}
     = \tilde{y}^{(s,k)}
       + \varepsilon^{(s)},
     \qquad
-    \varepsilon^{(s)} \sim t_{\nu^{(s)}}\!\left(0,\; \sigma_\varepsilon^{(s)}\right)
+    \varepsilon^{(s)} \sim t_{\nu^{(s)}}\!\left(0,\; \sigma_i^{(s)}\right)
     $$
 
-    where $\sigma_\varepsilon^{(s)}$ and $\nu^{(s)}$ are themselves
-    drawn from the posterior — both `sigma_obs` and `nu` are estimated
-    parameters in the Stan model.
-    The heavy tails of the Student-t distribution provide a realistic
-    characterisation of occasional outlier instrument readings.
+    where $\sigma_i^{(s)}$ is determined by the noise mode:
+
+    $$
+    \sigma_i^{(s)} =
+    \begin{cases}
+    \sigma_\text{obs}^{(s)}
+      & \text{if } \texttt{use\_heteroscedastic\_noise = FALSE}
+      \quad\text{(homoscedastic)} \\[6pt]
+    \exp\!\left(
+      \log\sigma_0^{(s)}
+      + \log\sigma_\text{slope}^{(s)} \cdot \log\!\left|\tilde{y}^{(s,k)}\right|
+    \right)
+      & \text{if } \texttt{use\_heteroscedastic\_noise = TRUE}
+      \quad\text{(CDAN)}
+    \end{cases}
+    $$
+
+    The homoscedastic path uses a constant noise SD drawn from the
+    posterior — a valid posterior-predictive precision measure but one
+    whose profile shape is driven mainly by the inverse-curve geometry.
+
+    The heteroscedastic (CDAN) path uses the power-of-mean variance
+    function from O'Malley (2008) §2: noise scales with the predicted
+    response level, so the precision profile captures both curve geometry
+    *and* the fact that instrument noise is larger at high signal values.
+    Both $\log\sigma_0^{(s)}$ and $\log\sigma_\text{slope}^{(s)}$ are
+    themselves drawn from the posterior, so their uncertainty is fully
+    propagated.
+
+    The heavy tails of the Student-t distribution ($\nu$ also posterior)
+    provide a realistic characterisation of occasional outlier instrument
+    readings in both modes.
 
     The noisy response $y^{*(s,k)}$ is then **back-calculated** through
     the analytical inverse of the forward model:
@@ -1288,15 +1435,15 @@ mean”) }
     = f^{-1}\!\left(y^{*(s,k)};\; \boldsymbol{\theta}_k^{(s)}\right)
     $$
 
-    The collection $\left\{\hat{x}^{(s,k)}\right\}$ is the CDAN
-    back-calculation distribution at $x^*$.
-    The `pcov` column is the SD of this collection, divided by the
-    mean, expressed as a percentage (computed on the fitting scale and
-    converted to the linear CV via $\text{pcov} = \text{SE} \times \ln(10) \times 100$).
+    The collection $\left\{\hat{x}^{(s,k)}\right\}$ is the back-calculation
+    distribution at $x^*$.
+    The `pcov` column is the SD of this collection divided by the mean,
+    expressed as a percentage (on the log scale: $\text{pcov} = \text{SE} \times \ln(10) \times 100$).
     The `pcov_rmse` column is the relative RMSE against the known true
-    grid point — the O'Malley (2008) CDAN precision metric.
+    grid point — the O'Malley (2008) CDAN precision metric when
+    `use_heteroscedastic_noise = TRUE`.
 
-    The entire three-step logic can be illustrated concisely:
+    The three-step logic can be illustrated concisely for both modes:
 
 
     ``` r
@@ -1315,37 +1462,61 @@ mean”) }
     sigma_obs <- as.numeric(samp[, "sigma_obs"])
     nu        <- as.numeric(samp[, "nu"])
 
+    # Heteroscedastic noise parameters (always estimated, regardless of mode)
+    log_sigma0     <- as.numeric(samp[, "log_sigma0"])
+    log_sigma_slope <- as.numeric(samp[, "log_sigma_slope"])
+
     # Grid point: log10(1 AU/mL) = 0
     x_star <- 0
 
-    # Step 1–2: forward prediction using curveRcore::logistic4()
+    # Step 1–2: forward prediction
     y_tilde <- curveRcore::logistic4(x_star, A, B, C, D)
 
-    # Step 3: inject Student-t noise (posterior nu), then invert
-    eps    <- rt(length(y_tilde), df = median(nu)) * sigma_obs
-    y_star <- y_tilde + eps
-
-    # Back-calculate using curveRcore analytical inverse
-    x_hat <- vapply(seq_along(A), function(s) {
+    # ── Mode 0: homoscedastic sigma_obs ──
+    sigma_homo <- sigma_obs
+    y_star_homo <- y_tilde + sigma_homo * rt(length(y_tilde), df = median(nu))
+    x_hat_homo <- vapply(seq_along(A), function(s) {
       tryCatch(
-        curveRcore::inv_logistic4(y_star[s], A[s], B[s], C[s], D[s]),
+        curveRcore::inv_logistic4(y_star_homo[s], A[s], B[s], C[s], D[s]),
         error = function(e) NA_real_
       )
     }, numeric(1))
-    x_hat <- x_hat[is.finite(x_hat)]
+    x_hat_homo <- x_hat_homo[is.finite(x_hat_homo)]
+
+    # ── Mode 1: heteroscedastic sigma_i = exp(log_sigma0 + log_sigma_slope * log|mu|) ──
+    sigma_hetero <- exp(log_sigma0 + log_sigma_slope * log(abs(y_tilde) + 1e-10))
+    y_star_hetero <- y_tilde + sigma_hetero * rt(length(y_tilde), df = median(nu))
+    x_hat_hetero <- vapply(seq_along(A), function(s) {
+      tryCatch(
+        curveRcore::inv_logistic4(y_star_hetero[s], A[s], B[s], C[s], D[s]),
+        error = function(e) NA_real_
+      )
+    }, numeric(1))
+    x_hat_hetero <- x_hat_hetero[is.finite(x_hat_hetero)]
 
     cat(sprintf(
-      "CDAN back-calculation at log10(x*) = %.1f  [x* = %.0f AU/mL]\n",
+      "Back-calculation at log10(x*) = %.1f  [x* = %.0f AU/mL]\n\n",
       x_star, 10^x_star
     ))
-    #> CDAN back-calculation at log10(x*) = 0.0  [x* = 1 AU/mL]
-    cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat, na.rm = TRUE)))
-    #>   Posterior mean:  -0.0005  log10(AU/mL)
-    cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat, na.rm = TRUE)))
-    #>   Posterior SD:    0.0797  log10(AU/mL)
+    #> Back-calculation at log10(x*) = 0.0  [x* = 1 AU/mL]
+    cat("Mode 0 — homoscedastic (sigma_obs):\n")
+    #> Mode 0 — homoscedastic (sigma_obs):
+    cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat_homo)))
+    #>   Posterior mean:  0.0053  log10(AU/mL)
+    cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat_homo)))
+    #>   Posterior SD:    0.1103  log10(AU/mL)
+    cat(sprintf("  Back-calc CV:    %.1f%%\n\n",
+                sd(x_hat_homo) * log(10) * 100))
+    #>   Back-calc CV:    25.4%
+    cat("Mode 1 — heteroscedastic CDAN (sigma_i = exp(log_sigma0 + log_sigma_slope*log|mu|)):\n")
+    #> Mode 1 — heteroscedastic CDAN (sigma_i = exp(log_sigma0 + log_sigma_slope*log|mu|)):
+    cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat_hetero)))
+    #>   Posterior mean:  -0.1573  log10(AU/mL)
+    cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat_hetero)))
+    #>   Posterior SD:    0.6142  log10(AU/mL)
     cat(sprintf("  Back-calc CV:    %.1f%%\n",
-                sd(x_hat, na.rm = TRUE) * log(10) * 100))
-    #>   Back-calc CV:    18.4%
+                sd(x_hat_hetero) * log(10) * 100))
+    #>   Back-calc CV:    141.4%
 
 ------------------------------------------------------------------------
 
@@ -1358,7 +1529,7 @@ This is the most important conceptual distinction in the package.
 When
 [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md)
 is called on observed test-sample responses, the situation is
-fundamentally different from building a CDAN grid:
+fundamentally different from building a precision grid:
 
 > **The observed response $`y_\text{obs}`$ already IS the noisy
 > measurement. Injecting noise again would be double-counting.**
@@ -1379,7 +1550,8 @@ $`\boldsymbol{\theta}_k^{(s)}`$.
 
 | Scenario | Function | Noise injected? | Source of uncertainty |
 |----|----|----|----|
-| CDAN precision grid | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | ✅ Yes — Student-t($`\nu`$, $`\sigma_\text{obs}`$) from posterior | Parameter uncertainty **+** hypothetical measurement noise |
+| Precision grid (homoscedastic) | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | ✅ Yes — Student-t($`\nu`$, $`\sigma_\text{obs}`$) constant | Parameter uncertainty + homoscedastic noise |
+| Precision grid (CDAN) | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | ✅ Yes — Student-t($`\nu`$, $`\sigma_i`$) where $`\sigma_i`$ scales with $`|\mu|`$ | Parameter uncertainty + concentration-dependent noise |
 | Test sample back-calculation | [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md) | ❌ No | Parameter uncertainty only (noise already realised in $`y_\text{obs}`$) |
 
 ### Running back-calculation
@@ -1410,12 +1582,12 @@ if (!is.null(results) && nrow(results) > 0) {
 
 | curve_id | sampleid | mfi | predicted_concentration | final_concentration | se_concentration | pcov | pcov_pass |
 |:---|:---|---:|---:|---:|---:|---:|:---|
-| 1 | a001 | 18323.4 | 1.125 | 26657.467 | 0.186 | 42.888 | TRUE |
-| 1 | a002 | 19414.7 | 1.335 | 43283.085 | 0.343 | 79.068 | TRUE |
-| 1 | a003 | 20098.5 | 1.486 | 61221.043 | 0.394 | 90.696 | TRUE |
-| 1 | a004 | 19556.0 | 1.369 | 46791.961 | 0.342 | 78.736 | TRUE |
-| 1 | a005 | 20177.5 | 1.500 | 63215.513 | 0.366 | 84.288 | TRUE |
-| 1 | a006 | 70.1 | -1.857 | 27.796 | 0.158 | 36.292 | TRUE |
+| 1 | a001 | 18323.4 | 1.097 | 25031.522 | 0.141 | 32.493 | FALSE |
+| 1 | a002 | 19414.7 | 1.317 | 41528.984 | 0.257 | 59.214 | FALSE |
+| 1 | a003 | 20098.5 | 1.497 | 62828.117 | 0.400 | 92.173 | FALSE |
+| 1 | a004 | 19556.0 | 1.354 | 45188.809 | 0.289 | 66.578 | FALSE |
+| 1 | a005 | 20177.5 | 1.513 | 65171.351 | 0.365 | 84.016 | FALSE |
+| 1 | a006 | 70.1 | -1.884 | 26.105 | 0.193 | 44.541 | FALSE |
 
 Back-calculated concentrations (first rows). predicted_concentration is
 on the log10(AU/mL) fitting scale; final_concentration is on the natural
@@ -1429,33 +1601,141 @@ scale after dilution correction.
 
 [`summary_table_bayes()`](https://immunoplex.github.io/curveRbayes/reference/summary_table_bayes.md)
 returns one row per `curve_id` with the best model name, per-parameter
-posterior mean and SD, and NUTS diagnostics.
+posterior mean and SD, NUTS diagnostics, and now also `n_standards`,
+`n_blanks`, and `noise_mode` columns.
 [`collect_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/collect_samples_bayes.md)
 returns a flat data frame of all back-calculated test samples with
 `curve_id` prepended.
 
 ``` r
-# One-row-per-curve summary
+# One-row-per-curve summary — includes n_standards, n_blanks, noise_mode
 summary_table_bayes(fit) |>
   knitr::kable(digits = 3,
-               caption = "Per-curve summary: best model, posterior means and SDs, NUTS diagnostics.")
+               caption = "Per-curve summary: best model, posterior means and SDs, NUTS diagnostics, standard/blank counts, and noise mode.")
 ```
 
-| curve_id | best_model | a_mean | a_sd | b_mean | b_sd | c_mean | c_sd | d_mean | d_sd | g_mean | g_sd | n_divergent | n_max_treedepth |
-|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | logistic5 | 1.327 | 0.148 | 0.430 | 0.049 | -0.158 | 0.173 | 4.332 | 0.027 | 0.469 | 0.176 | 0 | 0 |
-| 2 | logistic5 | 1.284 | 0.134 | 0.441 | 0.050 | -0.223 | 0.199 | 4.304 | 0.028 | 0.541 | 0.191 | 0 | 0 |
-| 3 | logistic5 | 1.317 | 0.140 | 0.431 | 0.047 | -0.234 | 0.168 | 4.351 | 0.026 | 0.491 | 0.164 | 0 | 0 |
-| 4 | logistic5 | 1.306 | 0.053 | 0.420 | 0.042 | 0.669 | 0.202 | 4.485 | 0.037 | 1.063 | 0.413 | 0 | 0 |
-| 5 | logistic5 | 1.259 | 0.050 | 0.425 | 0.044 | 0.690 | 0.211 | 4.447 | 0.037 | 1.070 | 0.421 | 0 | 0 |
-| 6 | logistic5 | 1.303 | 0.077 | 0.422 | 0.045 | 0.666 | 0.240 | 4.473 | 0.039 | 1.066 | 0.524 | 0 | 0 |
+| curve_id | best_model | a_mean | a_sd | b_mean | b_sd | c_mean | c_sd | d_mean | d_sd | g_mean | g_sd | n_divergent | n_max_treedepth | n_standards | n_blanks | noise_mode |
+|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|
+| 1 | logistic5 | 1.321 | 0.161 | 0.401 | 0.038 | -0.085 | 0.139 | 4.325 | 0.021 | 0.408 | 0.129 | 0 | 0 | 10 | 4 | FALSE |
+| 2 | logistic5 | 1.292 | 0.153 | 0.411 | 0.041 | -0.128 | 0.184 | 4.295 | 0.021 | 0.463 | 0.155 | 0 | 0 | 10 | 4 | FALSE |
+| 3 | logistic5 | 1.310 | 0.157 | 0.405 | 0.039 | -0.169 | 0.144 | 4.341 | 0.018 | 0.433 | 0.132 | 0 | 0 | 10 | 4 | FALSE |
+| 4 | logistic5 | 1.290 | 0.055 | 0.399 | 0.033 | 0.777 | 0.159 | 4.482 | 0.027 | 0.867 | 0.275 | 0 | 0 | 10 | 4 | FALSE |
+| 5 | logistic5 | 1.247 | 0.045 | 0.401 | 0.035 | 0.792 | 0.171 | 4.442 | 0.028 | 0.884 | 0.276 | 0 | 0 | 10 | 4 | FALSE |
+| 6 | logistic5 | 1.277 | 0.098 | 0.398 | 0.036 | 0.821 | 0.166 | 4.469 | 0.029 | 0.787 | 0.285 | 0 | 0 | 10 | 4 | FALSE |
 
 Per-curve summary: best model, posterior means and SDs, NUTS
-diagnostics.
+diagnostics, standard/blank counts, and noise mode.
 
 Both functions also accept the legacy single-`calibration_result` format
 (i.e. a single plate object), so they work identically on
 `fit$plates[["1"]]` and on the full multiplate object.
+
+------------------------------------------------------------------------
+
+## QA: standards and blanks
+
+Every per-curve `calibration_result` now carries a `$standards` slot
+(the preprocessed standards for that curve_id) and, when blanks were
+provided, a `$blanks` slot. Two collector functions mirror
+[`collect_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/collect_samples_bayes.md):
+
+``` r
+# Stack all per-curve standards into a single data frame
+stds_all <- collect_standards_bayes(fit)
+cat(sprintf("Standards collected: %d rows across %d curve_ids\n",
+            nrow(stds_all), dplyr::n_distinct(stds_all$curve_id)))
+#> Standards collected: 60 rows across 6 curve_ids
+
+# Stack all per-curve blanks (NULL if no blanks were provided)
+blanks_all <- collect_blanks_bayes(fit)
+if (!is.null(blanks_all)) {
+  cat(sprintf("Blanks collected:    %d rows across %d curve_ids\n",
+              nrow(blanks_all), dplyr::n_distinct(blanks_all$curve_id)))
+} else {
+  cat("No blanks stored (blanks = NULL at fitting time).\n")
+}
+#> Blanks collected:    24 rows across 6 curve_ids
+```
+
+``` r
+# Verify per-plate standard and blank counts from the summary table
+summary_table_bayes(fit) |>
+  dplyr::select(curve_id, n_standards, n_blanks, noise_mode) |>
+  knitr::kable(caption = "Per-plate data coverage. n_blanks = 0 when no blanks were supplied.")
+```
+
+| curve_id | n_standards | n_blanks | noise_mode |
+|:---------|------------:|---------:|:-----------|
+| 1        |          10 |        4 | FALSE      |
+| 2        |          10 |        4 | FALSE      |
+| 3        |          10 |        4 | FALSE      |
+| 4        |          10 |        4 | FALSE      |
+| 5        |          10 |        4 | FALSE      |
+| 6        |          10 |        4 | FALSE      |
+
+Per-plate data coverage. n_blanks = 0 when no blanks were supplied.
+
+\`\`\`{r qa-standards-plot, fig.cap=“Observed standards overlaid on the
+fitted posterior predictive band for antigen alpha (curve_ids 1–3).
+Storing standards in the result object makes this plot available without
+re-joining the original data frame.”} if (!is.null(stds_all) &&
+nrow(stds_all) \> 0 && “concentration” %in% names(stds_all)) {
+
+\# Combine standards with best-model grid for the same curve_ids
+grid_alpha \<- purrr::map_dfr( as.character(1:3), function(cid) { g \<-
+fit$`plates[[cid]]`$grid if (is.null(g)) return(NULL) dplyr::mutate(g,
+curve_id = as.integer(cid)) } )
+
+ggplot() + geom_ribbon( data = grid_alpha, aes(x = x_fit, ymin =
+ci_lower, ymax = ci_upper, group = factor(curve_id)), alpha = 0.15, fill
+= “steelblue” ) + geom_line( data = grid_alpha, aes(x = x_fit, y =
+predicted_response, colour = factor(curve_id)), linewidth = 0.7 ) +
+geom_point( data = dplyr::filter(stds_all, curve_id %in% 1:3), aes(x =
+concentration, y = .data\[\[bead_assay_example\$response_var\]\], colour
+= factor(curve_id)), size = 2, shape = 16, alpha = 0.9 ) +
+scale_colour_brewer(palette = “Set1”) + labs( x =
+“log081080(concentration) \[AU/mL\]”, y = “log081080(MFI)”, colour =
+“curve_id”, title = “Fitted curve with observed standards — antigen
+alpha” ) + theme_minimal(base_size = 12) + theme(legend.position =
+“bottom”) }
+
+    ```{r qa-blanks-plot,
+        fig.cap="Blank well responses per curve_id. The horizontal line marks the posterior mean lower asymptote for each curve — blanks should cluster near it."}
+    if (!is.null(blanks_all) && nrow(blanks_all) > 0) {
+
+      # Posterior mean lower asymptote per curve_id
+      a_means <- purrr::map_dfr(
+        names(fit$plates),
+        function(cid) {
+          cr   <- fit$plates[[cid]]
+          best <- cr$selection$best_model_name
+          p    <- cr$ensemble[[best]]$parameters
+          tibble::tibble(
+            curve_id = as.integer(cid),
+            a_mean   = if (!is.null(p) && "a" %in% p$term)
+                         p$mean[p$term == "a"]
+                       else NA_real_
+          )
+        }
+      )
+
+      blanks_all |>
+        dplyr::mutate(curve_id = as.integer(curve_id)) |>
+        ggplot(aes(x = factor(curve_id),
+                   y = .data[[bead_assay_example$response_var]])) +
+        geom_jitter(width = 0.1, size = 2, colour = "firebrick", alpha = 0.8) +
+        geom_hline(
+          data = a_means,
+          aes(yintercept = a_mean, group = factor(curve_id)),
+          linetype = "dashed", colour = "steelblue", linewidth = 0.6
+        ) +
+        labs(
+          x     = "curve_id",
+          y     = "log\u2081\u2080(MFI)  [blank wells]",
+          title = "Blank well responses vs posterior mean lower asymptote"
+        ) +
+        theme_minimal(base_size = 12)
+    }
 
 ------------------------------------------------------------------------
 

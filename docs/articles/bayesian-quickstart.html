@@ -62,7 +62,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Bayesian Hierarchical Calibration with curveRbayes</h1>
             <h3 data-toc-skip class="subtitle">From preprocessed
-standards to posterior concentration estimates and CDAN precision
+standards to posterior concentration estimates and precision
 profiles</h3>
             
       
@@ -271,9 +271,9 @@ hierarchical Stan models.</p>
 <table class="table">
 <caption>fit_calibration_bayes() complete argument reference.</caption>
 <colgroup>
-<col width="11%">
-<col width="13%">
-<col width="75%">
+<col width="4%">
+<col width="5%">
+<col width="89%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Argument</th>
@@ -286,139 +286,148 @@ hierarchical Stan models.</p>
 <td align="left">—</td>
 <td align="left">Data frame. Preprocessed stacked standards with
 curve_id, concentration, and response column — all on the fitting scale.
-Output of preprocess_standards()$data.</td>
+Output of
+preprocess_standards()<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>.</mi><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>s</mi><mi>a</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>s</mi><mrow><mo stretchy="true" form="prefix">|</mo><mi>N</mi><mi>U</mi><mi>L</mi><mi>L</mi><mo stretchy="true" form="postfix">|</mo></mrow><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>f</mi><mi>r</mi><mi>a</mi><mi>m</mi><mi>e</mi><mi>o</mi><mi>r</mi><mi>N</mi><mi>U</mi><mi>L</mi><mi>L</mi><mi>.</mi><mi>S</mi><mi>t</mi><mi>a</mi><mi>c</mi><mi>k</mi><mi>e</mi><mi>d</mi><mi>s</mi><mi>a</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>w</mi><mi>i</mi><mi>t</mi><mi>h</mi><mi>c</mi><mi>u</mi><mi>r</mi><mi>v</mi><msub><mi>e</mi><mi>i</mi></msub><mi>d</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi><mi>c</mi><mi>o</mi><mi>l</mi><mi>u</mi><mi>m</mi><mi>n</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>w</mi><mi>m</mi><mi>e</mi><mi>a</mi><mi>s</mi><mi>u</mi><mi>r</mi><mi>e</mi><mi>m</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>e</mi><mi>.</mi><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>b</mi><mi>l</mi><mi>a</mi><mi>n</mi><mi>k</mi><mi>s</mi><mrow><mo stretchy="true" form="prefix">|</mo><mi>N</mi><mi>U</mi><mi>L</mi><mi>L</mi><mo stretchy="true" form="postfix">|</mo></mrow><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>f</mi><mi>r</mi><mi>a</mi><mi>m</mi><mi>e</mi><mi>o</mi><mi>r</mi><mi>N</mi><mi>U</mi><mi>L</mi><mi>L</mi><mi>.</mi><mi>B</mi><mi>l</mi><mi>a</mi><mi>n</mi><mi>k</mi><mi>w</mi><mi>e</mi><mi>l</mi><mi>l</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>w</mi><mi>i</mi><mi>t</mi><mi>h</mi><mi>c</mi><mi>u</mi><mi>r</mi><mi>v</mi><msub><mi>e</mi><mi>i</mi></msub><mi>d</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>t</mi><mi>h</mi><mi>e</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>p</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi><mi>c</mi><mi>o</mi><mi>l</mi><mi>u</mi><mi>m</mi><mi>n</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mi>e</mi><mi>f</mi><mi>i</mi><mi>t</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>g</mi><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>e</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi><mi>P</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>e</mi><mi>d</mi><mi>t</mi><mi>o</mi><mi>S</mi><mi>t</mi><mi>a</mi><mi>n</mi><mi>t</mi><mi>o</mi><mi>a</mi><mi>n</mi><mi>c</mi><mi>h</mi><mi>o</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>e</mi><mi>l</mi><mi>o</mi><mi>w</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>s</mi><mi>y</mi><mi>m</mi><mi>p</mi><mi>t</mi><mi>o</mi><mi>t</mi><mi>e</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>e</mi><mi>d</mi><mi>i</mi><mi>n</mi><mi>e</mi><mi>a</mi><mi>c</mi><mi>h</mi><mi>p</mi><mi>e</mi><mi>r</mi><mo>−</mo><mi>c</mi><mi>u</mi><mi>r</mi><mi>v</mi><mi>e</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>i</mi><mi>b</mi><mi>r</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><msub><mi>n</mi><mi>r</mi></msub><mi>e</mi><mi>s</mi><mi>u</mi><mi>l</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">data.                                                                                                                                                                                                                                                                                                                      |
+|samples                   |NULL                        |Data frame or NULL. Stacked sample data with curve_id and response column on the raw measurement scale.                                                                                                                                                                                                                                                                                                                                                                              |
+|blanks                    |NULL                        |Data frame or NULL. Blank well data with curve_id and the response column (on the fitting scale). Passed to Stan to anchor the lower asymptote and stored in each per-curve calibration_result</annotation></semantics></math>blanks
+slot for downstream QA.</td>
 </tr>
 <tr class="even">
-<td align="left">samples</td>
-<td align="left">NULL</td>
-<td align="left">Data frame or NULL. Stacked sample data with curve_id
-and response column on the raw measurement scale.</td>
-</tr>
-<tr class="odd">
 <td align="left">response_var</td>
 <td align="left">—</td>
 <td align="left">Character. Name of the response column
 (e.g. ‘mfi’).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">model_names</td>
 <td align="left">c(‘logistic4’, ‘gompertz4’)</td>
 <td align="left">Character vector. Model families to fit. loglogistic4
 is automatically dropped when is_log_independent = TRUE.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">is_log_response</td>
 <td align="left">TRUE</td>
 <td align="left">Logical. Whether the response column is already
 log10-transformed.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">is_log_independent</td>
 <td align="left">TRUE</td>
 <td align="left">Logical. Whether the concentration column is already
 log10-transformed.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">std_curve_conc</td>
 <td align="left">—</td>
 <td align="left">Numeric. Undiluted standard concentration used to build
 the prediction grid.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">fixed_a</td>
 <td align="left">NULL</td>
 <td align="left">Numeric or NULL. If non-NULL, a soft Normal prior is
 placed on the population mean of log(A) centred here. NULL =
 data-adaptive only.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">cv_x_max</td>
 <td align="left">150</td>
 <td align="left">Numeric. Hard cap for pcov / pcov_rmse (prevents
 infinite CV at asymptotes).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pcov_threshold</td>
 <td align="left">20</td>
 <td align="left">Numeric. Percent CV threshold for LLOQ/ULOQ
 determination and the dynamic-range eligibility gate.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">min_dynamic_range_log10</td>
 <td align="left">0.5</td>
 <td align="left">Numeric. Minimum log10 dynamic range (upper – lower
 asymptote) for eligibility.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">max_rel_se</td>
 <td align="left">5.0</td>
 <td align="left">Numeric. Maximum posterior SD / |mean| permitted for
 any per-curve parameter.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">n_grid</td>
 <td align="left">200L</td>
-<td align="left">Integer. Number of concentration points in the CDAN
+<td align="left">Integer. Number of concentration points in the
 precision grid.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">grid_min_conc</td>
 <td align="left">1e-4</td>
 <td align="left">Numeric. Lower bound of the prediction grid on the raw
 concentration scale.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">grid_max_conc</td>
 <td align="left">NULL</td>
 <td align="left">Numeric or NULL. Upper bound of the grid. NULL uses
 std_curve_conc.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">chains</td>
 <td align="left">4L</td>
 <td align="left">Integer. Number of independent Markov chains.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">warmup</td>
 <td align="left">1000L</td>
 <td align="left">Integer. Warm-up iterations discarded before
 inference.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">sampling</td>
 <td align="left">1000L</td>
 <td align="left">Integer. Post-warmup sampling iterations used for
 inference.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">adapt_delta</td>
 <td align="left">0.9</td>
 <td align="left">Numeric. Stan adapt_delta. Increase toward 0.99 if
 divergences appear.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">seed</td>
 <td align="left">NULL</td>
 <td align="left">Integer or NULL. RNG seed passed to Stan for
 reproducibility.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">n_draws_predict</td>
 <td align="left">500L</td>
-<td align="left">Integer. Posterior draws for best-model CDAN grid and
-sample predictions.</td>
-</tr>
-<tr class="even">
-<td align="left">n_draws_ensemble</td>
-<td align="left">260L</td>
-<td align="left">Integer. Posterior draws for non-best-model CDAN
-grids.</td>
+<td align="left">Integer. Posterior draws for best-model precision grid
+and sample predictions.</td>
 </tr>
 <tr class="odd">
+<td align="left">n_draws_ensemble</td>
+<td align="left">260L</td>
+<td align="left">Integer. Posterior draws for non-best-model precision
+grids.</td>
+</tr>
+<tr class="even">
 <td align="left">compute_all_grids</td>
 <td align="left">FALSE</td>
 <td align="left">Logical. Forced TRUE automatically when &gt; 1 model is
 fitted (required for eligibility gating).</td>
+</tr>
+<tr class="odd">
+<td align="left">use_heteroscedastic_noise</td>
+<td align="left">FALSE</td>
+<td align="left">Logical. If TRUE, the Stan models use a power-of-mean
+noise function sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))
+in the likelihood and the same sigma_i is injected when generating CDAN
+noisy observations in predict_grid_bayes(). This restores the O’Malley
+(2008) CDAN precision profile. If FALSE (default), a constant sigma_obs
+is used and the precision profiles reflect posterior-predictive
+uncertainty driven mainly by inverse-curve geometry.</td>
 </tr>
 <tr class="even">
 <td align="left">run_loo</td>
@@ -443,24 +452,26 @@ already-preprocessed standards data frame from Section
 — the function does not accept the raw data list.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes</a></span><span class="op">(</span></span>
-<span>  standards          <span class="op">=</span> <span class="va">standards_preprocessed</span>,</span>
-<span>  samples            <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">samples</span>,</span>
-<span>  response_var       <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">response_var</span>,   <span class="co"># "mfi"</span></span>
-<span>  model_names        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"logistic4"</span>, <span class="st">"logistic5"</span>,</span>
-<span>                          <span class="st">"gompertz4"</span>, <span class="st">"loglogistic5"</span><span class="op">)</span>,</span>
-<span>  is_log_response    <span class="op">=</span> <span class="va">study_params</span><span class="op">$</span><span class="va">is_log_response</span>,</span>
-<span>  is_log_independent <span class="op">=</span> <span class="va">study_params</span><span class="op">$</span><span class="va">is_log_independent</span>,</span>
-<span>  std_curve_conc     <span class="op">=</span> <span class="va">antigen_settings</span><span class="op">$</span><span class="va">standard_curve_concentration</span>,</span>
-<span>  fixed_a            <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n_grid             <span class="op">=</span> <span class="fl">200L</span>,</span>
-<span>  grid_min_conc      <span class="op">=</span> <span class="fl">1e-4</span>,</span>
-<span>  chains             <span class="op">=</span> <span class="fl">4L</span>,</span>
-<span>  warmup             <span class="op">=</span> <span class="fl">1000L</span>,</span>
-<span>  sampling           <span class="op">=</span> <span class="fl">1000L</span>,</span>
-<span>  adapt_delta        <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  seed               <span class="op">=</span> <span class="fl">42</span>,</span>
-<span>  run_loo            <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verbose            <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  standards                 <span class="op">=</span> <span class="va">standards_preprocessed</span>,</span>
+<span>  samples                   <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">samples</span>,</span>
+<span>  blanks                    <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">blanks</span>,</span>
+<span>  response_var              <span class="op">=</span> <span class="va">bead_assay_example</span><span class="op">$</span><span class="va">response_var</span>,   <span class="co"># "mfi"</span></span>
+<span>  model_names               <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"logistic4"</span>, <span class="st">"logistic5"</span>,</span>
+<span>                                 <span class="st">"gompertz4"</span>, <span class="st">"loglogistic5"</span><span class="op">)</span>,</span>
+<span>  is_log_response           <span class="op">=</span> <span class="va">study_params</span><span class="op">$</span><span class="va">is_log_response</span>,</span>
+<span>  is_log_independent        <span class="op">=</span> <span class="va">study_params</span><span class="op">$</span><span class="va">is_log_independent</span>,</span>
+<span>  std_curve_conc            <span class="op">=</span> <span class="va">antigen_settings</span><span class="op">$</span><span class="va">standard_curve_concentration</span>,</span>
+<span>  fixed_a                   <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_grid                    <span class="op">=</span> <span class="fl">200L</span>,</span>
+<span>  grid_min_conc             <span class="op">=</span> <span class="fl">1e-4</span>,</span>
+<span>  chains                    <span class="op">=</span> <span class="fl">4L</span>,</span>
+<span>  warmup                    <span class="op">=</span> <span class="fl">1000L</span>,</span>
+<span>  sampling                  <span class="op">=</span> <span class="fl">1000L</span>,</span>
+<span>  adapt_delta               <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  seed                      <span class="op">=</span> <span class="fl">42</span>,</span>
+<span>  use_heteroscedastic_noise <span class="op">=</span> <span class="cn">FALSE</span>,   <span class="co"># TRUE for O'Malley CDAN; see §CDAN</span></span>
+<span>  run_loo                   <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose                   <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [fit_calibration_bayes] compute_all_grids forced TRUE for eligibility gating across 4 models</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -469,9 +480,11 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 1 Rejecting initial value:</span></span>
 <span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
-<span><span class="co">#&gt; Chain 1 Rejecting initial value:</span></span>
-<span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
-<span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
+<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
+<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf473ee1f0.stan', line 114, column 4 to column 40)</span></span>
+<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
+<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
+<span><span class="co">#&gt; Chain 1</span></span>
 <span><span class="co">#&gt; Chain 4 Rejecting initial value:</span></span>
 <span><span class="co">#&gt; Chain 4   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 4   Stan can't start sampling from this initial value.</span></span>
@@ -482,8 +495,13 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 1 Rejecting initial value:</span></span>
 <span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
+<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
+<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)</span></span>
+<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
+<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
+<span><span class="co">#&gt; Chain 1</span></span>
 <span><span class="co">#&gt; Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)</span></span>
 <span><span class="co">#&gt; Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 3</span></span>
@@ -491,7 +509,7 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 4   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 4   Stan can't start sampling from this initial value.</span></span>
 <span><span class="co">#&gt; Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f857575239.stan', line 114, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)</span></span>
 <span><span class="co">#&gt; Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 4</span></span>
@@ -502,16 +520,18 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; Chain 1 Rejecting initial value:</span></span>
 <span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
 <span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
-<span><span class="co">#&gt; Chain 1 Rejecting initial value:</span></span>
-<span><span class="co">#&gt; Chain 1   Gradient evaluated at the initial value is not finite.</span></span>
-<span><span class="co">#&gt; Chain 1   Stan can't start sampling from this initial value.</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
+<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
+<span><span class="co">#&gt; Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 119, column 4 to column 68)</span></span>
+<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
+<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
+<span><span class="co">#&gt; Chain 2</span></span>
+<span><span class="co">#&gt; Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
+<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 119, column 4 to column 68)</span></span>
+<span><span class="co">#&gt; Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
+<span><span class="co">#&gt; Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
+<span><span class="co">#&gt; Chain 3</span></span>
 <span><span class="co">#&gt; Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f810ca1129.stan', line 87, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 115, column 4 to column 40)</span></span>
 <span><span class="co">#&gt; Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 4</span></span>
@@ -520,15 +540,25 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt; ── Fitting loglogistic5 ──</span></span>
 <span><span class="co">#&gt; [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...</span></span>
 <span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 130, column 4 to column 68)</span></span>
 <span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 1</span></span>
+<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
+<span><span class="co">#&gt; Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)</span></span>
+<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
+<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
+<span><span class="co">#&gt; Chain 2</span></span>
 <span><span class="co">#&gt; Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpWmeqzM/model-25f8ea6153.stan', line 98, column 4 to column 42)</span></span>
+<span><span class="co">#&gt; Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)</span></span>
 <span><span class="co">#&gt; Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
 <span><span class="co">#&gt; Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
 <span><span class="co">#&gt; Chain 3</span></span>
+<span><span class="co">#&gt; Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
+<span><span class="co">#&gt; Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)</span></span>
+<span><span class="co">#&gt; Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
+<span><span class="co">#&gt; Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
+<span><span class="co">#&gt; Chain 4</span></span>
 <span><span class="co">#&gt; [fit_bayes] Done. Divergences: 0  Max treedepth: 0</span></span>
 <span><span class="co">#&gt;   [grids] logistic4 (260 draws)</span></span>
 <span><span class="co">#&gt;   [grids] logistic5 (260 draws)</span></span>
@@ -539,12 +569,12 @@ already-preprocessed standards data frame from Section
 <span><span class="co">#&gt;   [eligibility] gompertz4      ✓ eligible</span></span>
 <span><span class="co">#&gt;   [eligibility] loglogistic5   ✓ eligible</span></span>
 <span><span class="co">#&gt;   [selection] best = logistic5</span></span>
-<span><span class="co">#&gt; [detection_limits] curve_id=1  LLOD_resp=1.704  ULOD_resp=4.281  MDC=[-2.055, 1.254]  RDL=[-2.039, 0.9247]</span></span>
-<span><span class="co">#&gt; [detection_limits] curve_id=2  LLOD_resp=1.561  ULOD_resp=4.256  MDC=[-2.166, 1.315]  RDL=[-2.152, 0.9565]</span></span>
-<span><span class="co">#&gt; [detection_limits] curve_id=3  LLOD_resp=1.665  ULOD_resp=4.303  MDC=[-2.13, 1.242]  RDL=[-2.116, 0.9022]</span></span>
-<span><span class="co">#&gt; [detection_limits] curve_id=4  LLOD_resp=1.401  ULOD_resp=4.412  MDC=[-0.7033, 2.27]  RDL=[-0.6938, 1.972]</span></span>
-<span><span class="co">#&gt; [detection_limits] curve_id=5  LLOD_resp=1.349  ULOD_resp=4.379  MDC=[-0.7132, 2.345]  RDL=[-0.7042, 2.011]</span></span>
-<span><span class="co">#&gt; [detection_limits] curve_id=6  LLOD_resp=1.462  ULOD_resp=4.398  MDC=[-0.4906, 2.261]  RDL=[-0.4805, 1.954]</span></span></code></pre></div>
+<span><span class="co">#&gt; [detection_limits] curve_id=1  LLOD_resp=1.743  ULOD_resp=4.287  MDC=[-2.009, 1.302]  RDL=[-1.997, 0.9788]</span></span>
+<span><span class="co">#&gt; [detection_limits] curve_id=2  LLOD_resp=1.653  ULOD_resp=4.258  MDC=[-2.007, 1.355]  RDL=[-1.995, 1.033]</span></span>
+<span><span class="co">#&gt; [detection_limits] curve_id=3  LLOD_resp=1.712  ULOD_resp=4.309  MDC=[-2.053, 1.328]  RDL=[-2.043, 0.9972]</span></span>
+<span><span class="co">#&gt; [detection_limits] curve_id=4  LLOD_resp=1.387  ULOD_resp=4.426  MDC=[-0.8261, 2.324]  RDL=[-0.8177, 2.063]</span></span>
+<span><span class="co">#&gt; [detection_limits] curve_id=5  LLOD_resp=1.320  ULOD_resp=4.387  MDC=[-0.912, 2.37]  RDL=[-0.904, 2.067]</span></span>
+<span><span class="co">#&gt; [detection_limits] curve_id=6  LLOD_resp=1.509  ULOD_resp=4.415  MDC=[-0.4905, 2.34]  RDL=[-0.4816, 2.029]</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ── Unpack convenience references from the multiplate structure ──</span></span>
 <span></span>
@@ -614,9 +644,9 @@ the run:</p>
 <table class="table">
 <caption>fit$meta slot reference.</caption>
 <colgroup>
-<col width="12%">
+<col width="15%">
 <col width="6%">
-<col width="81%">
+<col width="78%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">fit$meta slot</th>
@@ -675,14 +705,21 @@ loo_weights.</td>
 <tr class="even">
 <td align="left">compute_all_grids</td>
 <td align="left">logical</td>
-<td align="left">Whether CDAN grids were computed for all models.</td>
+<td align="left">Whether precision grids were computed for all
+models.</td>
 </tr>
 <tr class="odd">
+<td align="left">use_heteroscedastic_noise</td>
+<td align="left">logical</td>
+<td align="left">Whether the heteroscedastic (CDAN) noise path was
+active at fitting time.</td>
+</tr>
+<tr class="even">
 <td align="left">pcov_threshold</td>
 <td align="left">numeric</td>
 <td align="left">Percent CV threshold used for LLOQ/ULOQ.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">timestamp</td>
 <td align="left">POSIXct</td>
 <td align="left">Wall time at which the function returned.</td>
@@ -697,7 +734,7 @@ per <code>curve_id</code>. Each entry is a
 <colgroup>
 <col width="9%">
 <col width="4%">
-<col width="85%">
+<col width="86%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">fit$plates[[“k”]] slot</th>
@@ -709,8 +746,9 @@ per <code>curve_id</code>. Each entry is a
 <td align="left">meta</td>
 <td align="left">list</td>
 <td align="left">Per-curve metadata: method, curve_id, n_standards,
-n_samples, chains, warmup, sampling, adapt_delta, seed, n_draws_predict,
-n_draws_ensemble, pcov_threshold, etc.</td>
+n_blanks, n_samples, chains, warmup, sampling, adapt_delta, seed,
+use_heteroscedastic_noise, n_draws_predict, n_draws_ensemble,
+pcov_threshold, etc.</td>
 </tr>
 <tr class="even">
 <td align="left">ensemble</td>
@@ -726,16 +764,28 @@ best_model_name, criterion, assessments_by_curve, fallback.</td>
 <tr class="even">
 <td align="left">grid</td>
 <td align="left">data frame</td>
-<td align="left">CDAN precision grid for the selected best model at this
+<td align="left">Precision grid for the selected best model at this
 curve_id. Columns: x_fit, predicted_response, ci_lower, ci_upper,
 predicted_concentration, se_concentration, pcov, pcov_rmse, pcov_pass,
-d2y_dx2.</td>
+noise_mode, d2y_dx2.</td>
 </tr>
 <tr class="odd">
 <td align="left">samples</td>
 <td align="left">data frame</td>
 <td align="left">Back-calculated test samples for this curve_id, or
 NULL.</td>
+</tr>
+<tr class="even">
+<td align="left">standards</td>
+<td align="left">data frame</td>
+<td align="left">Preprocessed standards for this curve_id (subset of the
+standards input), for plotting and QA.</td>
+</tr>
+<tr class="odd">
+<td align="left">blanks</td>
+<td align="left">data frame</td>
+<td align="left">Blank data for this curve_id, or NULL if no blanks were
+provided.</td>
 </tr>
 </tbody>
 </table>
@@ -791,8 +841,8 @@ gates (data frame), dynamic_range_log10, lloq, uloq.</td>
 <tr class="odd">
 <td align="left">grid</td>
 <td align="left">data frame</td>
-<td align="left">Per-model CDAN grid at this curve_id (populated for all
-models when compute_all_grids = TRUE).</td>
+<td align="left">Per-model precision grid at this curve_id (populated
+for all models when compute_all_grids = TRUE).</td>
 </tr>
 </tbody>
 </table>
@@ -824,25 +874,25 @@ models when compute_all_grids = TRUE).</td>
 <td align="left">logistic4</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.681</td>
+<td align="right">0.703</td>
 </tr>
 <tr class="even">
 <td align="left">logistic5</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.698</td>
+<td align="right">0.671</td>
 </tr>
 <tr class="odd">
 <td align="left">gompertz4</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.678</td>
+<td align="right">0.736</td>
 </tr>
 <tr class="even">
 <td align="left">loglogistic5</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.670</td>
+<td align="right">0.716</td>
 </tr>
 </tbody>
 </table>
@@ -856,42 +906,42 @@ models when compute_all_grids = TRUE).</td>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">mu_c_draws</span>, <span class="fl">0.025</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">mu_c_draws</span>, <span class="fl">0.975</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mu_c:  mean = 0.057  95% CI [-0.622, 0.827]  (log10 AU/mL)</span></span>
+<span><span class="co">#&gt; mu_c:  mean = 0.073  95% CI [-0.560, 0.760]  (log10 AU/mL)</span></span>
 <span></span>
 <span><span class="co"># 3. Formal LOO comparison (if more than one model was fitted)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">loo_comparison</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">loo_comparison</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         model elpd_diff se_diff p_worse diag_diff      diag_elpd</span></span>
 <span><span class="co">#&gt;     logistic5       0.0     0.0      NA           1 k_psis &gt; 0.7</span></span>
-<span><span class="co">#&gt;  loglogistic5      -0.8     0.9    0.83   N &lt; 100 2 k_psis &gt; 0.7</span></span>
-<span><span class="co">#&gt;     logistic4      -6.1     2.3    1.00   N &lt; 100 4 k_psis &gt; 0.7</span></span>
-<span><span class="co">#&gt;     gompertz4     -14.9     6.2    0.99   N &lt; 100 5 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;  loglogistic5      -0.6     0.6    0.84   N &lt; 100               </span></span>
+<span><span class="co">#&gt;     logistic4      -7.6     3.1    0.99   N &lt; 100               </span></span>
+<span><span class="co">#&gt;     gompertz4     -25.9     5.9    1.00   N &lt; 100</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
 <span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span>
 <span></span>
-<span><span class="co"># 4. Access CDAN grid for the best model at curve_id 1</span></span>
+<span><span class="co"># 4. Access precision grid for the best model at curve_id 1</span></span>
 <span><span class="va">grid_best</span> <span class="op">&lt;-</span> <span class="va">cr1</span><span class="op">$</span><span class="va">grid</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">grid_best</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x_fit"</span>, <span class="st">"predicted_response"</span>,</span>
-<span>                   <span class="st">"pcov"</span>, <span class="st">"pcov_rmse"</span>, <span class="st">"pcov_pass"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       x_fit predicted_response pcov pcov_rmse pcov_pass</span></span>
-<span><span class="co">#&gt; 1 -4.000000           1.391426  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 2 -3.972477           1.393164  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 3 -3.944954           1.394949  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 4 -3.917430           1.396783  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 5 -3.889907           1.398665  150       150     FALSE</span></span>
-<span><span class="co">#&gt; 6 -3.862384           1.400599  150       150     FALSE</span></span>
+<span>                   <span class="st">"pcov"</span>, <span class="st">"pcov_rmse"</span>, <span class="st">"pcov_pass"</span>, <span class="st">"noise_mode"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       x_fit predicted_response pcov pcov_rmse pcov_pass    noise_mode</span></span>
+<span><span class="co">#&gt; 1 -4.000000           1.398742  150       150     FALSE homoscedastic</span></span>
+<span><span class="co">#&gt; 2 -3.972477           1.400610  150       150     FALSE homoscedastic</span></span>
+<span><span class="co">#&gt; 3 -3.944954           1.402525  150       150     FALSE homoscedastic</span></span>
+<span><span class="co">#&gt; 4 -3.917430           1.404490  150       150     FALSE homoscedastic</span></span>
+<span><span class="co">#&gt; 5 -3.889907           1.406505  150       150     FALSE homoscedastic</span></span>
+<span><span class="co">#&gt; 6 -3.862384           1.408572  150       150     FALSE homoscedastic</span></span>
 <span></span>
 <span><span class="co"># 5. Access per-model grid for logistic4 specifically</span></span>
 <span><span class="va">grid_4pl</span> <span class="op">&lt;-</span> <span class="va">ensemble</span><span class="op">[[</span><span class="st">"logistic4"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">grid</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">grid_4pl</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x_fit"</span>, <span class="st">"predicted_response"</span>, <span class="st">"pcov"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       x_fit predicted_response     pcov</span></span>
-<span><span class="co">#&gt; 1 -4.000000           1.651680 146.7610</span></span>
-<span><span class="co">#&gt; 2 -3.972477           1.651920 140.8594</span></span>
-<span><span class="co">#&gt; 3 -3.944954           1.652173 150.0000</span></span>
-<span><span class="co">#&gt; 4 -3.917430           1.652439 150.0000</span></span>
-<span><span class="co">#&gt; 5 -3.889907           1.652718 150.0000</span></span>
-<span><span class="co">#&gt; 6 -3.862384           1.653011 140.4943</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 -4.000000           1.834228 143.1775</span></span>
+<span><span class="co">#&gt; 2 -3.972477           1.834319 139.6047</span></span>
+<span><span class="co">#&gt; 3 -3.944954           1.834415 140.4247</span></span>
+<span><span class="co">#&gt; 4 -3.917430           1.834518 142.0317</span></span>
+<span><span class="co">#&gt; 5 -3.889907           1.834626 138.1551</span></span>
+<span><span class="co">#&gt; 6 -3.862384           1.834740 150.0000</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -973,7 +1023,13 @@ is observation noise.</p>
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>ε</mi></msub><mo>,</mo><mi>ν</mi></mrow><annotation encoding="application/x-tex">\sigma_\varepsilon, \nu</annotation></semantics></math></td>
-<td>Observation noise SD and Student-t d.f.</td>
+<td>Homoscedastic observation noise SD and Student-t d.f.</td>
+<td>Global (pooled)</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><msub><mi>σ</mi><mn>0</mn></msub><mo>,</mo><mo>log</mo><msub><mi>σ</mi><mtext mathvariant="normal">slope</mtext></msub></mrow><annotation encoding="application/x-tex">\log\sigma_0, \log\sigma_\text{slope}</annotation></semantics></math></td>
+<td>Heteroscedastic noise intercept and slope (active when
+<code>use_heteroscedastic_noise = TRUE</code>)</td>
 <td>Global (pooled)</td>
 </tr>
 </tbody>
@@ -1069,50 +1125,65 @@ achieves near-zero divergences on these models.</p>
 <p>The <code>parameters</code> and <code>transformed parameters</code>
 blocks for <code>logistic4</code> illustrate the pattern:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode stan"><code class="sourceCode stan"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="kw">parameters</span> {</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="co">// population hyperparameters (on log scale for positive quantities)</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="dt">real</span> mu_log_b;</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="dt">real</span> mu_c;          <span class="co">// inflection on the fitting scale</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="dt">real</span> mu_log_d;</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="dt">real</span> mu_a;          <span class="co">// lower asymptote (fitting scale)</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="co">// population hyperparameters</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="dt">real</span> mu_a;</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="dt">real</span> mu_log_b;</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="dt">real</span> mu_c;          <span class="co">// inflection on the fitting scale</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="dt">real</span> mu_d;</span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a></span>
 <span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="co">// population SDs — Half-Normal keeps these positive</span></span>
 <span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_a;</span>
 <span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_log_b;</span>
 <span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_c;</span>
-<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_log_d;</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_d;</span>
 <span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>  <span class="co">// non-centred offsets: one per curve_id</span></span>
-<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] z_a;</span>
-<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] z_b;</span>
-<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] z_c;</span>
-<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] z_d;</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>  <span class="co">// non-centred offsets: one per curve_id (plate)</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] raw_a;</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] raw_log_b;</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] raw_c;</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] raw_d;</span>
 <span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a></span>
 <span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>  <span class="co">// observation noise (pooled across all curve_ids)</span></span>
-<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_obs;</span>
-<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">1</span>&gt; nu;</span>
-<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a>}</span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_obs;   <span class="co">// homoscedastic SD</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">2</span>&gt; nu;           <span class="co">// Student-t degrees of freedom</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; sigma_blank;</span>
 <span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="kw">transformed parameters</span> {</span>
-<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a>  <span class="co">// plate-level parameters reconstructed from NCP offsets</span></span>
-<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] a     = mu_a      + sigma_a      * z_a;</span>
-<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] b     = exp(mu_log_b + sigma_log_b * z_b);</span>
-<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] c_par = mu_c      + sigma_c      * z_c;</span>
-<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] d     = exp(mu_log_d + sigma_log_d * z_d);</span>
-<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a>}</span></code></pre></div>
-<p>Note that <code>b</code> and <code>d</code> are exponentiated so they
-remain strictly positive. The inflection point <code>c_par</code> and
-lower asymptote <code>a</code> are left on the fitting scale (already
-log10 after preprocessing).</p>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a>  <span class="co">// heteroscedastic noise — always estimated; active in likelihood</span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a>  <span class="co">// only when use_heteroscedastic_noise = 1</span></span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a>  <span class="dt">real</span> log_sigma0;</span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a>  <span class="dt">real</span> log_sigma_slope;</span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a>}</span>
+<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a><span class="kw">transformed parameters</span> {</span>
+<span id="cb12-32"><a href="#cb12-32" tabindex="-1"></a>  <span class="co">// plate-level parameters reconstructed from NCP offsets</span></span>
+<span id="cb12-33"><a href="#cb12-33" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] a     = mu_a     + sigma_a     * raw_a;</span>
+<span id="cb12-34"><a href="#cb12-34" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] b     = exp(mu_log_b + sigma_log_b * raw_log_b);</span>
+<span id="cb12-35"><a href="#cb12-35" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] c_par = mu_c     + sigma_c     * raw_c;</span>
+<span id="cb12-36"><a href="#cb12-36" tabindex="-1"></a>  <span class="dt">vector</span>[N_plates] d     = mu_d     + sigma_d     * raw_d;</span>
+<span id="cb12-37"><a href="#cb12-37" tabindex="-1"></a>}</span></code></pre></div>
+<p>Note that <code>b</code> is exponentiated so it remains strictly
+positive. The inflection point <code>c_par</code> and asymptotes are
+left on the fitting scale (already log10 after preprocessing).</p>
 </div>
 <div class="section level3">
-<h3 id="reduce-sum">The <code>reduce_sum</code> likelihood<a class="anchor" aria-label="anchor" href="#reduce-sum"></a>
+<h3 id="likelihood-loop">The likelihood loop<a class="anchor" aria-label="anchor" href="#likelihood-loop"></a>
 </h3>
-<p>The likelihood loop is parallelised via Stan’s
-<code>reduce_sum</code> map-reduce construct, controlled by the
-<code>grainsize</code> argument of <code><a href="../reference/build_stan_data.html">build_stan_data()</a></code>
-(default <code>1L</code>, which lets Stan choose the grain
-automatically). With CmdStan’s threading backend this provides
-near-linear speedup with the number of CPU cores for large datasets.</p>
+<p>The observation model in each Stan file is a serial <code>for</code>
+loop over all calibration points:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode stan"><code class="sourceCode stan"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span>:N_obs) {</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="dt">real</span> mu_i = ...; <span class="co">// forward model at x[i] for plate plate_idx[i]</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="dt">real</span> sigma_i = ...; <span class="co">// homoscedastic or heteroscedastic noise</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  y[i] ~ student_t(nu, mu_i, sigma_i);</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>}</span></code></pre></div>
+<p>A <code>grainsize</code> field is declared in the Stan
+<code>data {}</code> block and passed through
+<code><a href="../reference/build_stan_data.html">build_stan_data()</a></code> (default <code>1L</code>), reserving the
+interface for a future <code>reduce_sum</code> parallelisation. The
+threading path is not yet active — <code>grainsize</code> is accepted by
+Stan but currently unused. Fitting speed scales with
+<code>chains × sampling</code> and dataset size; for typical immunoassay
+datasets (≤ 200 calibrators) wall time is dominated by warm-up, not the
+likelihood evaluation.</p>
 <hr>
 </div>
 </div>
@@ -1136,13 +1207,15 @@ the Stan data list — <code>prior_a_mu</code>,
 Five-parameter families additionally receive <code>prior_log_g_sd</code>
 and <code>prior_log_g_plate_sd</code>.</p>
 <table class="table">
-<caption>Data-adaptive prior structure for logistic4 / gompertz4. y_min,
-y_max, y_range, x_mid, and x_range are computed from the preprocessed
-standards.</caption>
+<caption>Data-adaptive prior structure. y_min, y_max, y_range, x_mid,
+and x_range are computed from the preprocessed standards by
+compute_dynamic_priors(). The heteroscedastic noise priors are always
+passed to Stan but only enter the likelihood when
+use_heteroscedastic_noise = TRUE.</caption>
 <colgroup>
-<col width="14%">
-<col width="33%">
-<col width="52%">
+<col width="8%">
+<col width="20%">
+<col width="70%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Parameter</th>
@@ -1168,13 +1241,13 @@ standards.</caption>
 range.</td>
 </tr>
 <tr class="even">
-<td align="left">log(d) (upper asy.)</td>
+<td align="left">d (upper asy.)</td>
 <td align="left">Normal(y_max + 0.1 × y_range, 0.3 × y_range)</td>
 <td align="left">Slightly above observed maximum.</td>
 </tr>
 <tr class="odd">
 <td align="left">sigma_obs</td>
-<td align="left">Half-Normal(0, 0.1 × y_range)</td>
+<td align="left">Half-Normal(0, prior_a_sigma)</td>
 <td align="left">Noise scaled to signal range.</td>
 </tr>
 <tr class="even">
@@ -1183,10 +1256,23 @@ range.</td>
 <td align="left">5-parameter only. g = 1 recovers the 4PL; regularised
 toward symmetry.</td>
 </tr>
+<tr class="odd">
+<td align="left">log_sigma0</td>
+<td align="left">Normal(log(IQR/1.35 × 0.3), 1.5)</td>
+<td align="left">Intercept of log(sigma) vs log(|mu|) line. Wide prior —
+data will dominate. Active when use_heteroscedastic_noise = TRUE.</td>
+</tr>
+<tr class="even">
+<td align="left">log_sigma_slope</td>
+<td align="left">Normal(1.0, 0.5)</td>
+<td align="left">Slope of log(sigma) vs log(|mu|). 1 = proportional
+noise; 0 = additive; 2 = strongly heteroscedastic. Active when
+use_heteroscedastic_noise = TRUE.</td>
+</tr>
 </tbody>
 </table>
 <p>You can inspect the actual prior values that were passed to Stan:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute_dynamic_priors() is called internally; call it directly to inspect</span></span>
 <span><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_dynamic_priors.html">compute_dynamic_priors</a></span><span class="op">(</span></span>
 <span>  data              <span class="op">=</span> <span class="va">standards_preprocessed</span>,</span>
@@ -1194,15 +1280,19 @@ toward symmetry.</td>
 <span>  model_family      <span class="op">=</span> <span class="st">"logistic4"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">priors</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 8</span></span>
-<span><span class="co">#&gt;  $ prior_a_mu       : num 1.27</span></span>
-<span><span class="co">#&gt;  $ prior_a_sigma    : num 0.964</span></span>
-<span><span class="co">#&gt;  $ prior_d_mu       : num 4.8</span></span>
-<span><span class="co">#&gt;  $ prior_d_sigma    : num 0.964</span></span>
-<span><span class="co">#&gt;  $ prior_log_b_mu   : num 0</span></span>
-<span><span class="co">#&gt;  $ prior_log_b_sigma: num 0.7</span></span>
-<span><span class="co">#&gt;  $ prior_c_mu       : num 0.716</span></span>
-<span><span class="co">#&gt;  $ prior_c_sigma    : num 2.24</span></span></code></pre></div>
+<span><span class="co">#&gt; List of 12</span></span>
+<span><span class="co">#&gt;  $ prior_a_mu                 : num 1.27</span></span>
+<span><span class="co">#&gt;  $ prior_a_sigma              : num 0.964</span></span>
+<span><span class="co">#&gt;  $ prior_d_mu                 : num 4.8</span></span>
+<span><span class="co">#&gt;  $ prior_d_sigma              : num 0.964</span></span>
+<span><span class="co">#&gt;  $ prior_log_b_mu             : num 0</span></span>
+<span><span class="co">#&gt;  $ prior_log_b_sigma          : num 0.7</span></span>
+<span><span class="co">#&gt;  $ prior_log_sigma0_mu        : num -0.828</span></span>
+<span><span class="co">#&gt;  $ prior_log_sigma0_sigma     : num 1.5</span></span>
+<span><span class="co">#&gt;  $ prior_log_sigma_slope_mu   : num 1</span></span>
+<span><span class="co">#&gt;  $ prior_log_sigma_slope_sigma: num 0.5</span></span>
+<span><span class="co">#&gt;  $ prior_c_mu                 : num 0.716</span></span>
+<span><span class="co">#&gt;  $ prior_c_sigma              : num 2.24</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="fixed-a">The <code>fixed_a</code> soft constraint<a class="anchor" aria-label="anchor" href="#fixed-a"></a>
@@ -1229,7 +1319,7 @@ plate-to-plate variation. This is a <em>soft</em> constraint: strongly
 informative data can still move
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>A</mi></msub><annotation encoding="application/x-tex">\mu_A</annotation></semantics></math>
 away from <code>fixed_a</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># blank wells for antigen alpha have MFI ≈ 18 (on the raw scale);</span></span>
 <span><span class="co"># after log10-transform, fixed_a should be log10(18) ≈ 1.255.</span></span>
 <span><span class="va">fit_fixed_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes</a></span><span class="op">(</span></span>
@@ -1274,7 +1364,7 @@ three are stored in <code>ensemble[[model]]$fit_stats</code>.</p>
 <div class="section level3">
 <h3 id="diag-access">Accessing diagnostics<a class="anchor" aria-label="anchor" href="#diag-access"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Per-model convergence diagnostics from fit_stats</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ensemble</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">fs</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">fit_stats</span></span>
@@ -1299,29 +1389,29 @@ three are stored in <code>ensemble[[model]]$fit_stats</code>.</p>
 <td align="left">logistic4</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.681</td>
+<td align="right">0.703</td>
 </tr>
 <tr class="even">
 <td align="left">logistic5</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.698</td>
+<td align="right">0.671</td>
 </tr>
 <tr class="odd">
 <td align="left">gompertz4</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.678</td>
+<td align="right">0.736</td>
 </tr>
 <tr class="even">
 <td align="left">loglogistic5</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.670</td>
+<td align="right">0.716</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Population-level Rhat and ESS for logistic4</span></span>
 <span><span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_summary.html" class="external-link">summarise_draws</a></span><span class="op">(</span></span>
 <span>  <span class="va">draws_4pl</span>,</span>
@@ -1329,12 +1419,23 @@ three are stored in <code>ensemble[[model]]$fit_stats</code>.</p>
 <span>  <span class="op">~</span><span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/quantile2.html" class="external-link">quantile2</a></span><span class="op">(</span><span class="va">.x</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_summary.html" class="external-link">default_convergence_measures</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^mu_|^sigma_obs|^nu$"</span>, <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^mu_|^sigma_obs|^nu$|^log_sigma0$|^log_sigma_slope$"</span>, <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>               caption <span class="op">=</span> <span class="st">"Population-level parameter summary — logistic4. Rhat &lt; 1.01 and ess_bulk &gt; 400 indicate adequate convergence."</span><span class="op">)</span></span></code></pre></div>
+<span>               caption <span class="op">=</span> <span class="st">"Population-level parameter summary — logistic4. Rhat &lt; 1.01 and ess_bulk &gt; 400 indicate adequate convergence. log_sigma0 and log_sigma_slope are estimated regardless of noise mode."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Population-level parameter summary — logistic4. Rhat &lt; 1.01
-and ess_bulk &gt; 400 indicate adequate convergence.</caption>
+and ess_bulk &gt; 400 indicate adequate convergence. log_sigma0 and
+log_sigma_slope are estimated regardless of noise mode.</caption>
+<colgroup>
+<col width="23%">
+<col width="10%">
+<col width="8%">
+<col width="10%">
+<col width="10%">
+<col width="8%">
+<col width="13%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">variable</th>
 <th align="right">mean</th>
@@ -1348,63 +1449,83 @@ and ess_bulk &gt; 400 indicate adequate convergence.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">mu_a</td>
-<td align="right">1.440</td>
-<td align="right">0.137</td>
-<td align="right">1.215</td>
-<td align="right">1.733</td>
-<td align="right">1.004</td>
-<td align="right">946.535</td>
-<td align="right">2093.393</td>
+<td align="right">1.526</td>
+<td align="right">0.154</td>
+<td align="right">1.241</td>
+<td align="right">1.860</td>
+<td align="right">1.001</td>
+<td align="right">1528.747</td>
+<td align="right">2083.116</td>
 </tr>
 <tr class="even">
 <td align="left">mu_d</td>
-<td align="right">4.403</td>
-<td align="right">0.051</td>
-<td align="right">4.306</td>
-<td align="right">4.502</td>
-<td align="right">1.002</td>
-<td align="right">1675.909</td>
-<td align="right">2033.096</td>
+<td align="right">4.400</td>
+<td align="right">0.056</td>
+<td align="right">4.286</td>
+<td align="right">4.514</td>
+<td align="right">1.005</td>
+<td align="right">1420.359</td>
+<td align="right">1983.397</td>
 </tr>
 <tr class="odd">
 <td align="left">mu_log_b</td>
-<td align="right">-0.754</td>
-<td align="right">0.091</td>
-<td align="right">-0.896</td>
-<td align="right">-0.538</td>
+<td align="right">-0.808</td>
+<td align="right">0.063</td>
+<td align="right">-0.910</td>
+<td align="right">-0.663</td>
 <td align="right">1.001</td>
-<td align="right">1542.517</td>
-<td align="right">1803.016</td>
+<td align="right">1810.263</td>
+<td align="right">1581.351</td>
 </tr>
 <tr class="even">
 <td align="left">mu_c</td>
-<td align="right">0.057</td>
-<td align="right">0.359</td>
-<td align="right">-0.622</td>
-<td align="right">0.827</td>
+<td align="right">0.073</td>
+<td align="right">0.332</td>
+<td align="right">-0.560</td>
+<td align="right">0.760</td>
 <td align="right">1.002</td>
-<td align="right">1503.727</td>
-<td align="right">1999.230</td>
+<td align="right">1536.730</td>
+<td align="right">2061.559</td>
 </tr>
 <tr class="odd">
 <td align="left">sigma_obs</td>
-<td align="right">0.059</td>
-<td align="right">0.011</td>
-<td align="right">0.039</td>
-<td align="right">0.081</td>
-<td align="right">1.001</td>
-<td align="right">1308.624</td>
-<td align="right">2465.664</td>
+<td align="right">0.040</td>
+<td align="right">0.007</td>
+<td align="right">0.028</td>
+<td align="right">0.057</td>
+<td align="right">1.000</td>
+<td align="right">2443.924</td>
+<td align="right">2647.314</td>
 </tr>
 <tr class="even">
 <td align="left">nu</td>
-<td align="right">12.815</td>
-<td align="right">11.065</td>
-<td align="right">2.531</td>
-<td align="right">44.091</td>
-<td align="right">0.999</td>
-<td align="right">2143.685</td>
-<td align="right">2421.404</td>
+<td align="right">2.232</td>
+<td align="right">0.256</td>
+<td align="right">2.006</td>
+<td align="right">2.891</td>
+<td align="right">1.000</td>
+<td align="right">3579.007</td>
+<td align="right">2431.053</td>
+</tr>
+<tr class="odd">
+<td align="left">log_sigma0</td>
+<td align="right">-0.823</td>
+<td align="right">1.453</td>
+<td align="right">-3.645</td>
+<td align="right">2.055</td>
+<td align="right">1.001</td>
+<td align="right">5218.284</td>
+<td align="right">3193.687</td>
+</tr>
+<tr class="even">
+<td align="left">log_sigma_slope</td>
+<td align="right">1.011</td>
+<td align="right">0.500</td>
+<td align="right">0.020</td>
+<td align="right">1.969</td>
+<td align="right">1.000</td>
+<td align="right">5019.666</td>
+<td align="right">3156.013</td>
 </tr>
 </tbody>
 </table>
@@ -1443,7 +1564,7 @@ misspecification.</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ensemble</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>n_divergences <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">fit_stats</span><span class="op">$</span><span class="va">n_divergent</span> <span class="op"><a href="https://rdrr.io/r/base/Control.html" class="external-link">%||%</a></span> <span class="cn">NA_integer_</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1486,7 +1607,7 @@ region and cannot explore the full posterior geometry.</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mtext mathvariant="normal">E-BFMI</mtext><mo accent="true">̂</mo></mover><mo>=</mo><mfrac><mrow><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>2</mn></mrow><mi>N</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>H</mi><mi>n</mi></msub><mo>−</mo><msub><mi>H</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><mrow><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>H</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
 \widehat{\text{E-BFMI}} = \frac{\displaystyle\sum_{n=2}^{N}(H_n - H_{n-1})^2}{\operatorname{Var}(H)}
 </annotation></semantics></math></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ensemble</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ebfmi</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">fit_stats</span><span class="op">$</span><span class="va">ebfmi</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">ebfmi</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>mean_ebfmi <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span><span class="op">)</span></span>
@@ -1506,22 +1627,22 @@ exploration.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">logistic4</td>
-<td align="right">0.681</td>
+<td align="right">0.703</td>
 <td align="left">✅ OK</td>
 </tr>
 <tr class="even">
 <td align="left">logistic5</td>
-<td align="right">0.698</td>
+<td align="right">0.671</td>
 <td align="left">✅ OK</td>
 </tr>
 <tr class="odd">
 <td align="left">gompertz4</td>
-<td align="right">0.678</td>
+<td align="right">0.736</td>
 <td align="left">✅ OK</td>
 </tr>
 <tr class="even">
 <td align="left">loglogistic5</td>
-<td align="right">0.670</td>
+<td align="right">0.716</td>
 <td align="left">✅ OK</td>
 </tr>
 </tbody>
@@ -1536,7 +1657,7 @@ i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semanti
 leapfrog steps). When a large fraction of transitions hit the cap, the
 sampler is being truncated before it can turn: this does not bias the
 posterior but reduces effective samples per second.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ensemble</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">n_max</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">fit_stats</span><span class="op">$</span><span class="va">n_max_treedepth</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">n_max</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>n_max_treedepth <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span><span class="op">)</span></span>
@@ -1625,13 +1746,13 @@ unreliable:</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">loo_comparison</span><span class="op">)</span><span class="op">)</span> <span class="va">loo_comparison</span></span>
 <span><span class="co">#&gt;         model elpd_diff se_diff p_worse diag_diff      diag_elpd</span></span>
 <span><span class="co">#&gt;     logistic5       0.0     0.0      NA           1 k_psis &gt; 0.7</span></span>
-<span><span class="co">#&gt;  loglogistic5      -0.8     0.9    0.83   N &lt; 100 2 k_psis &gt; 0.7</span></span>
-<span><span class="co">#&gt;     logistic4      -6.1     2.3    1.00   N &lt; 100 4 k_psis &gt; 0.7</span></span>
-<span><span class="co">#&gt;     gompertz4     -14.9     6.2    0.99   N &lt; 100 5 k_psis &gt; 0.7</span></span>
+<span><span class="co">#&gt;  loglogistic5      -0.6     0.6    0.84   N &lt; 100               </span></span>
+<span><span class="co">#&gt;     logistic4      -7.6     3.1    0.99   N &lt; 100               </span></span>
+<span><span class="co">#&gt;     gompertz4     -25.9     5.9    1.00   N &lt; 100</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
@@ -1657,7 +1778,7 @@ is <strong>calibrated under model misspecification</strong>: even if no
 single candidate is the true data-generating process, the stacked
 ensemble achieves the best achievable predictive accuracy from the
 candidate set.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">stacking_weights</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/enframe.html" class="external-link">enframe</a></span><span class="op">(</span><span class="va">stacking_weights</span>, name <span class="op">=</span> <span class="st">"model"</span>, value <span class="op">=</span> <span class="st">"weight"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">weight</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1725,15 +1846,15 @@ but meaningless predictions.</p>
 <div class="section level3">
 <h3 id="dynamic-range">The <code>dynamic_range</code> gate<a class="anchor" aria-label="anchor" href="#dynamic-range"></a>
 </h3>
-<p>The dynamic range is assessed from the CDAN grid’s <code>pcov</code>
-profile — specifically, the log10-distance between the LLOQ and ULOQ
-(the concentration range where <code>pcov &lt; pcov_threshold</code>). A
-model whose quantifiable range spans less than
-<code>min_dynamic_range_log10</code> decades (default 0.5) is flagged
-ineligible.</p>
+<p>The dynamic range is assessed from the precision grid’s
+<code>pcov</code> profile — specifically, the log10-distance between the
+LLOQ and ULOQ (the concentration range where
+<code>pcov &lt; pcov_threshold</code>). A model whose quantifiable range
+spans less than <code>min_dynamic_range_log10</code> decades (default
+0.5) is flagged ineligible.</p>
 <p>A model is <strong>globally eligible</strong> only if it passes both
 gates on <strong>all</strong> <code>curve_id</code> values.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">eligibility</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">eligibility</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">eligibility</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">curve_id</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gate"</span>, <span class="st">"passed"</span>, <span class="st">"detail"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -1775,7 +1896,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">1</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 0.986 log10</td>
+<td align="left">dynamic range = 0.676 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1791,7 +1912,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">2</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.04 log10</td>
+<td align="left">dynamic range = 0.626 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1807,7 +1928,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">3</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.08 log10</td>
+<td align="left">dynamic range = 0.626 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1823,7 +1944,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">4</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.4 log10</td>
+<td align="left">dynamic range = 1.2 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1839,7 +1960,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">5</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.47 log10</td>
+<td align="left">dynamic range = 1.15 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1855,7 +1976,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">6</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.4 log10</td>
+<td align="left">dynamic range = 1.06 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1871,7 +1992,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">1</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.51 log10</td>
+<td align="left">dynamic range = 1.2 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1887,7 +2008,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">2</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.59 log10</td>
+<td align="left">dynamic range = 1.28 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1901,6 +2022,38 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <tr class="even">
 <td align="left">logistic4</td>
 <td align="right">3</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.28 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic4</td>
+<td align="right">4</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic4</td>
+<td align="right">4</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.62 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic4</td>
+<td align="right">5</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic4</td>
+<td align="right">5</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
 <td align="left">dynamic range = 1.53 log10</td>
@@ -1908,38 +2061,6 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 </tr>
 <tr class="odd">
 <td align="left">logistic4</td>
-<td align="right">4</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">logistic4</td>
-<td align="right">4</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.6 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">logistic4</td>
-<td align="right">5</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">logistic4</td>
-<td align="right">5</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.59 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">logistic4</td>
 <td align="right">6</td>
 <td align="left">rel_se</td>
 <td align="left">TRUE</td>
@@ -1951,7 +2072,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">6</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.58 log10</td>
+<td align="left">dynamic range = 1.37 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -1965,54 +2086,6 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <tr class="even">
 <td align="left">logistic5</td>
 <td align="right">1</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.75 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">logistic5</td>
-<td align="right">2</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">logistic5</td>
-<td align="right">2</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.94 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">logistic5</td>
-<td align="right">3</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">logistic5</td>
-<td align="right">3</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.69 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">logistic5</td>
-<td align="right">4</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">logistic5</td>
-<td align="right">4</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
 <td align="left">dynamic range = 1.64 log10</td>
@@ -2020,6 +2093,54 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 </tr>
 <tr class="odd">
 <td align="left">logistic5</td>
+<td align="right">2</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">2</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.56 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
+<td align="right">3</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">3</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.88 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
+<td align="right">4</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">logistic5</td>
+<td align="right">4</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.59 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">logistic5</td>
 <td align="right">5</td>
 <td align="left">rel_se</td>
 <td align="left">TRUE</td>
@@ -2031,7 +2152,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">5</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.65 log10</td>
+<td align="left">dynamic range = 1.63 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -2047,7 +2168,7 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">6</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.66 log10</td>
+<td align="left">dynamic range = 1.57 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
@@ -2063,75 +2184,75 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">1</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.69 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">2</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">2</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.68 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">3</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">3</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.91 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">4</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">4</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
-<td align="left">dynamic range = 1.65 log10</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">loglogistic5</td>
-<td align="right">5</td>
-<td align="left">rel_se</td>
-<td align="left">TRUE</td>
-<td align="left"></td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">loglogistic5</td>
-<td align="right">5</td>
-<td align="left">dynamic_range</td>
-<td align="left">TRUE</td>
 <td align="left">dynamic range = 1.66 log10</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
 <td align="left">loglogistic5</td>
+<td align="right">2</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">loglogistic5</td>
+<td align="right">2</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.71 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">loglogistic5</td>
+<td align="right">3</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">loglogistic5</td>
+<td align="right">3</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.46 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">loglogistic5</td>
+<td align="right">4</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">loglogistic5</td>
+<td align="right">4</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.63 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">loglogistic5</td>
+<td align="right">5</td>
+<td align="left">rel_se</td>
+<td align="left">TRUE</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">loglogistic5</td>
+<td align="right">5</td>
+<td align="left">dynamic_range</td>
+<td align="left">TRUE</td>
+<td align="left">dynamic range = 1.62 log10</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">loglogistic5</td>
 <td align="right">6</td>
 <td align="left">rel_se</td>
 <td align="left">TRUE</td>
@@ -2143,12 +2264,12 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 <td align="right">6</td>
 <td align="left">dynamic_range</td>
 <td align="left">TRUE</td>
-<td align="left">dynamic range = 1.68 log10</td>
+<td align="left">dynamic range = 1.79 log10</td>
 <td align="left">TRUE</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">eligibility</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">eligibility</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">&amp;&amp;</span></span>
 <span>    <span class="st">"eligible"</span> <span class="op"><a href="https://mc-stan.org/posterior/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">eligibility</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">eligibility</span> <span class="op">|&gt;</span></span>
@@ -2200,10 +2321,60 @@ gates on <strong>all</strong> <code>curve_id</code> values.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="cdan-grids">CDAN precision grids<a class="anchor" aria-label="anchor" href="#cdan-grids"></a>
+<h2 id="cdan-grids">Precision grids<a class="anchor" aria-label="anchor" href="#cdan-grids"></a>
 </h2>
 <div class="section level3">
-<h3 id="cdan-concept">What is a CDAN precision grid?<a class="anchor" aria-label="anchor" href="#cdan-concept"></a>
+<h3 id="precision-modes">Two precision profile modes<a class="anchor" aria-label="anchor" href="#precision-modes"></a>
+</h3>
+<p><code><a href="../reference/predict_grid_bayes.html">predict_grid_bayes()</a></code> supports two modes of precision
+profiling, selected at fitting time via
+<code>use_heteroscedastic_noise</code>.</p>
+<p><strong>Mode 0 — Posterior-predictive precision (default,
+<code>use_heteroscedastic_noise = FALSE</code>)</strong></p>
+<p>A constant <code>sigma_obs</code> is drawn from the posterior at each
+step. The precision profile measures how accurately the curve could
+back-calculate a concentration if the instrument produced a response
+drawn from a homoscedastic Student-t distribution. This is a valid
+Bayesian precision measure but the noise injected in Step 3 (see Section
+@ref(cdan-procedure)) does not vary with signal level — so the profile
+shape is dominated by the inverse-curve geometry (how steeply
+<code>inv(y)</code> magnifies small errors) rather than by
+concentration-dependent noise scaling.</p>
+<p><strong>Mode 1 — CDAN precision
+(<code>use_heteroscedastic_noise = TRUE</code>)</strong></p>
+<p>The Stan models additionally estimate two noise parameters —
+<code>log_sigma0</code> (intercept) and <code>log_sigma_slope</code>
+(slope) — that define a power-of-mean variance function:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>i</mi></msub><mo>=</mo><mo>exp</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mo>log</mo><msubsup><mi>σ</mi><mn>0</mn><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>+</mo><mo>log</mo><msubsup><mi>σ</mi><mtext mathvariant="normal">slope</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>⋅</mo><mo>log</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>μ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\sigma_i
+= \exp\!\left(\log\sigma_0^{(s)}
+  + \log\sigma_\text{slope}^{(s)} \cdot \log\!\left|\mu_i\right|\right)
+</annotation></semantics></math></p>
+<p>This is the variance function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>θ</mi><mn>1</mn></msub><msup><mi>m</mi><msub><mi>θ</mi><mn>2</mn></msub></msup></mrow><annotation encoding="application/x-tex">v(m, \theta) = \theta_1 m^{\theta_2}</annotation></semantics></math>
+of O’Malley (2008) §2, the defining feature of the <strong>Concentration
+Distribution of Assay Noise (CDAN)</strong> precision profile. With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>
+scaling with signal level, the precision profile captures both
+inverse-curve geometry <em>and</em> the fact that instrument noise is
+larger at high response values — giving the profile the characteristic
+U-shape where precision degrades near both asymptotes for different
+reasons.</p>
+<p>The <code>noise_mode</code> column in every grid data frame records
+which path was active (<code>"heteroscedastic"</code> or
+<code>"homoscedastic"</code>), making it easy to verify in plots and
+downstream comparisons.</p>
+<p>To compare both modes, fit twice:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit_homo</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes</a></span><span class="op">(</span><span class="va">...</span>, use_heteroscedastic_noise <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">fit_hetero</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes</a></span><span class="op">(</span><span class="va">...</span>, use_heteroscedastic_noise <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Both fits store the same structure; the grid$noise_mode column records which is which</span></span>
+<span><span class="va">fit_homo</span><span class="op">$</span><span class="va">plates</span><span class="op">[[</span><span class="st">"1"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">grid</span><span class="op">$</span><span class="va">noise_mode</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>   <span class="co"># "homoscedastic"</span></span>
+<span><span class="va">fit_hetero</span><span class="op">$</span><span class="va">plates</span><span class="op">[[</span><span class="st">"1"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">grid</span><span class="op">$</span><span class="va">noise_mode</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># "heteroscedastic"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="cdan-concept">What is a precision grid?<a class="anchor" aria-label="anchor" href="#cdan-concept"></a>
 </h3>
 <p><strong>CDAN</strong> (Concentration-Dependent Assay Noise) precision
 profiling <span class="citation">(O’Malley and Deely 2003; O’Malley
@@ -2213,7 +2384,7 @@ concentration falls on the curve. Near the inflection point the curve is
 steep — small response uncertainty maps to small concentration
 uncertainty. Near the asymptotes the curve is flat — the same response
 uncertainty maps to large concentration uncertainty.</p>
-<p>The CDAN grid makes this relationship explicit: a dense grid of
+<p>The precision grid makes this relationship explicit: a dense grid of
 concentration values, each with its posterior predictive
 back-calculation distribution and associated %CV, incorporating both
 curve-parameter uncertainty <em>and</em> the additional measurement
@@ -2223,10 +2394,10 @@ noise that a real instrument observation would contribute.</p>
 <h3 id="grid-columns">Grid columns<a class="anchor" aria-label="anchor" href="#grid-columns"></a>
 </h3>
 <table class="table">
-<caption>Columns in the CDAN grid data frame.</caption>
+<caption>Columns in the precision grid data frame.</caption>
 <colgroup>
-<col width="16%">
-<col width="83%">
+<col width="9%">
+<col width="90%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Column</th>
@@ -2251,7 +2422,7 @@ response across draws.</td>
 <tr class="even">
 <td align="left">predicted_concentration</td>
 <td align="left">Posterior median of back-calculated concentration
-across CDAN draws.</td>
+across precision-grid draws.</td>
 </tr>
 <tr class="odd">
 <td align="left">se_concentration</td>
@@ -2265,13 +2436,20 @@ se_concentration × log(10) × 100, capped at cv_x_max.</td>
 <tr class="odd">
 <td align="left">pcov_rmse</td>
 <td align="left">Relative RMSE of back-calculated concentration versus
-the true grid point (CDAN precision, O’Malley 2008).</td>
+the true grid point. When noise_mode = ‘heteroscedastic’ this is the
+O’Malley (2008) CDAN precision metric; when noise_mode = ‘homoscedastic’
+it is a posterior-predictive RMSE.</td>
 </tr>
 <tr class="even">
 <td align="left">pcov_pass</td>
 <td align="left">Logical: pcov &lt; pcov_threshold.</td>
 </tr>
 <tr class="odd">
+<td align="left">noise_mode</td>
+<td align="left">Character: ‘heteroscedastic’ or ‘homoscedastic’ —
+records which noise model was active at fitting time.</td>
+</tr>
+<tr class="even">
 <td align="left">d2y_dx2</td>
 <td align="left">Second derivative of the response curve — used by
 curveRcore::compute_shape_loq_from_grid() to locate shape-based
@@ -2283,23 +2461,27 @@ LLOQ/ULOQ.</td>
 <div class="section level3">
 <h3 id="grid-access">Accessing and plotting grids<a class="anchor" aria-label="anchor" href="#grid-access"></a>
 </h3>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">cr1</span><span class="op">$</span><span class="va">grid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 200</span></span>
-<span><span class="co">#&gt; Columns: 12</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
 <span><span class="co">#&gt; $ log10_concentration     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -4.000000<span style="color: #949494;">, </span>-3.972477<span style="color: #949494;">, </span>-3.944954<span style="color: #949494;">, </span>-3.917430<span style="color: #949494;">, </span>-3…</span></span>
 <span><span class="co">#&gt; $ concentration           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.0001000000<span style="color: #949494;">, </span>0.0001065426<span style="color: #949494;">, </span>0.0001135132<span style="color: #949494;">, </span>0.00…</span></span>
 <span><span class="co">#&gt; $ x_fit                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -4.000000<span style="color: #949494;">, </span>-3.972477<span style="color: #949494;">, </span>-3.944954<span style="color: #949494;">, </span>-3.917430<span style="color: #949494;">, </span>-3…</span></span>
-<span><span class="co">#&gt; $ predicted_response      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.391426<span style="color: #949494;">, </span>1.393164<span style="color: #949494;">, </span>1.394949<span style="color: #949494;">, </span>1.396783<span style="color: #949494;">, </span>1.3986…</span></span>
-<span><span class="co">#&gt; $ ci_lower                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.232767<span style="color: #949494;">, </span>1.235067<span style="color: #949494;">, </span>1.237425<span style="color: #949494;">, </span>1.239843<span style="color: #949494;">, </span>1.2423…</span></span>
-<span><span class="co">#&gt; $ ci_upper                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.708375<span style="color: #949494;">, </span>1.708640<span style="color: #949494;">, </span>1.708917<span style="color: #949494;">, </span>1.709205<span style="color: #949494;">, </span>1.7095…</span></span>
-<span><span class="co">#&gt; $ predicted_concentration <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.922594<span style="color: #949494;">, </span>-3.802136<span style="color: #949494;">, </span>-3.814621<span style="color: #949494;">, </span>-3.805984<span style="color: #949494;">, </span>-3…</span></span>
-<span><span class="co">#&gt; $ se_concentration        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.7825477<span style="color: #949494;">, </span>0.8010372<span style="color: #949494;">, </span>0.7374550<span style="color: #949494;">, </span>0.7870443<span style="color: #949494;">, </span>0.…</span></span>
+<span><span class="co">#&gt; $ predicted_response      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.398742<span style="color: #949494;">, </span>1.400610<span style="color: #949494;">, </span>1.402525<span style="color: #949494;">, </span>1.404490<span style="color: #949494;">, </span>1.4065…</span></span>
+<span><span class="co">#&gt; $ ci_lower                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.171737<span style="color: #949494;">, </span>1.174983<span style="color: #949494;">, </span>1.178430<span style="color: #949494;">, </span>1.181949<span style="color: #949494;">, </span>1.1855…</span></span>
+<span><span class="co">#&gt; $ ci_upper                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.784976<span style="color: #949494;">, </span>1.785086<span style="color: #949494;">, </span>1.785201<span style="color: #949494;">, </span>1.785323<span style="color: #949494;">, </span>1.7854…</span></span>
+<span><span class="co">#&gt; $ predicted_concentration <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> -3.880520<span style="color: #949494;">, </span>-3.862948<span style="color: #949494;">, </span>-3.856497<span style="color: #949494;">, </span>-3.881174<span style="color: #949494;">, </span>-3…</span></span>
+<span><span class="co">#&gt; $ se_concentration        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.6794048<span style="color: #949494;">, </span>0.6907654<span style="color: #949494;">, </span>0.8896030<span style="color: #949494;">, </span>0.9149750<span style="color: #949494;">, </span>0.…</span></span>
 <span><span class="co">#&gt; $ pcov                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.00…</span></span>
 <span><span class="co">#&gt; $ pcov_rmse               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.0000<span style="color: #949494;">, </span>150.00…</span></span>
 <span><span class="co">#&gt; $ pcov_pass               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALSE<span style="color: #949494;">, </span>FALS…</span></span>
-<span><span class="co">#&gt; $ d2y_dx2                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>0.06179685<span style="color: #949494;">, </span>0.06350562<span style="color: #949494;">, </span>0.06526292<span style="color: #949494;">, </span>0.0670…</span></span></code></pre></div>
-<p>```{r grid-plot, fig.cap=“Per-model CDAN precision profiles:
+<span><span class="co">#&gt; $ noise_mode              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "homoscedastic"<span style="color: #949494;">, </span>"homoscedastic"<span style="color: #949494;">, </span>"homoscedast…</span></span>
+<span><span class="co">#&gt; $ d2y_dx2                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>0.06311380<span style="color: #949494;">, </span>0.06477741<span style="color: #949494;">, </span>0.06648632<span style="color: #949494;">, </span>0.0682…</span></span>
+<span><span class="co"># noise_mode column records which precision profile mode was used</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">cr1</span><span class="op">$</span><span class="va">grid</span><span class="op">$</span><span class="va">noise_mode</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "homoscedastic"</span></span></code></pre></div>
+<p>```{r grid-plot, fig.cap=“Per-model precision profiles:
 back-calculation %CV versus log10(concentration) for all curve_ids. The
 dashed line marks 20% CV — a typical regulatory acceptability threshold.
 The ribbon spans the range across curve_ids; the line is the mean.”}
@@ -2317,17 +2499,18 @@ colour = “grey40”, linewidth = 0.6) + scale_x_continuous( name =
 “log081080(concentration) [AU/mL]”, breaks = seq(-3, 2, by = 1) ) +
 scale_y_continuous(name = “Back-calculation CV (%)”, limits = c(0, NA))
 + facet_wrap(~model, nrow = 2) + theme_minimal(base_size = 11) +
-theme(legend.position = “none”) + labs(title = “CDAN precision profiles
-— all models”, subtitle = “Ribbon = range across curve_ids; line =
-mean”) }</p>
+theme(legend.position = “none”) + labs(title = “Precision profiles — all
+models”, subtitle = “Ribbon = range across curve_ids; line = mean”)
+}</p>
 <pre><code>
 ---
 
-# The CDAN three-step noise injection procedure {#cdan-procedure}
+# The three-step noise injection procedure {#cdan-procedure}
 
-`predict_grid_bayes()` constructs the CDAN precision profile at each
+`predict_grid_bayes()` constructs the precision profile at each
 grid concentration $x^*$ via a three-step procedure that propagates
 both curve-parameter uncertainty and instrument measurement noise.
+The noise model used in Step 3 depends on `use_heteroscedastic_noise`.
 
 ## Step 1 — draw posterior curve parameters {#step1}
 
@@ -2358,26 +2541,54 @@ $$
 for `logistic5`/`loglogistic5` the asymmetry parameter $G_k^{(s)}$
 modifies the denominator.)
 
-## Step 3 — inject Student-t noise and invert {#step3}
+## Step 3 — inject noise and invert {#step3}
 
-**This step is unique to `predict_grid_bayes()` and defines CDAN.**
+**This step is the defining feature of the precision profile and is
+where the two noise modes diverge.**
 
 To each forward-predicted response $\tilde{y}^{(s,k)}$, add a noise
-draw from the posterior predictive distribution:
+draw scaled by $\sigma_i^{(s)}$:
 
 $$
 y^{*(s,k)}
 = \tilde{y}^{(s,k)}
   + \varepsilon^{(s)},
 \qquad
-\varepsilon^{(s)} \sim t_{\nu^{(s)}}\!\left(0,\; \sigma_\varepsilon^{(s)}\right)
+\varepsilon^{(s)} \sim t_{\nu^{(s)}}\!\left(0,\; \sigma_i^{(s)}\right)
 $$
 
-where $\sigma_\varepsilon^{(s)}$ and $\nu^{(s)}$ are themselves
-drawn from the posterior — both `sigma_obs` and `nu` are estimated
-parameters in the Stan model.
-The heavy tails of the Student-t distribution provide a realistic
-characterisation of occasional outlier instrument readings.
+where $\sigma_i^{(s)}$ is determined by the noise mode:
+
+$$
+\sigma_i^{(s)} =
+\begin{cases}
+\sigma_\text{obs}^{(s)}
+  &amp; \text{if } \texttt{use\_heteroscedastic\_noise = FALSE}
+  \quad\text{(homoscedastic)} \\[6pt]
+\exp\!\left(
+  \log\sigma_0^{(s)}
+  + \log\sigma_\text{slope}^{(s)} \cdot \log\!\left|\tilde{y}^{(s,k)}\right|
+\right)
+  &amp; \text{if } \texttt{use\_heteroscedastic\_noise = TRUE}
+  \quad\text{(CDAN)}
+\end{cases}
+$$
+
+The homoscedastic path uses a constant noise SD drawn from the
+posterior — a valid posterior-predictive precision measure but one
+whose profile shape is driven mainly by the inverse-curve geometry.
+
+The heteroscedastic (CDAN) path uses the power-of-mean variance
+function from O'Malley (2008) §2: noise scales with the predicted
+response level, so the precision profile captures both curve geometry
+*and* the fact that instrument noise is larger at high signal values.
+Both $\log\sigma_0^{(s)}$ and $\log\sigma_\text{slope}^{(s)}$ are
+themselves drawn from the posterior, so their uncertainty is fully
+propagated.
+
+The heavy tails of the Student-t distribution ($\nu$ also posterior)
+provide a realistic characterisation of occasional outlier instrument
+readings in both modes.
 
 The noisy response $y^{*(s,k)}$ is then **back-calculated** through
 the analytical inverse of the forward model:
@@ -2387,15 +2598,15 @@ $$
 = f^{-1}\!\left(y^{*(s,k)};\; \boldsymbol{\theta}_k^{(s)}\right)
 $$
 
-The collection $\left\{\hat{x}^{(s,k)}\right\}$ is the CDAN
-back-calculation distribution at $x^*$.
-The `pcov` column is the SD of this collection, divided by the
-mean, expressed as a percentage (computed on the fitting scale and
-converted to the linear CV via $\text{pcov} = \text{SE} \times \ln(10) \times 100$).
+The collection $\left\{\hat{x}^{(s,k)}\right\}$ is the back-calculation
+distribution at $x^*$.
+The `pcov` column is the SD of this collection divided by the mean,
+expressed as a percentage (on the log scale: $\text{pcov} = \text{SE} \times \ln(10) \times 100$).
 The `pcov_rmse` column is the relative RMSE against the known true
-grid point — the O'Malley (2008) CDAN precision metric.
+grid point — the O'Malley (2008) CDAN precision metric when
+`use_heteroscedastic_noise = TRUE`.
 
-The entire three-step logic can be illustrated concisely:
+The three-step logic can be illustrated concisely for both modes:
 
 
 ``` r
@@ -2414,37 +2625,61 @@ D         &lt;- as.numeric(samp[, "d[1]"])
 sigma_obs &lt;- as.numeric(samp[, "sigma_obs"])
 nu        &lt;- as.numeric(samp[, "nu"])
 
+# Heteroscedastic noise parameters (always estimated, regardless of mode)
+log_sigma0     &lt;- as.numeric(samp[, "log_sigma0"])
+log_sigma_slope &lt;- as.numeric(samp[, "log_sigma_slope"])
+
 # Grid point: log10(1 AU/mL) = 0
 x_star &lt;- 0
 
-# Step 1–2: forward prediction using curveRcore::logistic4()
+# Step 1–2: forward prediction
 y_tilde &lt;- curveRcore::logistic4(x_star, A, B, C, D)
 
-# Step 3: inject Student-t noise (posterior nu), then invert
-eps    &lt;- rt(length(y_tilde), df = median(nu)) * sigma_obs
-y_star &lt;- y_tilde + eps
-
-# Back-calculate using curveRcore analytical inverse
-x_hat &lt;- vapply(seq_along(A), function(s) {
+# ── Mode 0: homoscedastic sigma_obs ──
+sigma_homo &lt;- sigma_obs
+y_star_homo &lt;- y_tilde + sigma_homo * rt(length(y_tilde), df = median(nu))
+x_hat_homo &lt;- vapply(seq_along(A), function(s) {
   tryCatch(
-    curveRcore::inv_logistic4(y_star[s], A[s], B[s], C[s], D[s]),
+    curveRcore::inv_logistic4(y_star_homo[s], A[s], B[s], C[s], D[s]),
     error = function(e) NA_real_
   )
 }, numeric(1))
-x_hat &lt;- x_hat[is.finite(x_hat)]
+x_hat_homo &lt;- x_hat_homo[is.finite(x_hat_homo)]
+
+# ── Mode 1: heteroscedastic sigma_i = exp(log_sigma0 + log_sigma_slope * log|mu|) ──
+sigma_hetero &lt;- exp(log_sigma0 + log_sigma_slope * log(abs(y_tilde) + 1e-10))
+y_star_hetero &lt;- y_tilde + sigma_hetero * rt(length(y_tilde), df = median(nu))
+x_hat_hetero &lt;- vapply(seq_along(A), function(s) {
+  tryCatch(
+    curveRcore::inv_logistic4(y_star_hetero[s], A[s], B[s], C[s], D[s]),
+    error = function(e) NA_real_
+  )
+}, numeric(1))
+x_hat_hetero &lt;- x_hat_hetero[is.finite(x_hat_hetero)]
 
 cat(sprintf(
-  "CDAN back-calculation at log10(x*) = %.1f  [x* = %.0f AU/mL]\n",
+  "Back-calculation at log10(x*) = %.1f  [x* = %.0f AU/mL]\n\n",
   x_star, 10^x_star
 ))
-#&gt; CDAN back-calculation at log10(x*) = 0.0  [x* = 1 AU/mL]
-cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat, na.rm = TRUE)))
-#&gt;   Posterior mean:  -0.0005  log10(AU/mL)
-cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat, na.rm = TRUE)))
-#&gt;   Posterior SD:    0.0797  log10(AU/mL)
+#&gt; Back-calculation at log10(x*) = 0.0  [x* = 1 AU/mL]
+cat("Mode 0 — homoscedastic (sigma_obs):\n")
+#&gt; Mode 0 — homoscedastic (sigma_obs):
+cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat_homo)))
+#&gt;   Posterior mean:  0.0053  log10(AU/mL)
+cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat_homo)))
+#&gt;   Posterior SD:    0.1103  log10(AU/mL)
+cat(sprintf("  Back-calc CV:    %.1f%%\n\n",
+            sd(x_hat_homo) * log(10) * 100))
+#&gt;   Back-calc CV:    25.4%
+cat("Mode 1 — heteroscedastic CDAN (sigma_i = exp(log_sigma0 + log_sigma_slope*log|mu|)):\n")
+#&gt; Mode 1 — heteroscedastic CDAN (sigma_i = exp(log_sigma0 + log_sigma_slope*log|mu|)):
+cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat_hetero)))
+#&gt;   Posterior mean:  -0.1573  log10(AU/mL)
+cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat_hetero)))
+#&gt;   Posterior SD:    0.6142  log10(AU/mL)
 cat(sprintf("  Back-calc CV:    %.1f%%\n",
-            sd(x_hat, na.rm = TRUE) * log(10) * 100))
-#&gt;   Back-calc CV:    18.4%</code></pre>
+            sd(x_hat_hetero) * log(10) * 100))
+#&gt;   Back-calc CV:    141.4%</code></pre>
 <hr>
 </div>
 </div>
@@ -2457,7 +2692,7 @@ cat(sprintf("  Back-calc CV:    %.1f%%\n",
 <p>This is the most important conceptual distinction in the package.</p>
 <p>When <code><a href="../reference/predict_samples_bayes.html">predict_samples_bayes()</a></code> is called on observed
 test-sample responses, the situation is fundamentally different from
-building a CDAN grid:</p>
+building a precision grid:</p>
 <blockquote>
 <p><strong>The observed response
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mtext mathvariant="normal">obs</mtext></msub><annotation encoding="application/x-tex">y_\text{obs}</annotation></semantics></math>
@@ -2492,16 +2727,28 @@ arises solely from posterior uncertainty in the curve parameters
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>CDAN precision grid</td>
+<td>Precision grid (homoscedastic)</td>
 <td><code><a href="../reference/predict_grid_bayes.html">predict_grid_bayes()</a></code></td>
 <td>✅ Yes —
 Student-t(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mtext mathvariant="normal">obs</mtext></msub><annotation encoding="application/x-tex">\sigma_\text{obs}</annotation></semantics></math>)
-from posterior</td>
-<td>Parameter uncertainty <strong>+</strong> hypothetical measurement
-noise</td>
+constant</td>
+<td>Parameter uncertainty + homoscedastic noise</td>
 </tr>
 <tr class="even">
+<td>Precision grid (CDAN)</td>
+<td><code><a href="../reference/predict_grid_bayes.html">predict_grid_bayes()</a></code></td>
+<td>✅ Yes —
+Student-t(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>)
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>
+scales with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>μ</mi><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|\mu|</annotation></semantics></math>
+</td>
+<td>Parameter uncertainty + concentration-dependent noise</td>
+</tr>
+<tr class="odd">
 <td>Test sample back-calculation</td>
 <td><code><a href="../reference/predict_samples_bayes.html">predict_samples_bayes()</a></code></td>
 <td>❌ No</td>
@@ -2520,7 +2767,7 @@ expected — that is what is being estimated. Back-calculation is run
 automatically inside <code><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes()</a></code> whenever
 <code>samples</code> is provided; use
 <code><a href="../reference/collect_samples_bayes.html">collect_samples_bayes()</a></code> to extract the full table.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Collect all sample back-calculations across all curve_ids</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collect_samples_bayes.html">collect_samples_bayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span></span>
@@ -2564,61 +2811,61 @@ correction.</caption>
 <td align="left">1</td>
 <td align="left">a001</td>
 <td align="right">18323.4</td>
-<td align="right">1.125</td>
-<td align="right">26657.467</td>
-<td align="right">0.186</td>
-<td align="right">42.888</td>
-<td align="left">TRUE</td>
+<td align="right">1.097</td>
+<td align="right">25031.522</td>
+<td align="right">0.141</td>
+<td align="right">32.493</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">a002</td>
 <td align="right">19414.7</td>
-<td align="right">1.335</td>
-<td align="right">43283.085</td>
-<td align="right">0.343</td>
-<td align="right">79.068</td>
-<td align="left">TRUE</td>
+<td align="right">1.317</td>
+<td align="right">41528.984</td>
+<td align="right">0.257</td>
+<td align="right">59.214</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">a003</td>
 <td align="right">20098.5</td>
-<td align="right">1.486</td>
-<td align="right">61221.043</td>
-<td align="right">0.394</td>
-<td align="right">90.696</td>
-<td align="left">TRUE</td>
+<td align="right">1.497</td>
+<td align="right">62828.117</td>
+<td align="right">0.400</td>
+<td align="right">92.173</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">a004</td>
 <td align="right">19556.0</td>
-<td align="right">1.369</td>
-<td align="right">46791.961</td>
-<td align="right">0.342</td>
-<td align="right">78.736</td>
-<td align="left">TRUE</td>
+<td align="right">1.354</td>
+<td align="right">45188.809</td>
+<td align="right">0.289</td>
+<td align="right">66.578</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">a005</td>
 <td align="right">20177.5</td>
-<td align="right">1.500</td>
-<td align="right">63215.513</td>
-<td align="right">0.366</td>
-<td align="right">84.288</td>
-<td align="left">TRUE</td>
+<td align="right">1.513</td>
+<td align="right">65171.351</td>
+<td align="right">0.365</td>
+<td align="right">84.016</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">a006</td>
 <td align="right">70.1</td>
-<td align="right">-1.857</td>
-<td align="right">27.796</td>
-<td align="right">0.158</td>
-<td align="right">36.292</td>
-<td align="left">TRUE</td>
+<td align="right">-1.884</td>
+<td align="right">26.105</td>
+<td align="right">0.193</td>
+<td align="right">44.541</td>
+<td align="left">FALSE</td>
 </tr>
 </tbody>
 </table>
@@ -2631,32 +2878,36 @@ correction.</caption>
 </h2>
 <p><code><a href="../reference/summary_table_bayes.html">summary_table_bayes()</a></code> returns one row per
 <code>curve_id</code> with the best model name, per-parameter posterior
-mean and SD, and NUTS diagnostics. <code><a href="../reference/collect_samples_bayes.html">collect_samples_bayes()</a></code>
-returns a flat data frame of all back-calculated test samples with
-<code>curve_id</code> prepended.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># One-row-per-curve summary</span></span>
+mean and SD, NUTS diagnostics, and now also <code>n_standards</code>,
+<code>n_blanks</code>, and <code>noise_mode</code> columns.
+<code><a href="../reference/collect_samples_bayes.html">collect_samples_bayes()</a></code> returns a flat data frame of all
+back-calculated test samples with <code>curve_id</code> prepended.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># One-row-per-curve summary — includes n_standards, n_blanks, noise_mode</span></span>
 <span><span class="fu"><a href="../reference/summary_table_bayes.html">summary_table_bayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>               caption <span class="op">=</span> <span class="st">"Per-curve summary: best model, posterior means and SDs, NUTS diagnostics."</span><span class="op">)</span></span></code></pre></div>
+<span>               caption <span class="op">=</span> <span class="st">"Per-curve summary: best model, posterior means and SDs, NUTS diagnostics, standard/blank counts, and noise mode."</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>Per-curve summary: best model, posterior means and SDs, NUTS
-diagnostics.</caption>
+diagnostics, standard/blank counts, and noise mode.</caption>
 <colgroup>
+<col width="6%">
 <col width="7%">
-<col width="9%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="8%">
+<col width="11%">
+<col width="8%">
 <col width="6%">
-<col width="5%">
-<col width="6%">
-<col width="5%">
-<col width="6%">
-<col width="5%">
-<col width="6%">
-<col width="5%">
-<col width="6%">
-<col width="5%">
-<col width="10%">
-<col width="14%">
+<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">curve_id</th>
@@ -2673,103 +2924,124 @@ diagnostics.</caption>
 <th align="right">g_sd</th>
 <th align="right">n_divergent</th>
 <th align="right">n_max_treedepth</th>
+<th align="right">n_standards</th>
+<th align="right">n_blanks</th>
+<th align="left">noise_mode</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">logistic5</td>
-<td align="right">1.327</td>
-<td align="right">0.148</td>
-<td align="right">0.430</td>
-<td align="right">0.049</td>
-<td align="right">-0.158</td>
-<td align="right">0.173</td>
-<td align="right">4.332</td>
-<td align="right">0.027</td>
-<td align="right">0.469</td>
-<td align="right">0.176</td>
+<td align="right">1.321</td>
+<td align="right">0.161</td>
+<td align="right">0.401</td>
+<td align="right">0.038</td>
+<td align="right">-0.085</td>
+<td align="right">0.139</td>
+<td align="right">4.325</td>
+<td align="right">0.021</td>
+<td align="right">0.408</td>
+<td align="right">0.129</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">2</td>
 <td align="left">logistic5</td>
-<td align="right">1.284</td>
-<td align="right">0.134</td>
-<td align="right">0.441</td>
-<td align="right">0.050</td>
-<td align="right">-0.223</td>
-<td align="right">0.199</td>
-<td align="right">4.304</td>
-<td align="right">0.028</td>
-<td align="right">0.541</td>
-<td align="right">0.191</td>
+<td align="right">1.292</td>
+<td align="right">0.153</td>
+<td align="right">0.411</td>
+<td align="right">0.041</td>
+<td align="right">-0.128</td>
+<td align="right">0.184</td>
+<td align="right">4.295</td>
+<td align="right">0.021</td>
+<td align="right">0.463</td>
+<td align="right">0.155</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">3</td>
 <td align="left">logistic5</td>
-<td align="right">1.317</td>
-<td align="right">0.140</td>
-<td align="right">0.431</td>
-<td align="right">0.047</td>
-<td align="right">-0.234</td>
-<td align="right">0.168</td>
-<td align="right">4.351</td>
-<td align="right">0.026</td>
-<td align="right">0.491</td>
-<td align="right">0.164</td>
+<td align="right">1.310</td>
+<td align="right">0.157</td>
+<td align="right">0.405</td>
+<td align="right">0.039</td>
+<td align="right">-0.169</td>
+<td align="right">0.144</td>
+<td align="right">4.341</td>
+<td align="right">0.018</td>
+<td align="right">0.433</td>
+<td align="right">0.132</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">4</td>
 <td align="left">logistic5</td>
-<td align="right">1.306</td>
-<td align="right">0.053</td>
-<td align="right">0.420</td>
-<td align="right">0.042</td>
-<td align="right">0.669</td>
-<td align="right">0.202</td>
-<td align="right">4.485</td>
-<td align="right">0.037</td>
-<td align="right">1.063</td>
-<td align="right">0.413</td>
+<td align="right">1.290</td>
+<td align="right">0.055</td>
+<td align="right">0.399</td>
+<td align="right">0.033</td>
+<td align="right">0.777</td>
+<td align="right">0.159</td>
+<td align="right">4.482</td>
+<td align="right">0.027</td>
+<td align="right">0.867</td>
+<td align="right">0.275</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">5</td>
 <td align="left">logistic5</td>
-<td align="right">1.259</td>
-<td align="right">0.050</td>
-<td align="right">0.425</td>
-<td align="right">0.044</td>
-<td align="right">0.690</td>
-<td align="right">0.211</td>
-<td align="right">4.447</td>
-<td align="right">0.037</td>
-<td align="right">1.070</td>
-<td align="right">0.421</td>
+<td align="right">1.247</td>
+<td align="right">0.045</td>
+<td align="right">0.401</td>
+<td align="right">0.035</td>
+<td align="right">0.792</td>
+<td align="right">0.171</td>
+<td align="right">4.442</td>
+<td align="right">0.028</td>
+<td align="right">0.884</td>
+<td align="right">0.276</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">6</td>
 <td align="left">logistic5</td>
-<td align="right">1.303</td>
-<td align="right">0.077</td>
-<td align="right">0.422</td>
-<td align="right">0.045</td>
-<td align="right">0.666</td>
-<td align="right">0.240</td>
-<td align="right">4.473</td>
-<td align="right">0.039</td>
-<td align="right">1.066</td>
-<td align="right">0.524</td>
+<td align="right">1.277</td>
+<td align="right">0.098</td>
+<td align="right">0.398</td>
+<td align="right">0.036</td>
+<td align="right">0.821</td>
+<td align="right">0.166</td>
+<td align="right">4.469</td>
+<td align="right">0.029</td>
+<td align="right">0.787</td>
+<td align="right">0.285</td>
 <td align="right">0</td>
 <td align="right">0</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
 </tr>
 </tbody>
 </table>
@@ -2777,6 +3049,146 @@ diagnostics.</caption>
 single-<code>calibration_result</code> format (i.e. a single plate
 object), so they work identically on <code>fit$plates[["1"]]</code> and
 on the full multiplate object.</p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="qa">QA: standards and blanks<a class="anchor" aria-label="anchor" href="#qa"></a>
+</h2>
+<p>Every per-curve <code>calibration_result</code> now carries a
+<code>$standards</code> slot (the preprocessed standards for that
+curve_id) and, when blanks were provided, a <code>$blanks</code> slot.
+Two collector functions mirror <code><a href="../reference/collect_samples_bayes.html">collect_samples_bayes()</a></code>:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Stack all per-curve standards into a single data frame</span></span>
+<span><span class="va">stds_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collect_standards_bayes.html">collect_standards_bayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Standards collected: %d rows across %d curve_ids\n"</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">stds_all</span><span class="op">)</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/n_distinct.html" class="external-link">n_distinct</a></span><span class="op">(</span><span class="va">stds_all</span><span class="op">$</span><span class="va">curve_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Standards collected: 60 rows across 6 curve_ids</span></span>
+<span></span>
+<span><span class="co"># Stack all per-curve blanks (NULL if no blanks were provided)</span></span>
+<span><span class="va">blanks_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collect_blanks_bayes.html">collect_blanks_bayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">blanks_all</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Blanks collected:    %d rows across %d curve_ids\n"</span>,</span>
+<span>              <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">blanks_all</span><span class="op">)</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/n_distinct.html" class="external-link">n_distinct</a></span><span class="op">(</span><span class="va">blanks_all</span><span class="op">$</span><span class="va">curve_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"No blanks stored (blanks = NULL at fitting time).\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; Blanks collected:    24 rows across 6 curve_ids</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Verify per-plate standard and blank counts from the summary table</span></span>
+<span><span class="fu"><a href="../reference/summary_table_bayes.html">summary_table_bayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">curve_id</span>, <span class="va">n_standards</span>, <span class="va">n_blanks</span>, <span class="va">noise_mode</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Per-plate data coverage. n_blanks = 0 when no blanks were supplied."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Per-plate data coverage. n_blanks = 0 when no blanks were
+supplied.</caption>
+<thead><tr class="header">
+<th align="left">curve_id</th>
+<th align="right">n_standards</th>
+<th align="right">n_blanks</th>
+<th align="left">noise_mode</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>```{r qa-standards-plot, fig.cap=“Observed standards overlaid on the
+fitted posterior predictive band for antigen alpha (curve_ids 1–3).
+Storing standards in the result object makes this plot available without
+re-joining the original data frame.”} if (!is.null(stds_all) &amp;&amp;
+nrow(stds_all) &gt; 0 &amp;&amp; “concentration” %in% names(stds_all))
+{</p>
+<p># Combine standards with best-model grid for the same curve_ids
+grid_alpha &lt;- purrr::map_dfr( as.character(1:3), function(cid) { g
+&lt;-
+fit<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>l</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>s</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>c</mi><mi>i</mi><mi>d</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">plates[[cid]]</annotation></semantics></math>grid
+if (is.null(g)) return(NULL) dplyr::mutate(g, curve_id =
+as.integer(cid)) } )</p>
+<p>ggplot() + geom_ribbon( data = grid_alpha, aes(x = x_fit, ymin =
+ci_lower, ymax = ci_upper, group = factor(curve_id)), alpha = 0.15, fill
+= “steelblue” ) + geom_line( data = grid_alpha, aes(x = x_fit, y =
+predicted_response, colour = factor(curve_id)), linewidth = 0.7 ) +
+geom_point( data = dplyr::filter(stds_all, curve_id %in% 1:3), aes(x =
+concentration, y = .data[[bead_assay_example$response_var]], colour =
+factor(curve_id)), size = 2, shape = 16, alpha = 0.9 ) +
+scale_colour_brewer(palette = “Set1”) + labs( x =
+“log081080(concentration) [AU/mL]”, y = “log081080(MFI)”, colour =
+“curve_id”, title = “Fitted curve with observed standards — antigen
+alpha” ) + theme_minimal(base_size = 12) + theme(legend.position =
+“bottom”) }</p>
+<pre><code>
+```{r qa-blanks-plot,
+    fig.cap="Blank well responses per curve_id. The horizontal line marks the posterior mean lower asymptote for each curve — blanks should cluster near it."}
+if (!is.null(blanks_all) &amp;&amp; nrow(blanks_all) &gt; 0) {
+
+  # Posterior mean lower asymptote per curve_id
+  a_means &lt;- purrr::map_dfr(
+    names(fit$plates),
+    function(cid) {
+      cr   &lt;- fit$plates[[cid]]
+      best &lt;- cr$selection$best_model_name
+      p    &lt;- cr$ensemble[[best]]$parameters
+      tibble::tibble(
+        curve_id = as.integer(cid),
+        a_mean   = if (!is.null(p) &amp;&amp; "a" %in% p$term)
+                     p$mean[p$term == "a"]
+                   else NA_real_
+      )
+    }
+  )
+
+  blanks_all |&gt;
+    dplyr::mutate(curve_id = as.integer(curve_id)) |&gt;
+    ggplot(aes(x = factor(curve_id),
+               y = .data[[bead_assay_example$response_var]])) +
+    geom_jitter(width = 0.1, size = 2, colour = "firebrick", alpha = 0.8) +
+    geom_hline(
+      data = a_means,
+      aes(yintercept = a_mean, group = factor(curve_id)),
+      linetype = "dashed", colour = "steelblue", linewidth = 0.6
+    ) +
+    labs(
+      x     = "curve_id",
+      y     = "log\u2081\u2080(MFI)  [blank wells]",
+      title = "Blank well responses vs posterior mean lower asymptote"
+    ) +
+    theme_minimal(base_size = 12)
+}</code></pre>
 <hr>
 </div>
 <div class="section level2">
@@ -2813,7 +3225,7 @@ Distributions.”</span> <em>Bayesian Analysis</em> 13 (3): 917–1007. <a href=
 <div class="section level2">
 <h2 id="session">Session information<a class="anchor" aria-label="anchor" href="#session"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.1 (2025-06-13 ucrt)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>

@@ -56,6 +56,7 @@ parameter summaries.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fit_calibration_bayes</span><span class="op">(</span></span>
 <span>  <span class="va">standards</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  blanks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">response_var</span>,</span>
 <span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"logistic4"</span>, <span class="st">"gompertz4"</span><span class="op">)</span>,</span>
 <span>  is_log_response <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -77,6 +78,7 @@ parameter summaries.</p>
 <span>  n_draws_predict <span class="op">=</span> <span class="fl">500L</span>,</span>
 <span>  n_draws_ensemble <span class="op">=</span> <span class="fl">260L</span>,</span>
 <span>  compute_all_grids <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_heteroscedastic_noise <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  run_loo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -95,6 +97,14 @@ column — all on the fitting scale.</p></dd>
 <dt id="arg-samples">samples<a class="anchor" aria-label="anchor" href="#arg-samples"></a></dt>
 <dd><p>Data frame or NULL. Stacked sample data with <code>curve_id</code>
 and the response column (on the raw measurement scale).</p></dd>
+
+
+<dt id="arg-blanks">blanks<a class="anchor" aria-label="anchor" href="#arg-blanks"></a></dt>
+<dd><p>Data frame or NULL. Blank well data with <code>curve_id</code> and
+the response column (on the fitting scale). When supplied, blanks are
+passed to Stan to anchor the lower asymptote via a separate likelihood
+term, and are stored in each per-curve <code>calibration_result$blanks</code>
+slot for downstream QA. Default NULL.</p></dd>
 
 
 <dt id="arg-response-var">response_var<a class="anchor" aria-label="anchor" href="#arg-response-var"></a></dt>
@@ -184,9 +194,21 @@ non-best-model precision grids. Default 260.</p></dd>
 
 
 <dt id="arg-compute-all-grids">compute_all_grids<a class="anchor" aria-label="anchor" href="#arg-compute-all-grids"></a></dt>
-<dd><p>Logical. If TRUE, compute CDAN precision
+<dd><p>Logical. If TRUE, compute precision
 grids for every converged model. Required for eligibility gating
 when more than one model is fitted. Default FALSE.</p></dd>
+
+
+<dt id="arg-use-heteroscedastic-noise">use_heteroscedastic_noise<a class="anchor" aria-label="anchor" href="#arg-use-heteroscedastic-noise"></a></dt>
+<dd><p>Logical. If TRUE, the Stan models use
+a power-of-mean variance function
+<code>sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))</code> in the
+likelihood, and the same sigma_i is injected when generating the
+CDAN noisy observations in <code><a href="predict_grid_bayes.html">predict_grid_bayes()</a></code>. This restores the
+O'Malley (2008) CDAN precision profile interpretation. If FALSE
+(default), a constant <code>sigma_obs</code> is used and the precision profiles
+reflect posterior-predictive uncertainty driven mainly by inverse-
+curve geometry.</p></dd>
 
 
 <dt id="arg-run-loo">run_loo<a class="anchor" aria-label="anchor" href="#arg-run-loo"></a></dt>
@@ -201,7 +223,9 @@ when more than one model is fitted. Default FALSE.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>calibration_result_multiplate</code> object (from curveRcore).
 Each per-plate <code>$selection</code> contains <code>$assessments</code>, <code>$eligible_models</code>,
-and <code>$fallback</code> from the eligibility gating.</p>
+and <code>$fallback</code> from the eligibility gating. Each per-plate
+<code>calibration_result</code> carries <code>$standards</code> and <code>$blanks</code> slots with
+the per-curve subsets of the input data.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

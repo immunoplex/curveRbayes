@@ -1,22 +1,38 @@
 # =============================================================================
 # predict_bayes.R — Posterior predictive grid and sample back-calculation
 #
-# Implements the CDAN (Concentration Distribution of Assay Noise) approach
-# from O'Malley (2008). For each posterior draw:
-#   1. Evaluate the forward model to get the predicted response
-#   2. Add observation noise (Student-t with posterior sigma_obs and nu)
-#   3. Back-calculate concentration from the noisy response
+# Implements two precision profile modes selectable via the
+# `use_heteroscedastic_noise` argument of fit_calibration_bayes():
 #
-# This produces a proper posterior predictive distribution of concentration
-# that accounts for both parameter uncertainty and measurement noise.
+# Mode 0 — Posterior-predictive precision (homoscedastic):
+#   sigma_i is constant (sigma_obs from the posterior). The precision
+#   profile reflects mainly the inverse-curve geometry.
+#
+# Mode 1 — CDAN precision (heteroscedastic, O'Malley 2008):
+#   sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))
+#   A power-of-mean variance function where noise scales with signal level.
+#   For each posterior draw, the grid point, and each CDAN replicate:
+#     1. Evaluate the forward model  →  mu_s
+#     2. Compute sigma_i from the heteroscedastic noise model
+#     3. Draw  y_noisy ~ Student-t(nu, mu_s, sigma_i)
+#     4. Back-calculate concentration from y_noisy  →  x_hat
+#   pcov_rmse is then the relative RMSE of x_hat around x_true, which is
+#   the O'Malley CDAN precision measure.
 # =============================================================================
 
 
-#' Predict Grid Response from Posterior Draws (Bayesian, CDAN)
+#' Predict Grid Response from Posterior Draws (Bayesian)
 #'
 #' For each grid point, evaluates the forward model at every posterior
-#' draw, adds observation noise (CDAN approach), then back-calculates
-#' concentration. This produces a proper precision profile.
+#' draw, adds observation noise, then back-calculates concentration to
+#' produce a precision profile.
+#'
+#' When the model was fitted with `use_heteroscedastic_noise = TRUE`,
+#' the noise injected at Step 2 scales with the predicted response
+#' magnitude (`sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))`),
+#' giving the O'Malley (2008) CDAN precision profile. When
+#' `use_heteroscedastic_noise = FALSE`, a constant `sigma_obs` is used
+#' and the profile reflects posterior-predictive uncertainty.
 #'
 #' @param grid Data frame from [curveRcore::generate_prediction_grid()].
 #' @param bayes_fit Output of [curveRbayes::fit_bayes_single()].
@@ -31,7 +47,7 @@
 #'
 #' @return `grid` with added columns: `predicted_response`, `ci_lower`,
 #'   `ci_upper`, `predicted_concentration`, `se_concentration`, `pcov`,
-#'   `pcov_rmse`, `pcov_pass`.
+#'   `pcov_rmse`, `pcov_pass`, `noise_mode`.
 #'
 #' @export
 predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
@@ -46,7 +62,7 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
   p      <- curve_idx
   n_grid <- nrow(grid)
 
-  # Extract plate-level posterior draws
+  # ── Curve shape draws ──
   a_draws <- as.numeric(draws[[paste0("a[", p, "]")]])
   b_draws <- as.numeric(draws[[paste0("b[", p, "]")]])
   c_draws <- as.numeric(draws[[paste0("c_par[", p, "]")]])
@@ -54,18 +70,33 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
   g_draws <- if (family %in% c("logistic5", "loglogistic5"))
     as.numeric(draws[[paste0("g[", p, "]")]]) else NULL
 
-  # Extract observation noise parameters (shared across plates)
+  # ── Noise draws — homoscedastic path ──
   sigma_obs_draws <- as.numeric(draws[["sigma_obs"]])
   nu_draws        <- as.numeric(draws[["nu"]])
+
+  # ── Noise draws — heteroscedastic (CDAN) path ──
+  # These columns are present whenever use_heteroscedastic_noise was set
+  # in build_stan_data() (the Stan model always estimates them).
+  has_hetero      <- all(c("log_sigma0", "log_sigma_slope") %in% names(draws))
+  log_sigma0_draws     <- if (has_hetero) as.numeric(draws[["log_sigma0"]])     else NULL
+  log_sigma_slope_draws <- if (has_hetero) as.numeric(draws[["log_sigma_slope"]]) else NULL
+
+  # Determine which noise path was active at fitting time.
+  # bayes_fit$stan_data$use_heteroscedastic_noise is 0 or 1.
+  use_hetero <- isTRUE(bayes_fit$stan_data$use_heteroscedastic_noise == 1L)
 
   S <- length(a_draws)
   if (!is.null(n_draws) && n_draws < S) {
     idx <- sample.int(S, n_draws)
     a_draws <- a_draws[idx]; b_draws <- b_draws[idx]
     c_draws <- c_draws[idx]; d_draws <- d_draws[idx]
-    if (!is.null(g_draws)) g_draws <- g_draws[idx]
+    if (!is.null(g_draws))            g_draws            <- g_draws[idx]
     sigma_obs_draws <- sigma_obs_draws[idx]
     nu_draws        <- nu_draws[idx]
+    if (!is.null(log_sigma0_draws)) {
+      log_sigma0_draws      <- log_sigma0_draws[idx]
+      log_sigma_slope_draws <- log_sigma_slope_draws[idx]
+    }
     S <- n_draws
   }
 
@@ -114,9 +145,15 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
         next
       }
 
-      # Step 2: CDAN — generate noisy response
-      # y_noisy ~ Student-t(nu, mu, sigma_obs)
-      y_noisy <- mu_s + sigma_obs_draws[s] * stats::rt(1, df = nu_draws[s])
+      # Step 2: Draw noisy observation.
+      # Heteroscedastic (CDAN): sigma scales with |mu_s|.
+      # Homoscedastic:          sigma is the shared constant sigma_obs.
+      sigma_s <- if (use_hetero && !is.null(log_sigma0_draws)) {
+        exp(log_sigma0_draws[s] + log_sigma_slope_draws[s] * log(abs(mu_s) + 1e-10))
+      } else {
+        sigma_obs_draws[s]
+      }
+      y_noisy <- mu_s + sigma_s * stats::rt(1, df = nu_draws[s])
 
       # Step 3: Back-calculate from noisy response
       x_mat[i, s] <- suppressWarnings(
@@ -125,7 +162,7 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
     }
   }
 
-  # Summaries
+  # ── Summaries ──
   grid$predicted_response      <- rowMeans(y_mat, na.rm = TRUE)
   grid$ci_lower                <- apply(y_mat, 1, stats::quantile,
                                         probs = 0.025, na.rm = TRUE)
@@ -134,7 +171,7 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
   grid$predicted_concentration <- apply(x_mat, 1, stats::median, na.rm = TRUE)
   grid$se_concentration        <- apply(x_mat, 1, stats::sd, na.rm = TRUE)
 
-  # pcov: CV (%) — posterior SD of back-calculated concentration
+  # pcov: posterior SD of back-calculated concentration as CV (%)
   grid$pcov <- vapply(seq_len(n_grid), function(i) {
     se_i <- grid$se_concentration[i]
     if (!is.finite(se_i)) return(cv_x_max)
@@ -145,8 +182,12 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
     min(raw_cv, cv_x_max, na.rm = TRUE)
   }, numeric(1))
 
-  # pcov_rmse: relative RMSE (%) — CDAN precision (O'Malley 2008)
-  # RMSE relative to the true grid concentration x_f
+  # pcov_rmse: relative RMSE of back-calculated concentration around x_true.
+  # When use_heteroscedastic_noise = TRUE, this is the O'Malley (2008) CDAN
+  # precision measure — noise scales with signal level, so the profile
+  # captures both inverse-curve geometry and concentration-dependent noise.
+  # When use_heteroscedastic_noise = FALSE, this is still a valid
+  # posterior-predictive precision summary but does not constitute CDAN.
   grid$pcov_rmse <- vapply(seq_len(n_grid), function(i) {
     x_draws <- x_mat[i, ]
     x_true  <- grid$x_fit[i]
@@ -161,9 +202,10 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
   }, numeric(1))
 
   # pcov_pass uses pcov_threshold (precision budget), NOT cv_x_max (hard cap).
-  # cv_x_max is an overflow guard; marking everything below 150 % as "pass"
-  # would be misleading — the usable range is defined by pcov_threshold.
   grid$pcov_pass <- !is.na(grid$pcov) & grid$pcov < pcov_threshold
+
+  # Record which noise mode was used (useful for plotting / auditing)
+  grid$noise_mode <- if (use_hetero) "heteroscedastic" else "homoscedastic"
 
   grid <- curveRcore::enrich_grid_with_d2y(grid, is_log_response = is_log_response)
 
@@ -183,6 +225,7 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
 #' @param is_log_response Logical.
 #' @param n_draws Integer or NULL.
 #' @param cv_x_max Numeric. Default 150.
+#' @param pcov_threshold Numeric. Percent CV threshold for pcov_pass. Default 20.
 #' @param is_log_x Logical. Default TRUE.
 #'
 #' @return Data frame with original sample columns plus prediction columns.
@@ -192,6 +235,7 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
                                   response_variable,
                                   is_log_response = TRUE,
                                   n_draws = NULL, cv_x_max = 150,
+                                  pcov_threshold = 20,
                                   is_log_x = TRUE) {
 
   family <- bayes_fit$model_family
