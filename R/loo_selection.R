@@ -18,9 +18,15 @@ compute_loo <- function(bayes_fit) {
   if (length(ll_cols) == 0)
     stop("No log_lik columns found in posterior draws")
 
-  # Convert to plain matrix to avoid posterior::draws_df subsetting warnings
+  # Pointwise log-likelihood matrix [draws x observations]. Pass r_eff so loo
+  # accounts for HMC autocorrelation; without it, loo treats draws as
+  # independent and reports optimistic Pareto-k and ELPD standard errors.
+  # (Restores the relative_eff() step from stanassay's loo_stacking.R.)
   log_lik_matrix <- as.matrix(draws)[, ll_cols, drop = FALSE]
-  suppressWarnings(loo::loo(log_lik_matrix))
+  chain_id <- if (".chain" %in% names(draws)) as.integer(draws$.chain)
+              else rep(1L, nrow(log_lik_matrix))
+  r_eff <- loo::relative_eff(exp(log_lik_matrix), chain_id = chain_id)
+  suppressWarnings(loo::loo(log_lik_matrix, r_eff = r_eff))
 }
 
 
@@ -42,16 +48,26 @@ compare_models_loo <- function(fits) {
 
   comp <- loo::loo_compare(loo_list)
 
-  # Stacking weights
-  stacking_wts <- tryCatch(
-    suppressWarnings(loo::stacking_weights(loo_list)),
-    error = function(e) {
-      w <- rep(0, length(fits))
-      names(w) <- names(fits)
-      w[rownames(comp)[1]] <- 1
-      w
-    }
-  )
+  # Bayesian stacking weights (Yao et al. 2018). loo_model_weights() is the
+  # correct high-level API for a *list* of loo objects. The previous code
+  # called loo::stacking_weights(loo_list), which expects a pointwise
+  # log-density matrix, not a list — so it always threw and fell through to the
+  # degenerate fallback (weight 1 on the single best model), silently reducing
+  # "stacking" to hard model selection. This restores true stacking and matches
+  # stanassay's loo::loo_model_weights(..., method = "stacking").
+  stacking_wts <- if (length(loo_list) == 1L) {
+    stats::setNames(1, names(loo_list))
+  } else {
+    tryCatch(
+      loo::loo_model_weights(loo_list, method = "stacking"),
+      error = function(e) {
+        warning("loo stacking failed (", conditionMessage(e),
+                "); falling back to weight 1 on the best model")
+        w <- rep(0, length(fits)); names(w) <- names(fits)
+        w[rownames(comp)[1]] <- 1; w
+      }
+    )
+  }
 
   best_name <- rownames(comp)[1]
 
