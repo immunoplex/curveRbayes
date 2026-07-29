@@ -1,5 +1,31 @@
 # Changelog
 
+## curveRbayes 0.4.0 (2026-07-29)
+
+- **Unified the precision-profile variance definition** across the grid
+  and the per-sample back-calculation via a new
+  `include_measurement_error` argument to
+  [`fit_calibration_bayes()`](https://immunoplex.github.io/curveRbayes/reference/fit_calibration_bayes.md)
+  (default `TRUE`), threaded identically into
+  [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md)
+  and
+  [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md).
+  This closes the gap where Bayesian sample points floated ~9.6 %CV
+  below the precision profile with a concentration-dependent slope: with
+  the default they now lie on the measurement/CDAN profile.
+- [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md)
+  and
+  [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md)
+  now share a single
+  [`.obs_noise_sigma()`](https://immunoplex.github.io/curveRbayes/reference/dot-obs_noise_sigma.md)
+  noise definition, so the grid and sample paths cannot diverge again.
+- `include_measurement_error = FALSE` yields a
+  curve/parameter-uncertainty-only profile; in that mode the grid
+  inverts a fixed posterior-mean reference response across draws
+  (non-degenerate) to match the sample path.
+- The active mode is recorded in the `noise_mode` column and in the
+  result `meta`.
+
 ## curveRbayes 0.2.0
 
 - Initial release.
