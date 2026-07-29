@@ -35,6 +35,7 @@ fit_calibration_bayes(
   n_draws_ensemble = 260L,
   compute_all_grids = FALSE,
   use_heteroscedastic_noise = FALSE,
+  include_measurement_error = TRUE,
   run_loo = NULL,
   verbose = FALSE
 )
@@ -163,6 +164,18 @@ fit_calibration_bayes(
   interpretation. If FALSE (default), a constant `sigma_obs` is used and
   the precision profiles reflect posterior-predictive uncertainty driven
   mainly by inverse- curve geometry.
+
+- include_measurement_error:
+
+  Logical. Default TRUE. Selects the SINGLE variance definition used by
+  BOTH the precision grid and the per-sample pcov, so sample points lie
+  on the profile. TRUE injects observation noise before back-calculation
+  (measurement / CDAN precision — the classical immunoassay precision
+  profile). FALSE inverts a fixed reference response across the
+  posterior (curve/parameter uncertainty only). The noise MODEL used
+  when TRUE is chosen by `use_heteroscedastic_noise`. See
+  `predict_bayes.R` and
+  UNDERSTANDING_precision_and_measurement_error.md.
 
 - run_loo:
 

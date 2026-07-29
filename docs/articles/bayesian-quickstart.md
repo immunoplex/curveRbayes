@@ -276,7 +276,7 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf473ee1f0.stan', line 114, column 4 to column 40)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b644b885a43.stan', line 114, column 4 to column 40)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
@@ -291,12 +291,12 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b64aa02e32.stan', line 142, column 4 to column 40)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b64aa02e32.stan', line 142, column 4 to column 40)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
@@ -304,7 +304,7 @@ fit <- fit_calibration_bayes(
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf456521a4c.stan', line 142, column 4 to column 40)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b64aa02e32.stan', line 142, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -316,17 +316,17 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 119, column 4 to column 68)
+#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b6453046c7c.stan', line 119, column 4 to column 68)
 #> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 119, column 4 to column 68)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b6453046c7c.stan', line 119, column 4 to column 68)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf47ef6726.stan', line 115, column 4 to column 40)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b6453046c7c.stan', line 115, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -335,22 +335,22 @@ fit <- fit_calibration_bayes(
 #> ── Fitting loglogistic5 ──
 #> [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 130, column 4 to column 68)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b645c2d4eb9.stan', line 130, column 4 to column 68)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)
+#> Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b645c2d4eb9.stan', line 126, column 4 to column 40)
 #> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b645c2d4eb9.stan', line 126, column 4 to column 40)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpIrroom/model-adf41a322375.stan', line 126, column 4 to column 40)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp4qZE7U/model-1b645c2d4eb9.stan', line 126, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -542,13 +542,20 @@ if (!is.null(loo_comparison)) print(loo_comparison)
 grid_best <- cr1$grid
 head(grid_best[, c("x_fit", "predicted_response",
                    "pcov", "pcov_rmse", "pcov_pass", "noise_mode")])
-#>       x_fit predicted_response pcov pcov_rmse pcov_pass    noise_mode
-#> 1 -4.000000           1.398742  150       150     FALSE homoscedastic
-#> 2 -3.972477           1.400610  150       150     FALSE homoscedastic
-#> 3 -3.944954           1.402525  150       150     FALSE homoscedastic
-#> 4 -3.917430           1.404490  150       150     FALSE homoscedastic
-#> 5 -3.889907           1.406505  150       150     FALSE homoscedastic
-#> 6 -3.862384           1.408572  150       150     FALSE homoscedastic
+#>       x_fit predicted_response pcov pcov_rmse pcov_pass
+#> 1 -4.000000           1.398742  150       150     FALSE
+#> 2 -3.972477           1.400610  150       150     FALSE
+#> 3 -3.944954           1.402525  150       150     FALSE
+#> 4 -3.917430           1.404490  150       150     FALSE
+#> 5 -3.889907           1.406505  150       150     FALSE
+#> 6 -3.862384           1.408572  150       150     FALSE
+#>                  noise_mode
+#> 1 measurement_homoscedastic
+#> 2 measurement_homoscedastic
+#> 3 measurement_homoscedastic
+#> 4 measurement_homoscedastic
+#> 5 measurement_homoscedastic
+#> 6 measurement_homoscedastic
 
 # 5. Access per-model grid for logistic4 specifically
 grid_4pl <- ensemble[["logistic4"]]$grid
@@ -1311,11 +1318,11 @@ dplyr::glimpse(cr1$grid)
 #> $ pcov                    <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
 #> $ pcov_rmse               <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
 #> $ pcov_pass               <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
-#> $ noise_mode              <chr> "homoscedastic", "homoscedastic", "homoscedast…
+#> $ noise_mode              <chr> "measurement_homoscedastic", "measurement_homo…
 #> $ d2y_dx2                 <dbl> NA, 0.06311380, 0.06477741, 0.06648632, 0.0682…
 # noise_mode column records which precision profile mode was used
 unique(cr1$grid$noise_mode)
-#> [1] "homoscedastic"
+#> [1] "measurement_homoscedastic"
 ```
 
 \`\`\`{r grid-plot, fig.cap=“Per-model precision profiles:
@@ -1582,12 +1589,12 @@ if (!is.null(results) && nrow(results) > 0) {
 
 | curve_id | sampleid | mfi | predicted_concentration | final_concentration | se_concentration | pcov | pcov_pass |
 |:---|:---|---:|---:|---:|---:|---:|:---|
-| 1 | a001 | 18323.4 | 1.097 | 25031.522 | 0.141 | 32.493 | FALSE |
-| 1 | a002 | 19414.7 | 1.317 | 41528.984 | 0.257 | 59.214 | FALSE |
-| 1 | a003 | 20098.5 | 1.497 | 62828.117 | 0.400 | 92.173 | FALSE |
-| 1 | a004 | 19556.0 | 1.354 | 45188.809 | 0.289 | 66.578 | FALSE |
-| 1 | a005 | 20177.5 | 1.513 | 65171.351 | 0.365 | 84.016 | FALSE |
-| 1 | a006 | 70.1 | -1.884 | 26.105 | 0.193 | 44.541 | FALSE |
+| 1 | a001 | 18323.4 | 1.059 | 22931.93 | 0.380 | 87.416 | FALSE |
+| 1 | a002 | 19414.7 | 1.236 | 34433.04 | 0.439 | 101.049 | FALSE |
+| 1 | a003 | 20098.5 | 1.279 | 38032.36 | 0.471 | 108.516 | FALSE |
+| 1 | a004 | 19556.0 | 1.207 | 32188.42 | 0.486 | 111.985 | FALSE |
+| 1 | a005 | 20177.5 | 1.272 | 37394.04 | 0.452 | 104.149 | FALSE |
+| 1 | a006 | 70.1 | -1.896 | 25.44 | 0.255 | 58.677 | FALSE |
 
 Back-calculated concentrations (first rows). predicted_concentration is
 on the log10(AU/mL) fitting scale; final_concentration is on the natural
@@ -1788,7 +1795,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] loo_2.9.0.9000    bayesplot_1.15.0  posterior_1.7.0   ggplot2_4.0.3    
-#> [5] dplyr_1.2.1       curveRbayes_0.2.0 curveRcore_0.2.0 
+#> [5] dplyr_1.2.1       curveRbayes_0.2.0 curveRcore_0.4.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      
@@ -1797,7 +1804,7 @@ sessionInfo()
 #> [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.1     
 #> [13] ps_1.9.3             scales_1.4.0         textshaping_1.0.5   
 #> [16] jquerylib_0.1.4      abind_1.4-8          cli_3.6.6           
-#> [19] rlang_1.2.0          cmdstanr_0.9.0.9000  withr_3.0.2         
+#> [19] rlang_1.2.0          cmdstanr_0.9.0.9001  withr_3.0.2         
 #> [22] cachem_1.1.0         yaml_2.3.12          otel_0.2.0          
 #> [25] parallel_4.5.1       tools_4.5.1          checkmate_2.3.4     
 #> [28] vctrs_0.7.3          R6_2.6.1             matrixStats_1.5.0   

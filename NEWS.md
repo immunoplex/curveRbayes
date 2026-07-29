@@ -40,3 +40,14 @@
   to be eligible for back-calculation.
 * `bead_assay_example` synthetic dataset: two antigens × three plates,
   six `curve_id` values.
+
+# curveRbayes <next>
+
+## Verified compatible with curveRcore 0.3.0 (mask-aware preprocessing)
+
+* No code changes required. `fit_calibration_bayes()` receives already-
+  preprocessed standards/blanks and only the *included* subset (worker-filtered).
+  Verified no internal re-preprocessing and no DB reads: `stan_data()` builds the
+  blank baseline term directly from the passed `blanks` (mapped by `curve_id`),
+  which are the included blanks, so the baseline/lower-asymptote term and the fit
+  are identical to pre-0.3.0 behaviour. Masked points are never seen by the model.

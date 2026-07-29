@@ -73,6 +73,14 @@
 #'   (default), a constant `sigma_obs` is used and the precision profiles
 #'   reflect posterior-predictive uncertainty driven mainly by inverse-
 #'   curve geometry.
+#' @param include_measurement_error Logical. Default TRUE. Selects the SINGLE
+#'   variance definition used by BOTH the precision grid and the per-sample
+#'   pcov, so sample points lie on the profile. TRUE injects observation noise
+#'   before back-calculation (measurement / CDAN precision — the classical
+#'   immunoassay precision profile). FALSE inverts a fixed reference response
+#'   across the posterior (curve/parameter uncertainty only). The noise MODEL
+#'   used when TRUE is chosen by `use_heteroscedastic_noise`. See
+#'   `predict_bayes.R` and UNDERSTANDING_precision_and_measurement_error.md.
 #' @param run_loo Logical or NULL. Default NULL (auto).
 #' @param verbose Logical. Default FALSE.
 #'
@@ -108,6 +116,7 @@ fit_calibration_bayes <- function(standards,
                                   n_draws_ensemble = 260L,
                                   compute_all_grids = FALSE,
                                   use_heteroscedastic_noise = FALSE,
+                                  include_measurement_error = TRUE,
                                   run_loo = NULL,
                                   verbose = FALSE) {
 
@@ -255,7 +264,8 @@ fit_calibration_bayes <- function(standards,
         cv_x_max = cv_x_max,
         pcov_threshold = pcov_threshold,
         is_log_x = is_log_independent,
-        is_log_response = is_log_response
+        is_log_response = is_log_response,
+        include_measurement_error = include_measurement_error
       )
     }
 
@@ -399,7 +409,8 @@ fit_calibration_bayes <- function(standards,
           is_log_response   = is_log_response,
           n_draws  = n_draws_predict,
           cv_x_max = cv_x_max,
-          is_log_x = is_log_independent
+          is_log_x = is_log_independent,
+          include_measurement_error = include_measurement_error
         )
       }
     }
@@ -460,6 +471,7 @@ fit_calibration_bayes <- function(standards,
       seed               = seed,
       compute_all_grids  = compute_all_grids,
       use_heteroscedastic_noise = use_heteroscedastic_noise,
+      include_measurement_error = include_measurement_error,
       n_draws_predict    = n_draws_predict,
       n_draws_ensemble   = n_draws_ensemble,
       pcov_threshold     = pcov_threshold
@@ -494,6 +506,7 @@ fit_calibration_bayes <- function(standards,
     selection          = eligible_selection,
     compute_all_grids  = compute_all_grids,
     use_heteroscedastic_noise = use_heteroscedastic_noise,
+    include_measurement_error = include_measurement_error,
     pcov_threshold     = pcov_threshold,
     timestamp          = Sys.time()
   )

@@ -79,6 +79,7 @@ parameter summaries.</p>
 <span>  n_draws_ensemble <span class="op">=</span> <span class="fl">260L</span>,</span>
 <span>  compute_all_grids <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  use_heteroscedastic_noise <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_measurement_error <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  run_loo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -209,6 +210,17 @@ O'Malley (2008) CDAN precision profile interpretation. If FALSE
 (default), a constant <code>sigma_obs</code> is used and the precision profiles
 reflect posterior-predictive uncertainty driven mainly by inverse-
 curve geometry.</p></dd>
+
+
+<dt id="arg-include-measurement-error">include_measurement_error<a class="anchor" aria-label="anchor" href="#arg-include-measurement-error"></a></dt>
+<dd><p>Logical. Default TRUE. Selects the SINGLE
+variance definition used by BOTH the precision grid and the per-sample
+pcov, so sample points lie on the profile. TRUE injects observation noise
+before back-calculation (measurement / CDAN precision — the classical
+immunoassay precision profile). FALSE inverts a fixed reference response
+across the posterior (curve/parameter uncertainty only). The noise MODEL
+used when TRUE is chosen by <code>use_heteroscedastic_noise</code>. See
+<code>predict_bayes.R</code> and UNDERSTANDING_precision_and_measurement_error.md.</p></dd>
 
 
 <dt id="arg-run-loo">run_loo<a class="anchor" aria-label="anchor" href="#arg-run-loo"></a></dt>

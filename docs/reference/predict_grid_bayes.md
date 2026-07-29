@@ -1,8 +1,10 @@
 # Predict Grid Response from Posterior Draws (Bayesian)
 
-For each grid point, evaluates the forward model at every posterior
-draw, adds observation noise, then back-calculates concentration to
-produce a precision profile.
+For each grid point, evaluates the forward model at every posterior draw
+and back-calculates concentration to produce a precision profile.
+Whether a fresh observation-noise draw is injected before
+back-calculation is governed by `include_measurement_error` (see file
+header).
 
 ## Usage
 
@@ -15,7 +17,8 @@ predict_grid_bayes(
   cv_x_max = 150,
   pcov_threshold = 20,
   is_log_x = TRUE,
-  is_log_response = TRUE
+  is_log_response = TRUE,
+  include_measurement_error = TRUE
 )
 ```
 
@@ -54,20 +57,18 @@ predict_grid_bayes(
 - is_log_response:
 
   Logical. Whether the response is log10-transformed. Passed to
-  [`curveRcore::enrich_grid_with_d2y()`](https://immunoplex.github.io/curveRcore/reference/enrich_grid_with_d2y.html)
-  for second-derivative enrichment. Default TRUE.
+  [`curveRcore::enrich_grid_with_d2y()`](https://immunoplex.github.io/curveRcore/reference/enrich_grid_with_d2y.html).
+  Default TRUE.
+
+- include_measurement_error:
+
+  Logical. If TRUE (default) inject observation noise before
+  back-calculation (measurement/CDAN precision). If FALSE, invert the
+  fixed posterior-mean reference response across draws (curve/parameter
+  precision only). See file header.
 
 ## Value
 
 `grid` with added columns: `predicted_response`, `ci_lower`, `ci_upper`,
 `predicted_concentration`, `se_concentration`, `pcov`, `pcov_rmse`,
 `pcov_pass`, `noise_mode`.
-
-## Details
-
-When the model was fitted with `use_heteroscedastic_noise = TRUE`, the
-noise injected at Step 2 scales with the predicted response magnitude
-(`sigma_i = exp(log_sigma0 + log_sigma_slope * log(|mu_i|))`), giving
-the O'Malley (2008) CDAN precision profile. When
-`use_heteroscedastic_noise = FALSE`, a constant `sigma_obs` is used and
-the profile reflects posterior-predictive uncertainty.

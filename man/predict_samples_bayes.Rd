@@ -13,7 +13,8 @@ predict_samples_bayes(
   n_draws = NULL,
   cv_x_max = 150,
   pcov_threshold = 20,
-  is_log_x = TRUE
+  is_log_x = TRUE,
+  include_measurement_error = TRUE
 )
 }
 \arguments{
@@ -34,11 +35,19 @@ predict_samples_bayes(
 \item{pcov_threshold}{Numeric. Percent CV threshold for pcov_pass. Default 20.}
 
 \item{is_log_x}{Logical. Default TRUE.}
+
+\item{include_measurement_error}{Logical. If TRUE (default) inject the SAME
+observation noise the grid uses before back-calculating, so samples lie on
+the measurement/CDAN profile. If FALSE, invert the observed response with no
+added noise (curve/parameter precision only). MUST match the value passed to
+\code{\link[=predict_grid_bayes]{predict_grid_bayes()}} for the same fit.}
 }
 \value{
 Data frame with original sample columns plus prediction columns.
 }
 \description{
-For each test sample, evaluates the inverse model at every posterior
-draw to produce a full posterior distribution of predicted concentration.
+For each test sample, evaluates the inverse model at every posterior draw to
+produce a posterior distribution of predicted concentration. The variance
+definition matches \code{\link[=predict_grid_bayes]{predict_grid_bayes()}} via \code{include_measurement_error}, so
+the sample pcov is directly comparable to the precision profile.
 }
