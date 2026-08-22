@@ -52,8 +52,10 @@ build_stan_data <- function(standards,
       "curve_id" %in% names(blanks)) {
     blank_idx      <- as.integer(curve_id_map[as.character(blanks$curve_id)])
     blank_response <- blanks[[response_variable]]
-    # Drop any blanks whose curve_id is not in the map (e.g., filtered plates)
-    valid          <- !is.na(blank_idx)
+    # Drop blanks with an unmapped curve_id OR an NA response. NA responses
+    # (e.g. missing blank-well MFI) must never reach Stan -- a single NA in
+    # blank_response aborts the whole fit. (KNOWN ISSUE, cloneB ipv1/IgG2.)
+    valid          <- !is.na(blank_idx) & !is.na(blank_response)
     blank_idx      <- blank_idx[valid]
     blank_response <- blank_response[valid]
     N_blanks       <- length(blank_response)

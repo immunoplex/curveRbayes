@@ -1,3 +1,14 @@
+
+## [unreleased] curveRbayes
+
+### Fixed
+- `build_stan_data()`: NA blank responses (not just NA curve_id indices) are
+  now dropped before constructing the Stan data list. Previously a single NA
+  MFI in a blank well aborted the entire multiplate fit with
+  "Variable 'blank_response' has NA values", independent of `blank_option`.
+  Groups with all-NA blanks now fit from standards alone (N_blanks = 0).
+  Discovered: cloneB_GaPs ipv1/IgG2. (stan_data.R:56)
+  
 # curveRbayes 0.4.0 (2026-07-29)
 
 * **Unified the precision-profile variance definition** across the grid and the
