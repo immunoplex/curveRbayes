@@ -1,7 +1,7 @@
 
-## [unreleased] curveRbayes
+# [unreleased] curveRbayes (2026-08-22)
 
-### Fixed
+* **Fixed**
 - `build_stan_data()`: NA blank responses (not just NA curve_id indices) are
   now dropped before constructing the Stan data list. Previously a single NA
   MFI in a blank well aborted the entire multiplate fit with

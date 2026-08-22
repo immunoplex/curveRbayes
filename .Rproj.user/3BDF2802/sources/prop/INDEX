@@ -15,6 +15,7 @@ C%3A%2FUsers%2Fd78039e%2FDocuments%2FR-git%2FcurveRbayes%2Fvignettes%2Freference
 ~%2FR-git%2FcurveRbayes%2F_pkgdown.yml="6A3689D1"
 ~%2FR-git%2FcurveRbayes%2Fbuild-pkgdown-site.R="08CD630B"
 ~%2FR-git%2FcurveRbayes%2Fdata-raw%2Fgenerate_reference_bayes.R="E0E4F49B"
+~%2FR-git%2FcurveRbayes%2Ftests%2Ffix_and_rebuild.R="331F1003"
 ~%2FR-git%2FcurveRbayes%2Ftests%2Ftestthat%2Ftest-bayes-fitting.R="E7328525"
 ~%2FR-git%2FcurveRbayes%2Ftests%2Ftestthat%2Ftest-bayes-pipeline.R="B677FA92"
 ~%2FR-git%2FcurveRbayes%2Ftests%2Ftestthat%2Ftest-elisa-bayes.R="D607E503"

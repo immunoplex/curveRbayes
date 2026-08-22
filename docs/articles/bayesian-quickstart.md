@@ -276,7 +276,7 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d4235112f.stan', line 114, column 4 to column 40)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-352065bf1a78.stan', line 114, column 4 to column 40)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
@@ -291,12 +291,12 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d46f201504.stan', line 142, column 4 to column 40)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-352064085875.stan', line 142, column 4 to column 40)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d46f201504.stan', line 142, column 4 to column 40)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-352064085875.stan', line 142, column 4 to column 40)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
@@ -304,7 +304,7 @@ fit <- fit_calibration_bayes(
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d46f201504.stan', line 142, column 4 to column 40)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-352064085875.stan', line 142, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -316,17 +316,17 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d424791ece.stan', line 119, column 4 to column 68)
+#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-3520595c5e94.stan', line 119, column 4 to column 68)
 #> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d424791ece.stan', line 119, column 4 to column 68)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-3520595c5e94.stan', line 119, column 4 to column 68)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d424791ece.stan', line 115, column 4 to column 40)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-3520595c5e94.stan', line 115, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -335,22 +335,22 @@ fit <- fit_calibration_bayes(
 #> ── Fitting loglogistic5 ──
 #> [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d47f9a7682.stan', line 130, column 4 to column 68)
+#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-35206752280b.stan', line 130, column 4 to column 68)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d47f9a7682.stan', line 126, column 4 to column 40)
+#> Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-35206752280b.stan', line 126, column 4 to column 40)
 #> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d47f9a7682.stan', line 126, column 4 to column 40)
+#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-35206752280b.stan', line 126, column 4 to column 40)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/Rtmp0AzECn/model-95d47f9a7682.stan', line 126, column 4 to column 40)
+#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpEN6NgK/model-35206752280b.stan', line 126, column 4 to column 40)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -1804,7 +1804,7 @@ sessionInfo()
 #> [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.1     
 #> [13] ps_1.9.3             scales_1.4.0         textshaping_1.0.5   
 #> [16] jquerylib_0.1.4      abind_1.4-8          cli_3.6.6           
-#> [19] rlang_1.2.0          cmdstanr_0.9.0.9001  withr_3.0.2         
+#> [19] rlang_1.2.0          cmdstanr_0.9.0.9002  withr_3.0.2         
 #> [22] cachem_1.1.0         yaml_2.3.12          otel_0.2.0          
 #> [25] parallel_4.5.1       tools_4.5.1          checkmate_2.3.4     
 #> [28] vctrs_0.7.3          R6_2.6.1             matrixStats_1.5.0   
