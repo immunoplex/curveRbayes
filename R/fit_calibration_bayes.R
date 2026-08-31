@@ -118,6 +118,8 @@ fit_calibration_bayes <- function(standards,
                                   use_heteroscedastic_noise = FALSE,
                                   include_measurement_error = TRUE,
                                   run_loo = NULL,
+                                  persist_draws = FALSE,
+                                  bayes_single_plate = FALSE,
                                   verbose = FALSE) {
 
   # ── 1. Validate inputs ── (unchanged)
@@ -134,6 +136,61 @@ fit_calibration_bayes <- function(standards,
       stop("blanks must contain a 'curve_id' column when provided")
     if (!(response_var %in% names(blanks)))
       stop("response_var '", response_var, "' not found in blanks")
+  }
+
+  # ── 1b. Bayesian single-plate (unpooled) mode ──────────────────────────────
+  # When enabled, fit each plate independently (N_plates = 1, no cross-plate
+  # pooling) by recursing per curve_id, then merge into one multiplate result.
+  # Reuses the whole normal path (each recursion is a plain N_plates=1 fit);
+  # no Stan change. Each single-curve fit's population slot (its own group
+  # scalars under the hyperprior) is moved onto that plate's result.
+  if (isTRUE(bayes_single_plate)) {
+    sp_curve_ids <- sort(unique(standards$curve_id))
+    if (length(sp_curve_ids) > 1L) {
+      sp_plates <- list()
+      for (cid in sp_curve_ids) {
+        ck     <- as.character(cid)
+        s_i    <- standards[as.character(standards$curve_id) == ck, , drop = FALSE]
+        samp_i <- if (!is.null(samples)) samples[as.character(samples$curve_id) == ck, , drop = FALSE] else NULL
+        blk_i  <- if (!is.null(blanks))  blanks[as.character(blanks$curve_id)  == ck, , drop = FALSE] else NULL
+        if (!is.null(samp_i) && nrow(samp_i) == 0L) samp_i <- NULL
+        if (!is.null(blk_i)  && nrow(blk_i)  == 0L) blk_i  <- NULL
+
+        r_i <- fit_calibration_bayes(
+          standards = s_i, samples = samp_i, blanks = blk_i,
+          response_var = response_var, model_names = model_names,
+          is_log_response = is_log_response, is_log_independent = is_log_independent,
+          std_curve_conc = std_curve_conc, fixed_a = fixed_a, cv_x_max = cv_x_max,
+          pcov_threshold = pcov_threshold,
+          min_dynamic_range_log10 = min_dynamic_range_log10, max_rel_se = max_rel_se,
+          n_grid = n_grid, grid_min_conc = grid_min_conc, grid_max_conc = grid_max_conc,
+          chains = chains, warmup = warmup, sampling = sampling,
+          adapt_delta = adapt_delta, seed = seed,
+          n_draws_predict = n_draws_predict, n_draws_ensemble = n_draws_ensemble,
+          compute_all_grids = compute_all_grids,
+          use_heteroscedastic_noise = use_heteroscedastic_noise,
+          include_measurement_error = include_measurement_error,
+          run_loo = run_loo, persist_draws = persist_draws,
+          bayes_single_plate = FALSE,          # each recursion is a plain N_plates=1 fit
+          verbose = verbose
+        )
+        pcid <- names(r_i$plates)[1]            # 1-plate result; move population onto the plate
+        cr_i <- r_i$plates[[pcid]]
+        cr_i$population <- r_i$population
+        sp_plates[[pcid]] <- cr_i
+      }
+      sp_meta <- list(
+        method = "bayesian", package = "curveRbayes",
+        curve_ids = sp_curve_ids, n_curves = length(sp_curve_ids),
+        response_var = response_var,
+        is_log_response = is_log_response, is_log_independent = is_log_independent,
+        best_model = NA_character_, fit_mode = "single_plate",
+        timestamp = Sys.time()
+      )
+      return(curveRcore::new_calibration_result_multiplate(
+        meta = sp_meta, plates = sp_plates, population = NULL))
+    }
+    # n_curves == 1: fall through to the normal path (already a single plate).
   }
 
   # ── 2. Resolve effective models ── (unchanged)
@@ -432,6 +489,11 @@ fit_calibration_bayes <- function(standards,
       # Attach per-model grid (best model at full resolution; others at ensemble)
       entry$grid <- ensemble_grids[[fam]][[idx]]
 
+      # Per-plate posterior draws for the SELECTED model only (calib_draws,
+      # param_scope = "curve"); emitted only when persist_draws is on.
+      if (isTRUE(persist_draws) && identical(fam, best_name))
+        entry$draws <- extract_curve_draws(bayes_fits[[fam]], idx)
+
       entry
     })
     names(curve_ensemble) <- names(ensemble_out)
@@ -511,8 +573,28 @@ fit_calibration_bayes <- function(standards,
     timestamp          = Sys.time()
   )
 
+  # ── 8b. Population/noise params + fit diagnostics for the SELECTED model ────
+  # Group-level scalars of the pooled hierarchy (mu_*, sigma_*, sigma_obs, nu,
+  # sigma_blank, ...), the selected model's sampler diagnostics, and — gated by
+  # persist_draws — the population draw vectors. Populates the curveRcore
+  # `population` slot; the worker flattens it to calib_hyperparam / calib_draws /
+  # calib_fit_diag via tidy_hyperparam() / tidy_draws() / tidy_fit_diag().
+  population <- NULL
+  if (!is.na(best_name) && !is.null(best_fit)) {
+    fd <- extract_fit_diag(best_fit)
+    fd$converged <- isTRUE(ensemble_out[[best_name]]$converged)
+    population <- list(
+      params     = extract_population_summary(best_fit),
+      fit_diag   = fd,
+      model_name = best_name
+    )
+    if (isTRUE(persist_draws))
+      population$draws <- extract_population_draws(best_fit)
+  }
+
   curveRcore::new_calibration_result_multiplate(
-    meta   = multi_meta,
-    plates = plates
+    meta       = multi_meta,
+    plates     = plates,
+    population = population
   )
 }

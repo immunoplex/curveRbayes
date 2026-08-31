@@ -166,3 +166,127 @@ extract_curve_params <- function(bayes_fit, curve_idx = 1L,
 
   do.call(rbind, Filter(Negate(is.null), rows))
 }
+
+
+# =============================================================================
+# Schema-expansion extractors (calib_hyperparam / calib_draws / calib_fit_diag)
+#
+# These read the `bf` object returned by fit_bayes_single() — specifically
+# bf$draws (posterior::as_draws_df, all params incl. transformed b/g and the
+# non-indexed population/noise scalars) and bf$fit (the CmdStanMCMC object).
+# They fill the curveRcore `population` slot contract:
+#   params   : data.frame(term, estimate, std_error, q_lo, q_med, q_hi)
+#   draws    : named list term -> numeric() (iteration-ordered; shared order)
+#   fit_diag : named list of per-fit sampler diagnostics
+# =============================================================================
+
+# Population/noise scalar term names in the draws = columns that are NOT
+# plate-indexed ("[..]"), NOT non-centered auxiliaries (raw_*), and NOT
+# posterior bookkeeping (.chain/.iteration/.draw, lp__). Auto-discovers the
+# exact .stan parameters{} scalars (mu_*, sigma_*, sigma_obs, nu, sigma_blank,
+# log_sigma0, log_sigma_slope) for whichever model was fitted.
+.population_terms <- function(draws) {
+  nm <- names(draws)
+  meta    <- nm %in% c(".chain", ".iteration", ".draw", ".draw_id") | nm == "lp__"
+  indexed <- grepl("\\[", nm)
+  raw     <- grepl("^raw_", nm)
+  nm[!meta & !indexed & !raw]
+}
+
+#' Summarise population / noise parameters from a Bayesian fit
+#'
+#' @param bayes_fit Output of [fit_bayes_single()].
+#' @param probs Quantiles. Default c(0.025, 0.5, 0.975).
+#' @return data.frame(term, estimate, std_error, q_lo, q_med, q_hi) — the
+#'   curveRcore `population$params` shape. One row per group-level scalar.
+#' @export
+extract_population_summary <- function(bayes_fit, probs = c(0.025, 0.5, 0.975)) {
+  draws <- bayes_fit$draws
+  terms <- .population_terms(draws)
+  if (length(terms) == 0L) return(data.frame())
+  rows <- lapply(terms, function(t) {
+    v  <- as.numeric(draws[[t]])
+    qs <- stats::quantile(v, probs = probs, names = FALSE, na.rm = TRUE)
+    data.frame(term = t, estimate = mean(v), std_error = stats::sd(v),
+               q_lo = qs[1], q_med = qs[2], q_hi = qs[3],
+               stringsAsFactors = FALSE)
+  })
+  do.call(rbind, rows)
+}
+
+#' Posterior draw vectors for the population / noise scalars
+#'
+#' @param bayes_fit Output of [fit_bayes_single()].
+#' @return Named list `term -> numeric()`, iteration-ordered (all terms share
+#'   one order, so they can be column-bound into a joint posterior). For
+#'   calib_draws (param_scope = "population"); emit only when persist_draws.
+#' @export
+extract_population_draws <- function(bayes_fit) {
+  draws <- bayes_fit$draws
+  terms <- .population_terms(draws)
+  stats::setNames(lapply(terms, function(t) as.numeric(draws[[t]])), terms)
+}
+
+#' Posterior draw vectors for one plate's curve parameters (a,b,c,d,g)
+#'
+#' @param bayes_fit Output of [fit_bayes_single()].
+#' @param curve_idx Integer plate index (1-based Stan index).
+#' @return Named list `term -> numeric()` (c_par emitted as c). For calib_draws
+#'   (param_scope = "curve"); emit only when persist_draws.
+#' @export
+extract_curve_draws <- function(bayes_fit, curve_idx) {
+  draws  <- bayes_fit$draws
+  family <- bayes_fit$model_family
+  pnames <- if (family %in% c("logistic5", "loglogistic5"))
+    c("a", "b", "c_par", "d", "g") else c("a", "b", "c_par", "d")
+  out <- list()
+  for (pn in pnames) {
+    sn <- paste0(pn, "[", curve_idx, "]")
+    if (sn %in% names(draws)) out[[sub("c_par", "c", pn)]] <- as.numeric(draws[[sn]])
+  }
+  out
+}
+
+#' Per-fit sampler diagnostics from a Bayesian fit
+#'
+#' @param bayes_fit Output of [fit_bayes_single()].
+#' @return Named list matching the calib_fit_diag Bayesian columns. `converged`
+#'   is left NULL here (the caller supplies it from the ensemble's converged
+#'   flag); rhat/ess come from the CmdStanMCMC $summary(), divergences/treedepth/
+#'   ebfmi from bf$diagnostics, timing from $time(), seed from $metadata().
+#' @export
+extract_fit_diag <- function(bayes_fit) {
+  fit  <- bayes_fit$fit
+  diag <- bayes_fit$diagnostics %||% list()
+
+  rhat_max <- ess_bulk_min <- ess_tail_min <- NA_real_
+  smry <- tryCatch(fit$summary(), error = function(e) NULL)
+  if (!is.null(smry)) {
+    if ("rhat"     %in% names(smry)) rhat_max     <- suppressWarnings(max(smry$rhat,     na.rm = TRUE))
+    if ("ess_bulk" %in% names(smry)) ess_bulk_min <- suppressWarnings(min(smry$ess_bulk, na.rm = TRUE))
+    if ("ess_tail" %in% names(smry)) ess_tail_min <- suppressWarnings(min(smry$ess_tail, na.rm = TRUE))
+  }
+  fin <- function(x) if (length(x) && is.finite(x)) x else NA_real_
+
+  n_draws_total <- tryCatch(nrow(bayes_fit$draws), error = function(e) NA_integer_)
+  n_div <- diag$num_divergent %||% NA_integer_
+  fit_seconds <- tryCatch({ t <- fit$time(); t$total %||% NA_real_ }, error = function(e) NA_real_)
+  fit_seed <- tryCatch({ s <- fit$metadata()$seed; if (length(s)) as.numeric(s)[1] else NA_real_ },
+                       error = function(e) NA_real_)
+  ebfmi_min <- tryCatch(suppressWarnings(min(diag$ebfmi, na.rm = TRUE)), error = function(e) NA_real_)
+
+  list(
+    fit_seconds       = fin(fit_seconds),
+    n_iterations      = NA_integer_,               # MCMC: warmup+sampling live in meta
+    converged         = NULL,                       # set by caller (ensemble flag)
+    fit_seed          = if (is.finite(fit_seed)) fit_seed else NA_real_,
+    rhat_max          = fin(rhat_max),
+    ess_bulk_min      = fin(ess_bulk_min),
+    ess_tail_min      = fin(ess_tail_min),
+    n_divergent       = n_div,
+    pct_divergent     = if (!is.na(n_div) && !is.na(n_draws_total) && n_draws_total > 0)
+                          100 * n_div / n_draws_total else NA_real_,
+    max_treedepth_hit = diag$num_max_treedepth %||% NA_integer_,
+    ebfmi_min         = fin(ebfmi_min)
+  )
+}
