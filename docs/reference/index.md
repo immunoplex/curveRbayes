@@ -42,6 +42,14 @@ compilation, sampling parameters, or multi-step workflows.
   : Fit a Single Model Family via MCMC
 - [`extract_curve_params()`](https://immunoplex.github.io/curveRbayes/reference/extract_curve_params.md)
   : Extract Curve-Level Posterior Summaries
+- [`extract_curve_draws()`](https://immunoplex.github.io/curveRbayes/reference/extract_curve_draws.md)
+  : Posterior draw vectors for one plate's curve parameters (a,b,c,d,g)
+- [`extract_fit_diag()`](https://immunoplex.github.io/curveRbayes/reference/extract_fit_diag.md)
+  : Per-fit sampler diagnostics from a Bayesian fit
+- [`extract_population_draws()`](https://immunoplex.github.io/curveRbayes/reference/extract_population_draws.md)
+  : Posterior draw vectors for the population / noise scalars
+- [`extract_population_summary()`](https://immunoplex.github.io/curveRbayes/reference/extract_population_summary.md)
+  : Summarise population / noise parameters from a Bayesian fit
 
 ## Stan Data and Priors
 

@@ -37,6 +37,8 @@ fit_calibration_bayes(
   use_heteroscedastic_noise = FALSE,
   include_measurement_error = TRUE,
   run_loo = NULL,
+  persist_draws = FALSE,
+  bayes_single_plate = FALSE,
   verbose = FALSE
 )
 ```

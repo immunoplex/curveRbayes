@@ -16,7 +16,11 @@
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/compute_loo.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/dot-obs_noise_sigma.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/elisa_assay_example.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/extract_curve_draws.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/extract_curve_params.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/extract_fit_diag.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/extract_population_draws.html</loc></url>
+<url><loc>https://immunoplex.github.io/curveRbayes/reference/extract_population_summary.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/fit_bayes_single.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/fit_calibration_bayes.html</loc></url>
 <url><loc>https://immunoplex.github.io/curveRbayes/reference/index.html</loc></url>

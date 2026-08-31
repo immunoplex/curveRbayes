@@ -63,6 +63,10 @@ reference:
   - compile_stan_model
   - fit_bayes_single
   - extract_curve_params
+  - extract_curve_draws
+  - extract_fit_diag
+  - extract_population_draws
+  - extract_population_summary
 
 - title: Stan Data and Priors
   desc: >
