@@ -1,3 +1,8 @@
+# curveRbayes 0.4.1
+
+* fit_calibration_bayes() now passes pcov_threshold explicitly into predict_samples_bayes() instead of relying on that function's own default, so per-sample pcov_pass always reflects the study's configured threshold.
+
+
 
 # [unreleased] curveRbayes (2026-08-22)
 
