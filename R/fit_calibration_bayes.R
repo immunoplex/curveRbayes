@@ -463,7 +463,7 @@ fit_calibration_bayes <- function(standards,
         samples_out <- predict_samples_bayes(
           this_samp, best_fit, curve_idx = idx,
           response_variable = response_var,
-          is_log_response   = is_log_response,
+          # is_log_response   = is_log_response,
           n_draws  = n_draws_predict,
           cv_x_max = cv_x_max,
           pcov_threshold = pcov_threshold,
