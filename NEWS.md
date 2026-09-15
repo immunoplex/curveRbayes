@@ -1,3 +1,8 @@
+# curveRbayes 0.4.2
+
+* Created a new pcov_gate_class and changed the basis for pcov_pass classifcations.
+
+
 # curveRbayes 0.4.1
 
 * fit_calibration_bayes() now passes pcov_threshold explicitly into predict_samples_bayes() instead of relying on that function's own default, so per-sample pcov_pass always reflects the study's configured threshold.

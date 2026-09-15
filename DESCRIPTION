@@ -1,6 +1,6 @@
 Package: curveRbayes
 Title: Bayesian Immunoassay Standard Curve Fitting
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: c( person("Hardik", "Gupta", email =
         "Hardik.Gupta@dartmouth.edu", role = "aut"), person("Michael
         Scot", "Zens", email = "michael.s.zens@dartmouth.edu", role =

@@ -14,7 +14,7 @@ Source:
 [`DESCRIPTION`](https://github.com/immunoplex/curveRbayes/blob/HEAD/DESCRIPTION)
 
 Gupta H, Zens M, Hoen A (2026). *curveRbayes: Bayesian Immunoassay
-Standard Curve Fitting*. R package version 0.4.1,
+Standard Curve Fitting*. R package version 0.4.2,
 <https://github.com/immunoplex/curveRbayes>.
 
     @Manual{,
@@ -22,6 +22,6 @@ Standard Curve Fitting*. R package version 0.4.1,
       author = {Hardik Gupta and Michael
             Scot Zens and Anne G. Hoen},
       year = {2026},
-      note = {R package version 0.4.1},
+      note = {R package version 0.4.2},
       url = {https://github.com/immunoplex/curveRbayes},
     }

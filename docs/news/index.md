@@ -1,5 +1,10 @@
 # Changelog
 
+## curveRbayes 0.4.2
+
+- Created a new pcov_gate_class and changed the basis for pcov_pass
+  classifcations.
+
 ## curveRbayes 0.4.1
 
 - fit_calibration_bayes() now passes pcov_threshold explicitly into
