@@ -1,3 +1,32 @@
+functions {
+  // Partial log-likelihood over the observation slice [start, end]. reduce_sum
+  // shards the sum across TBB threads within a chain; with threads_per_chain = 1
+  // it runs as a single serial loop with negligible overhead, so it is safe as a
+  // default. The noise model here is identical to the serial version it replaces.
+  real partial_sum_ll(array[] real y_slice, int start, int end,
+                      array[] int plate_idx, vector x,
+                      vector a, vector d, vector b, vector c_par,
+                      int use_het, real sigma_obs,
+                      real log_sigma0, real log_sigma_slope, real nu) {
+    real lp = 0;
+    for (n in 1:(end - start + 1)) {
+      int i = start + n - 1;
+      int p = plate_idx[i];
+      real z = -(x[i] - c_par[p]) / b[p];
+      real mu_i = a[p] + (d[p] - a[p]) / (1.0 + exp(z));
+      real sigma_i;
+      if (use_het) {
+        real log_abs_mu = log(abs(mu_i) + 1e-10);
+        sigma_i = exp(log_sigma0 + log_sigma_slope * log_abs_mu);
+      } else {
+        sigma_i = sigma_obs;
+      }
+      lp += student_t_lpdf(y_slice[n] | nu, mu_i, sigma_i);
+    }
+    return lp;
+  }
+}
+
 // hierarchical_logistic4.stan
 //
 // Hierarchical 4-parameter logistic model (symmetric sigmoid).
@@ -105,19 +134,11 @@ model {
   log_sigma_slope  ~ normal(prior_log_sigma_slope_mu, prior_log_sigma_slope_sigma);
 
   // curveRcore logistic4: y = a + (d - a) / (1 + exp(-(x - c) / b))
-  for (i in 1:N_obs) {
-    int p = plate_idx[i];
-    real z = -(x[i] - c_par[p]) / b[p];
-    real mu_i = a[p] + (d[p] - a[p]) / (1.0 + exp(z));
-    real sigma_i;
-    if (use_heteroscedastic_noise) {
-      real log_abs_mu = log(abs(mu_i) + 1e-10);
-      sigma_i = exp(log_sigma0 + log_sigma_slope * log_abs_mu);
-    } else {
-      sigma_i = sigma_obs;
-    }
-    y[i] ~ student_t(nu, mu_i, sigma_i);
-  }
+  // Likelihood, threaded within-chain via reduce_sum (see functions block).
+  target += reduce_sum(partial_sum_ll, y, grainsize,
+                       plate_idx, x, a, d, b, c_par,
+                       use_heteroscedastic_noise, sigma_obs,
+                       log_sigma0, log_sigma_slope, nu);
 
   if (N_blanks > 0)
     blank_response ~ student_t(nu, a[blank_plate_idx], sigma_blank);
