@@ -38,7 +38,11 @@ compile_stan_model <- function(model_family = "logistic4") {
          "  install.packages('cmdstanr', repos = c('https://stan-dev.r-universe.dev', getOption('repos')))")
 
   path <- stan_model_path(model_family)
-  cmdstanr::cmdstan_model(path)
+  # stan_threads = TRUE enables within-chain parallelism: the model bodies
+  # evaluate the likelihood through reduce_sum, which shards across TBB threads
+  # when sampled with threads_per_chain > 1. At threads_per_chain = 1 it runs
+  # serially with negligible overhead, so this is safe as a default.
+  cmdstanr::cmdstan_model(path, cpp_options = list(stan_threads = TRUE))
 }
 
 
@@ -71,6 +75,7 @@ fit_bayes_single <- function(stan_data,
                              adapt_delta = 0.9,
                              max_treedepth = 12L,
                              seed = NULL,
+                             threads_per_chain = 1L,
                              compiled_model = NULL,
                              verbose = FALSE) {
 
@@ -87,6 +92,7 @@ fit_bayes_single <- function(stan_data,
     adapt_delta     = adapt_delta,
     max_treedepth   = max_treedepth,
     seed            = seed,
+    threads_per_chain = max(1L, as.integer(threads_per_chain)),
     refresh         = if (verbose) 200 else 0,
     show_messages   = verbose,
     show_exceptions = verbose
