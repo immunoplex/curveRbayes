@@ -79,13 +79,18 @@ transformed parameters {
 
 model {
   mu_a ~ normal(prior_a_mu, prior_a_sigma);
-  sigma_a ~ normal(0, prior_a_sigma * 0.5);
+  // Between-plate SDs use a half-Cauchy rather than a half-Normal. With few
+  // plates the group-level scale is weakly identified, and a heavy tail lets
+  // it escape a mis-chosen prior scale instead of being pinned near it
+  // (Gelman 2006; Polson & Scott 2012). Measured neutral at 3-30 plates on
+  // the current scales, so this is insurance rather than a fix.
+  sigma_a ~ cauchy(0, prior_a_sigma * 0.5);
   mu_d ~ normal(prior_d_mu, prior_d_sigma);
-  sigma_d ~ normal(0, prior_d_sigma * 0.5);
+  sigma_d ~ cauchy(0, prior_d_sigma * 0.5);
   mu_log_b ~ normal(prior_log_b_mu, prior_log_b_sigma);
-  sigma_log_b ~ normal(0, 0.5);
+  sigma_log_b ~ cauchy(0, 0.5);
   mu_c ~ normal(prior_c_mu, prior_c_sigma);
-  sigma_c ~ normal(0, prior_c_sigma * 0.5);
+  sigma_c ~ cauchy(0, prior_c_sigma * 0.5);
 
   raw_a ~ std_normal();
   raw_d ~ std_normal();
@@ -103,7 +108,15 @@ model {
   // Likelihood: curveRcore gompertz4 convention
   for (i in 1:N_obs) {
     int p = plate_idx[i];
-    real u = exp(-b[p] * (x[i] - c_par[p]));
+    // Clamp the inner exponent. Without it, at concentrations far below the
+    // inflection point lin grows large and exp(lin) overflows to +Inf; the
+    // curve value stays correct (exp(-Inf) = 0 -> mu = a) but the autodiff
+    // gradient becomes Inf*0 = NaN and NUTS stalls or diverges. exp(-exp(30))
+    // is already 0 to machine precision, so the clamp only engages where the
+    // curve is numerically flat at the lower asymptote and is invisible to the
+    // likelihood anywhere the data support.
+    real lin = -b[p] * (x[i] - c_par[p]);
+    real u = exp(fmin(lin, 30.0));
     real mu_i = a[p] + (d[p] - a[p]) * exp(-u);
     real sigma_i;
     if (use_heteroscedastic_noise) {
@@ -125,7 +138,15 @@ generated quantities {
 
   for (i in 1:N_obs) {
     int p = plate_idx[i];
-    real u = exp(-b[p] * (x[i] - c_par[p]));
+    // Clamp the inner exponent. Without it, at concentrations far below the
+    // inflection point lin grows large and exp(lin) overflows to +Inf; the
+    // curve value stays correct (exp(-Inf) = 0 -> mu = a) but the autodiff
+    // gradient becomes Inf*0 = NaN and NUTS stalls or diverges. exp(-exp(30))
+    // is already 0 to machine precision, so the clamp only engages where the
+    // curve is numerically flat at the lower asymptote and is invisible to the
+    // likelihood anywhere the data support.
+    real lin = -b[p] * (x[i] - c_par[p]);
+    real u = exp(fmin(lin, 30.0));
     real mu_val = a[p] + (d[p] - a[p]) * exp(-u);
     real sigma_i;
     if (use_heteroscedastic_noise) {
