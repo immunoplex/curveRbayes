@@ -96,16 +96,21 @@ transformed parameters {
 model {
   // Hyperpriors
   mu_a ~ normal(prior_a_mu, prior_a_sigma);
-  sigma_a ~ normal(0, prior_a_sigma * 0.5);
+  // Between-plate SDs use a half-Cauchy rather than a half-Normal. With few
+  // plates the group-level scale is weakly identified, and a heavy tail lets
+  // it escape a mis-chosen prior scale instead of being pinned near it
+  // (Gelman 2006; Polson & Scott 2012). Measured neutral at 3-30 plates on
+  // the current scales, so this is insurance rather than a fix.
+  sigma_a ~ cauchy(0, prior_a_sigma * 0.5);
 
   mu_d ~ normal(prior_d_mu, prior_d_sigma);
-  sigma_d ~ normal(0, prior_d_sigma * 0.5);
+  sigma_d ~ cauchy(0, prior_d_sigma * 0.5);
 
   mu_log_b ~ normal(prior_log_b_mu, prior_log_b_sigma);
-  sigma_log_b ~ normal(0, 0.5);
+  sigma_log_b ~ cauchy(0, 0.5);
 
   mu_c ~ normal(prior_c_mu, prior_c_sigma);
-  sigma_c ~ normal(0, prior_c_sigma * 0.5);
+  sigma_c ~ cauchy(0, prior_c_sigma * 0.5);
 
   mu_log_g ~ normal(0, prior_log_g_sd);
   sigma_log_g ~ normal(0, prior_log_g_plate_sd);
