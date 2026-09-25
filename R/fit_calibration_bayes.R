@@ -112,6 +112,7 @@ fit_calibration_bayes <- function(standards,
                                   sampling = 1000L,
                                   adapt_delta = 0.9,
                                   seed = NULL,
+                                  threads_per_chain = 1L,
                                   n_draws_predict = 500L,
                                   n_draws_ensemble = 260L,
                                   compute_all_grids = FALSE,
@@ -238,6 +239,7 @@ fit_calibration_bayes <- function(standards,
     )
 
     bayes_fits[[fam]] <- fit_bayes_single(
+        threads_per_chain = threads_per_chain,
       sdata, model_family = fam,
       chains = chains, warmup = warmup, sampling = sampling,
       adapt_delta = adapt_delta, seed = seed,
