@@ -1,3 +1,24 @@
+# curveRbayes 0.4.3 (2026-09-26)
+
+* Declared the real dependency floor: `Imports: curveRcore (>= 0.4.0)`.
+  `fit_calibration_bayes()` passes `population =` to
+  `new_calibration_result_multiplate()`, which curveRcore only accepts from
+  0.4.0. With no floor, a clean install could resolve curveRcore 0.2.0 and then
+  fail every fit with `unused argument (population = population)` at the end of
+  the run.
+* `hierarchical_loglogistic4.stan` now uses `sigma_log_c ~ cauchy(0, 0.5)`,
+  completing the half-Cauchy switch from 0.4.2+. That family estimates the
+  location on the log scale and so names its between-plate SD `sigma_log_c`; the
+  original patch matched `sigma_(a|d|c|log_b)` and skipped it, leaving one
+  family with a half-Normal location tau while the other four were half-Cauchy.
+  The scale is 0.5, not the previous 1.0, because a half-Cauchy(0, 1) on a
+  log-EC50 SD admits implausibly large between-plate spread.
+* Version bump so the tag uniquely identifies the code. `main` had carried the
+  LOO-stacking fix, the Gompertz overflow guard, the `reduce_sum` threading and
+  the half-Cauchy taus while still declaring 0.4.2, so two materially different
+  package states both answered `packageVersion("curveRbayes")` with "0.4.2".
+
+
 # curveRbayes 0.4.2
 
 * Created a new pcov_gate_class and changed the basis for pcov_pass classifcations.

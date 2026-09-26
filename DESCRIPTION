@@ -1,6 +1,6 @@
 Package: curveRbayes
 Title: Bayesian Immunoassay Standard Curve Fitting
-Version: 0.4.2
+Version: 0.4.3
 Authors@R: c( person("Hardik", "Gupta", email =
         "Hardik.Gupta@dartmouth.edu", role = "aut"), person("Michael
         Scot", "Zens", email = "michael.s.zens@dartmouth.edu", role =
@@ -18,7 +18,8 @@ URL: https://github.com/immunoplex/curveRbayes,
         https://immunoplex.github.io/curveRbayes
 BugReports: https://github.com/immunoplex/curveRbayes/issues
 Remotes: immunoplex/curveRcore, stan-dev/cmdstanr
-Imports: curveRcore, cmdstanr, posterior, loo (>= 2.7.0), stats
+Imports: curveRcore (>= 0.4.0), cmdstanr, posterior, loo (>= 2.7.0),
+        stats
 Suggests: testthat (>= 3.0.0), knitr, rmarkdown, bayesplot, dplyr,
         ggplot2, tibble, scales, purrr
 Additional_repositories: https://stan-dev.r-universe.dev

@@ -124,7 +124,7 @@ model {
   mu_log_b ~ normal(prior_log_b_mu, prior_log_b_sigma);
   sigma_log_b ~ cauchy(0, 0.5);
   mu_log_c ~ normal(prior_log_c_mu, prior_log_c_sigma);
-  sigma_log_c ~ normal(0, 1.0);
+  sigma_log_c ~ cauchy(0, 0.5);
 
   raw_a ~ std_normal();
   raw_d ~ std_normal();
