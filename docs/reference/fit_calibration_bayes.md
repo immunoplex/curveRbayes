@@ -31,11 +31,13 @@ fit_calibration_bayes(
   sampling = 1000L,
   adapt_delta = 0.9,
   seed = NULL,
+  threads_per_chain = 1L,
   n_draws_predict = 500L,
   n_draws_ensemble = 260L,
   compute_all_grids = FALSE,
   use_heteroscedastic_noise = FALSE,
   include_measurement_error = TRUE,
+  decision_cutoff = NULL,
   run_loo = NULL,
   persist_draws = FALSE,
   bayes_single_plate = FALSE,
@@ -178,6 +180,13 @@ fit_calibration_bayes(
   when TRUE is chosen by `use_heteroscedastic_noise`. See
   `predict_bayes.R` and
   UNDERSTANDING_precision_and_measurement_error.md.
+
+- decision_cutoff:
+
+  Numeric or NULL. Dilution-corrected concentration for each sample's
+  `p_below_cutoff` (probability its concentration is below the cutoff).
+  Default NULL: `p_below_cutoff` is `NA`. `p_below_lloq` /
+  `p_above_uloq` are always computed.
 
 - run_loo:
 

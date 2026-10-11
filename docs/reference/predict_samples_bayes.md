@@ -20,7 +20,10 @@ predict_samples_bayes(
   cv_x_max = 150,
   pcov_threshold = 20,
   is_log_x = TRUE,
-  include_measurement_error = TRUE
+  include_measurement_error = TRUE,
+  lloq_log10 = NA_real_,
+  uloq_log10 = NA_real_,
+  decision_cutoff = NULL
 )
 ```
 
@@ -72,6 +75,21 @@ predict_samples_bayes(
   [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md)
   for the same fit.
 
+- lloq_log10, uloq_log10:
+
+  Numeric. This curve's LLOQ/ULOQ (log10, pre-dilution) for
+  `p_below_lloq` / `p_above_uloq`. Default `NA`.
+
+- decision_cutoff:
+
+  Numeric or NULL. Dilution-corrected concentration for
+  `p_below_cutoff`. Default NULL (column is `NA`).
+
 ## Value
 
-Data frame with original sample columns plus prediction columns.
+Data frame with original sample columns plus prediction columns,
+including the predictive interval / probability columns from
+[`curveRcore::summarize_conc_draws()`](https://immunoplex.github.io/curveRcore/reference/summarize_conc_draws.html).
+Those are computed from ALL draws, with draws whose response falls
+beyond an asymptote kept as censored; `se_concentration` / `pcov` are
+unchanged and still use the invertible draws only.

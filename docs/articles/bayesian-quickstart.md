@@ -276,13 +276,28 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d83f753004.stan', line 114, column 4 to column 40)
+#> Chain 1 Exception: Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 138, column 2 to line 141, column 56)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
+#> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 144, column 4 to column 68)
+#> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 2
+#> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 3 Exception: Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 138, column 2 to line 141, column 56)
+#> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 3
 #> Chain 4 Rejecting initial value:
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
+#> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#> Chain 4 Exception: Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7544db9bca.stan', line 138, column 2 to line 141, column 56)
+#> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+#> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+#> Chain 4
 #> [fit_bayes] Done. Divergences: 0  Max treedepth: 0
 #> 
 #> ── Fitting logistic5 ──
@@ -291,12 +306,12 @@ fit <- fit_calibration_bayes(
 #> Chain 1   Gradient evaluated at the initial value is not finite.
 #> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d843c2154.stan', line 142, column 4 to column 40)
+#> Chain 1 Exception: Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75451f3498e.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75451f3498e.stan', line 166, column 2 to line 169, column 56)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d843c2154.stan', line 142, column 4 to column 40)
+#> Chain 3 Exception: Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75451f3498e.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75451f3498e.stan', line 166, column 2 to line 169, column 56)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
@@ -304,7 +319,7 @@ fit <- fit_calibration_bayes(
 #> Chain 4   Gradient evaluated at the initial value is not finite.
 #> Chain 4   Stan can't start sampling from this initial value.
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d843c2154.stan', line 142, column 4 to column 40)
+#> Chain 4 Exception: Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75451f3498e.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75451f3498e.stan', line 166, column 2 to line 169, column 56)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -312,21 +327,18 @@ fit <- fit_calibration_bayes(
 #> 
 #> ── Fitting gompertz4 ──
 #> [fit_bayes] Sampling gompertz4 (4 chains × 1000 draws) ...
-#> Chain 1 Rejecting initial value:
-#> Chain 1   Gradient evaluated at the initial value is not finite.
-#> Chain 1   Stan can't start sampling from this initial value.
 #> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d844c73cb1.stan', line 119, column 4 to column 68)
+#> Chain 2 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75443c86ac5.stan', line 147, column 4 to column 68)
 #> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d844c73cb1.stan', line 119, column 4 to column 68)
+#> Chain 3 Exception: Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75443c86ac5.stan', line 26, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75443c86ac5.stan', line 141, column 2 to line 144, column 56)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d844c73cb1.stan', line 115, column 4 to column 40)
+#> Chain 4 Exception: Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75443c86ac5.stan', line 26, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-75443c86ac5.stan', line 141, column 2 to line 144, column 56)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
@@ -335,41 +347,47 @@ fit <- fit_calibration_bayes(
 #> ── Fitting loglogistic5 ──
 #> [fit_bayes] Sampling loglogistic5 (4 chains × 1000 draws) ...
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: student_t_lpdf: Scale parameter is 0, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d814d822a0.stan', line 130, column 4 to column 68)
+#> Chain 1 Exception: Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7542cd723f8.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7542cd723f8.stan', line 150, column 2 to line 153, column 56)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1
-#> Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 2 Exception: student_t_lpdf: Location parameter is nan, but must be finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d814d822a0.stan', line 126, column 4 to column 40)
-#> Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-#> Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-#> Chain 2
 #> Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 3 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d814d822a0.stan', line 126, column 4 to column 40)
+#> Chain 3 Exception: Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7542cd723f8.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7542cd723f8.stan', line 150, column 2 to line 153, column 56)
 #> Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 3
 #> Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 4 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpCA2xfy/model-42d814d822a0.stan', line 126, column 4 to column 40)
+#> Chain 4 Exception: Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7542cd723f8.stan', line 24, column 6 to column 59) (in 'C:/Users/d78039e/AppData/Local/Temp/RtmpwN99KO/model-7542cd723f8.stan', line 150, column 2 to line 153, column 56)
 #> Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 4
-#> [fit_bayes] Done. Divergences: 0  Max treedepth: 0
+#> Warning: 55 of 4000 (1.0%) transitions ended with a divergence.
+#> See https://mc-stan.org/misc/warnings for details.
+#> 
+#> Warning: 55 of 4000 (1.0%) transitions ended with a divergence.
+#> See https://mc-stan.org/misc/warnings for details.
+#> 
+#> Warning: 55 of 4000 (1.0%) transitions ended with a divergence.
+#> See https://mc-stan.org/misc/warnings for details.
+#> 
+#> Warning: 55 of 4000 (1.0%) transitions ended with a divergence.
+#> See https://mc-stan.org/misc/warnings for details.
+#> [fit_bayes] Done. Divergences: 55  Max treedepth: 0
 #>   [grids] logistic4 (260 draws)
 #>   [grids] logistic5 (260 draws)
 #>   [grids] gompertz4 (260 draws)
 #>   [grids] loglogistic5 (260 draws)
 #>   [eligibility] logistic4      ✓ eligible
 #>   [eligibility] logistic5      ✓ eligible
-#>   [eligibility] gompertz4      ✓ eligible
-#>   [eligibility] loglogistic5   ✓ eligible
+#>   [eligibility] gompertz4      ✗ ineligible
+#>   [eligibility] loglogistic5   ✗ ineligible
 #>   [selection] best = logistic5
-#> [detection_limits] curve_id=1  LLOD_resp=1.743  ULOD_resp=4.287  MDC=[-2.009, 1.302]  RDL=[-1.997, 0.9788]
-#> [detection_limits] curve_id=2  LLOD_resp=1.653  ULOD_resp=4.258  MDC=[-2.007, 1.355]  RDL=[-1.995, 1.033]
-#> [detection_limits] curve_id=3  LLOD_resp=1.712  ULOD_resp=4.309  MDC=[-2.053, 1.328]  RDL=[-2.043, 0.9972]
-#> [detection_limits] curve_id=4  LLOD_resp=1.387  ULOD_resp=4.426  MDC=[-0.8261, 2.324]  RDL=[-0.8177, 2.063]
-#> [detection_limits] curve_id=5  LLOD_resp=1.320  ULOD_resp=4.387  MDC=[-0.912, 2.37]  RDL=[-0.904, 2.067]
-#> [detection_limits] curve_id=6  LLOD_resp=1.509  ULOD_resp=4.415  MDC=[-0.4905, 2.34]  RDL=[-0.4816, 2.029]
+#> [detection_limits] curve_id=1  LLOD_resp=1.749  ULOD_resp=4.287  MDC=[-1.997, 1.3]  RDL=[-1.985, 0.9835]
+#> [detection_limits] curve_id=2  LLOD_resp=1.680  ULOD_resp=4.258  MDC=[-1.95, 1.361]  RDL=[-1.938, 1.045]
+#> [detection_limits] curve_id=3  LLOD_resp=1.699  ULOD_resp=4.308  MDC=[-2.091, 1.31]  RDL=[-2.08, 0.9782]
+#> [detection_limits] curve_id=4  LLOD_resp=1.384  ULOD_resp=4.428  MDC=[-0.8371, 2.339]  RDL=[-0.8291, 2.059]
+#> [detection_limits] curve_id=5  LLOD_resp=1.323  ULOD_resp=4.389  MDC=[-0.8827, 2.386]  RDL=[-0.8752, 2.083]
+#> [detection_limits] curve_id=6  LLOD_resp=1.511  ULOD_resp=4.413  MDC=[-0.4876, 2.326]  RDL=[-0.4784, 2.025]
 ```
 
 ``` r
@@ -507,10 +525,10 @@ lapply(ensemble, function(m) {
 
 | model        | n_divergent | n_max_treedepth | mean_ebfmi |
 |:-------------|------------:|----------------:|-----------:|
-| logistic4    |           0 |               0 |      0.703 |
-| logistic5    |           0 |               0 |      0.671 |
-| gompertz4    |           0 |               0 |      0.736 |
-| loglogistic5 |           0 |               0 |      0.716 |
+| logistic4    |           0 |               0 |      0.682 |
+| logistic5    |           0 |               0 |      0.727 |
+| gompertz4    |           0 |               0 |      0.670 |
+| loglogistic5 |          55 |               0 |      0.787 |
 
 Quick convergence summary — curve_id 1.
 
@@ -524,15 +542,15 @@ cat(sprintf(
   quantile(mu_c_draws, 0.025),
   quantile(mu_c_draws, 0.975)
 ))
-#> mu_c:  mean = 0.073  95% CI [-0.560, 0.760]  (log10 AU/mL)
+#> mu_c:  mean = 0.076  95% CI [-0.646, 0.765]  (log10 AU/mL)
 
 # 3. Formal LOO comparison (if more than one model was fitted)
 if (!is.null(loo_comparison)) print(loo_comparison)
-#>         model elpd_diff se_diff p_worse diag_diff      diag_elpd
-#>     logistic5       0.0     0.0      NA           1 k_psis > 0.7
-#>  loglogistic5      -0.6     0.6    0.84   N < 100               
-#>     logistic4      -7.6     3.1    0.99   N < 100               
-#>     gompertz4     -25.9     5.9    1.00   N < 100
+#>         model elpd_diff se_diff p_worse diag_diff diag_elpd
+#>     logistic5       0.0     0.0      NA                    
+#>     logistic4      -8.1     3.1    1.00   N < 100          
+#>     gompertz4     -26.0     6.0    1.00   N < 100          
+#>  loglogistic5     -96.9     5.4    1.00   N < 100
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -542,13 +560,13 @@ if (!is.null(loo_comparison)) print(loo_comparison)
 grid_best <- cr1$grid
 head(grid_best[, c("x_fit", "predicted_response",
                    "pcov", "pcov_rmse", "pcov_pass", "noise_mode")])
-#>       x_fit predicted_response pcov pcov_rmse pcov_pass
-#> 1 -4.000000           1.398742  150       150     FALSE
-#> 2 -3.972477           1.400610  150       150     FALSE
-#> 3 -3.944954           1.402525  150       150     FALSE
-#> 4 -3.917430           1.404490  150       150     FALSE
-#> 5 -3.889907           1.406505  150       150     FALSE
-#> 6 -3.862384           1.408572  150       150     FALSE
+#>       x_fit predicted_response     pcov pcov_rmse pcov_pass
+#> 1 -4.000000           1.416051 150.0000  150.0000     FALSE
+#> 2 -3.972477           1.417838 150.0000  150.0000     FALSE
+#> 3 -3.944954           1.419672 150.0000  150.0000     FALSE
+#> 4 -3.917430           1.421553 150.0000  150.0000     FALSE
+#> 5 -3.889907           1.423484 143.5773  143.2711     FALSE
+#> 6 -3.862384           1.425465 150.0000  150.0000     FALSE
 #>                  noise_mode
 #> 1 measurement_homoscedastic
 #> 2 measurement_homoscedastic
@@ -561,12 +579,12 @@ head(grid_best[, c("x_fit", "predicted_response",
 grid_4pl <- ensemble[["logistic4"]]$grid
 head(grid_4pl[, c("x_fit", "predicted_response", "pcov")])
 #>       x_fit predicted_response     pcov
-#> 1 -4.000000           1.834228 143.1775
-#> 2 -3.972477           1.834319 139.6047
-#> 3 -3.944954           1.834415 140.4247
-#> 4 -3.917430           1.834518 142.0317
-#> 5 -3.889907           1.834626 138.1551
-#> 6 -3.862384           1.834740 150.0000
+#> 1 -4.000000           1.822226 150.0000
+#> 2 -3.972477           1.822325 141.5082
+#> 3 -3.944954           1.822430 127.9078
+#> 4 -3.917430           1.822542 149.5447
+#> 5 -3.889907           1.822659 127.0822
+#> 6 -3.862384           1.822784 140.6219
 ```
 
 ------------------------------------------------------------------------
@@ -868,10 +886,10 @@ lapply(ensemble, function(m) {
 
 | model        | n_divergent | n_max_treedepth | mean_ebfmi |
 |:-------------|------------:|----------------:|-----------:|
-| logistic4    |           0 |               0 |      0.703 |
-| logistic5    |           0 |               0 |      0.671 |
-| gompertz4    |           0 |               0 |      0.736 |
-| loglogistic5 |           0 |               0 |      0.716 |
+| logistic4    |           0 |               0 |      0.682 |
+| logistic5    |           0 |               0 |      0.727 |
+| gompertz4    |           0 |               0 |      0.670 |
+| loglogistic5 |          55 |               0 |      0.787 |
 
 Convergence flag summary — curve_id 1.
 
@@ -890,14 +908,14 @@ posterior::summarise_draws(
 
 | variable        |   mean |    sd |   q2.5 |  q97.5 |  rhat | ess_bulk | ess_tail |
 |:----------------|-------:|------:|-------:|-------:|------:|---------:|---------:|
-| mu_a            |  1.526 | 0.154 |  1.241 |  1.860 | 1.001 | 1528.747 | 2083.116 |
-| mu_d            |  4.400 | 0.056 |  4.286 |  4.514 | 1.005 | 1420.359 | 1983.397 |
-| mu_log_b        | -0.808 | 0.063 | -0.910 | -0.663 | 1.001 | 1810.263 | 1581.351 |
-| mu_c            |  0.073 | 0.332 | -0.560 |  0.760 | 1.002 | 1536.730 | 2061.559 |
-| sigma_obs       |  0.040 | 0.007 |  0.028 |  0.057 | 1.000 | 2443.924 | 2647.314 |
-| nu              |  2.232 | 0.256 |  2.006 |  2.891 | 1.000 | 3579.007 | 2431.053 |
-| log_sigma0      | -0.823 | 1.453 | -3.645 |  2.055 | 1.001 | 5218.284 | 3193.687 |
-| log_sigma_slope |  1.011 | 0.500 |  0.020 |  1.969 | 1.000 | 5019.666 | 3156.013 |
+| mu_a            |  1.528 | 0.167 |  1.210 |  1.877 | 1.001 | 1649.241 | 1636.807 |
+| mu_d            |  4.402 | 0.055 |  4.294 |  4.519 | 1.003 | 1766.760 | 1778.370 |
+| mu_log_b        | -0.809 | 0.060 | -0.909 | -0.665 | 1.000 | 2218.153 | 2147.059 |
+| mu_c            |  0.076 | 0.345 | -0.646 |  0.765 | 1.000 | 1550.409 | 1994.654 |
+| sigma_obs       |  0.041 | 0.007 |  0.028 |  0.057 | 1.002 | 2610.542 | 2904.305 |
+| nu              |  2.236 | 0.271 |  2.004 |  2.907 | 1.001 | 3747.847 | 2134.099 |
+| log_sigma0      | -0.828 | 1.525 | -3.795 |  2.149 | 1.001 | 6380.695 | 2941.177 |
+| log_sigma_slope |  0.994 | 0.511 |  0.003 |  1.994 | 1.001 | 5750.686 | 2706.685 |
 
 Population-level parameter summary — logistic4. Rhat \< 1.01 and
 ess_bulk \> 400 indicate adequate convergence. log_sigma0 and
@@ -930,7 +948,7 @@ lapply(ensemble, function(m) {
 | logistic4    |             0 |
 | logistic5    |             0 |
 | gompertz4    |             0 |
-| loglogistic5 |             0 |
+| loglogistic5 |            55 |
 
 Divergent transitions per model.
 
@@ -961,10 +979,10 @@ lapply(ensemble, function(m) {
 
 | model        | mean_ebfmi | flag  |
 |:-------------|-----------:|:------|
-| logistic4    |      0.703 | ✅ OK |
-| logistic5    |      0.671 | ✅ OK |
-| gompertz4    |      0.736 | ✅ OK |
-| loglogistic5 |      0.716 | ✅ OK |
+| logistic4    |      0.682 | ✅ OK |
+| logistic5    |      0.727 | ✅ OK |
+| gompertz4    |      0.670 | ✅ OK |
+| loglogistic5 |      0.787 | ✅ OK |
 
 Mean E-BFMI per model. Values below 0.2 indicate poor energy
 exploration.
@@ -1029,11 +1047,11 @@ weights are unreliable:
 
 ``` r
 if (!is.null(loo_comparison)) loo_comparison
-#>         model elpd_diff se_diff p_worse diag_diff      diag_elpd
-#>     logistic5       0.0     0.0      NA           1 k_psis > 0.7
-#>  loglogistic5      -0.6     0.6    0.84   N < 100               
-#>     logistic4      -7.6     3.1    0.99   N < 100               
-#>     gompertz4     -25.9     5.9    1.00   N < 100
+#>         model elpd_diff se_diff p_worse diag_diff diag_elpd
+#>     logistic5       0.0     0.0      NA                    
+#>     logistic4      -8.1     3.1    1.00   N < 100          
+#>     gompertz4     -26.0     6.0    1.00   N < 100          
+#>  loglogistic5     -96.9     5.4    1.00   N < 100
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -1072,11 +1090,10 @@ if (!is.null(stacking_weights)) {
 
 | model        | weight |
 |:-------------|-------:|
-|              |      1 |
-| logistic4    |      0 |
-| logistic5    |      0 |
-| gompertz4    |      0 |
-| loglogistic5 |      0 |
+| logistic5    | 0.9926 |
+| gompertz4    | 0.0074 |
+| logistic4    | 0.0000 |
+| loglogistic5 | 0.0000 |
 
 Bayesian stacking weights across candidate models.
 
@@ -1133,53 +1150,53 @@ if (!is.null(eligibility) && nrow(eligibility) > 0) {
 | model | curve_id | gate | passed | detail | eligible |
 |:---|---:|:---|:---|:---|:---|
 | gompertz4 | 1 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 1 | dynamic_range | TRUE | dynamic range = 0.676 log10 | TRUE |
-| gompertz4 | 2 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 2 | dynamic_range | TRUE | dynamic range = 0.626 log10 | TRUE |
+| gompertz4 | 1 | dynamic_range | TRUE | dynamic range = 0.516 log10 | TRUE |
+| gompertz4 | 2 | rel_se | TRUE |  | FALSE |
+| gompertz4 | 2 | dynamic_range | FALSE | dynamic range = 0.346 log10 (need \>= 0.5) | FALSE |
 | gompertz4 | 3 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 3 | dynamic_range | TRUE | dynamic range = 0.626 log10 | TRUE |
+| gompertz4 | 3 | dynamic_range | TRUE | dynamic range = 0.709 log10 | TRUE |
 | gompertz4 | 4 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 4 | dynamic_range | TRUE | dynamic range = 1.2 log10 | TRUE |
+| gompertz4 | 4 | dynamic_range | TRUE | dynamic range = 1.34 log10 | TRUE |
 | gompertz4 | 5 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 5 | dynamic_range | TRUE | dynamic range = 1.15 log10 | TRUE |
+| gompertz4 | 5 | dynamic_range | TRUE | dynamic range = 1.39 log10 | TRUE |
 | gompertz4 | 6 | rel_se | TRUE |  | TRUE |
-| gompertz4 | 6 | dynamic_range | TRUE | dynamic range = 1.06 log10 | TRUE |
+| gompertz4 | 6 | dynamic_range | TRUE | dynamic range = 0.949 log10 | TRUE |
 | logistic4 | 1 | rel_se | TRUE |  | TRUE |
-| logistic4 | 1 | dynamic_range | TRUE | dynamic range = 1.2 log10 | TRUE |
+| logistic4 | 1 | dynamic_range | TRUE | dynamic range = 1.43 log10 | TRUE |
 | logistic4 | 2 | rel_se | TRUE |  | TRUE |
-| logistic4 | 2 | dynamic_range | TRUE | dynamic range = 1.28 log10 | TRUE |
+| logistic4 | 2 | dynamic_range | TRUE | dynamic range = 1.2 log10 | TRUE |
 | logistic4 | 3 | rel_se | TRUE |  | TRUE |
-| logistic4 | 3 | dynamic_range | TRUE | dynamic range = 1.28 log10 | TRUE |
+| logistic4 | 3 | dynamic_range | TRUE | dynamic range = 1.27 log10 | TRUE |
 | logistic4 | 4 | rel_se | TRUE |  | TRUE |
-| logistic4 | 4 | dynamic_range | TRUE | dynamic range = 1.62 log10 | TRUE |
+| logistic4 | 4 | dynamic_range | TRUE | dynamic range = 1.4 log10 | TRUE |
 | logistic4 | 5 | rel_se | TRUE |  | TRUE |
-| logistic4 | 5 | dynamic_range | TRUE | dynamic range = 1.53 log10 | TRUE |
+| logistic4 | 5 | dynamic_range | TRUE | dynamic range = 1.57 log10 | TRUE |
 | logistic4 | 6 | rel_se | TRUE |  | TRUE |
-| logistic4 | 6 | dynamic_range | TRUE | dynamic range = 1.37 log10 | TRUE |
+| logistic4 | 6 | dynamic_range | TRUE | dynamic range = 1.57 log10 | TRUE |
 | logistic5 | 1 | rel_se | TRUE |  | TRUE |
-| logistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.64 log10 | TRUE |
+| logistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.46 log10 | TRUE |
 | logistic5 | 2 | rel_se | TRUE |  | TRUE |
-| logistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.56 log10 | TRUE |
+| logistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.88 log10 | TRUE |
 | logistic5 | 3 | rel_se | TRUE |  | TRUE |
-| logistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.88 log10 | TRUE |
+| logistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.69 log10 | TRUE |
 | logistic5 | 4 | rel_se | TRUE |  | TRUE |
-| logistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.59 log10 | TRUE |
+| logistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.62 log10 | TRUE |
 | logistic5 | 5 | rel_se | TRUE |  | TRUE |
-| logistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.63 log10 | TRUE |
+| logistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.65 log10 | TRUE |
 | logistic5 | 6 | rel_se | TRUE |  | TRUE |
-| logistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.57 log10 | TRUE |
-| loglogistic5 | 1 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 1 | dynamic_range | TRUE | dynamic range = 1.66 log10 | TRUE |
-| loglogistic5 | 2 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 2 | dynamic_range | TRUE | dynamic range = 1.71 log10 | TRUE |
-| loglogistic5 | 3 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 3 | dynamic_range | TRUE | dynamic range = 1.46 log10 | TRUE |
-| loglogistic5 | 4 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 4 | dynamic_range | TRUE | dynamic range = 1.63 log10 | TRUE |
-| loglogistic5 | 5 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 5 | dynamic_range | TRUE | dynamic range = 1.62 log10 | TRUE |
-| loglogistic5 | 6 | rel_se | TRUE |  | TRUE |
-| loglogistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.79 log10 | TRUE |
+| logistic5 | 6 | dynamic_range | TRUE | dynamic range = 1.59 log10 | TRUE |
+| loglogistic5 | 1 | rel_se | FALSE | b: rel_se=63.03; c: rel_se=9.94 | FALSE |
+| loglogistic5 | 1 | dynamic_range | FALSE | dynamic range = 0 log10 (need \>= 0.5) | FALSE |
+| loglogistic5 | 2 | rel_se | FALSE | b: rel_se=54.42; c: rel_se=7.46 | FALSE |
+| loglogistic5 | 2 | dynamic_range | FALSE | dynamic range = 0 log10 (need \>= 0.5) | FALSE |
+| loglogistic5 | 3 | rel_se | FALSE | b: rel_se=63.25; c: rel_se=8.73 | FALSE |
+| loglogistic5 | 3 | dynamic_range | FALSE | dynamic range = 0 log10 (need \>= 0.5) | FALSE |
+| loglogistic5 | 4 | rel_se | FALSE | b: rel_se=51.22; c: rel_se=9.58 | FALSE |
+| loglogistic5 | 4 | dynamic_range | FALSE | dynamic range = 0 log10 (need \>= 0.5) | FALSE |
+| loglogistic5 | 5 | rel_se | FALSE | b: rel_se=63.24; c: rel_se=10.78 | FALSE |
+| loglogistic5 | 5 | dynamic_range | FALSE | dynamic range = 0 log10 (need \>= 0.5) | FALSE |
+| loglogistic5 | 6 | rel_se | FALSE | b: rel_se=63.25; c: rel_se=10.37 | FALSE |
+| loglogistic5 | 6 | dynamic_range | FALSE | dynamic range = 0 log10 (need \>= 0.5) | FALSE |
 
 Eligibility gate results. eligible = FALSE excludes that model ×
 curve_id from back-calculation.
@@ -1201,10 +1218,10 @@ if (!is.null(eligibility) && nrow(eligibility) > 0 &&
 
 | model        | n_curve_ids | n_failures | all_passed |
 |:-------------|------------:|-----------:|:-----------|
-| gompertz4    |           6 |          0 | TRUE       |
+| gompertz4    |           6 |          2 | FALSE      |
 | logistic4    |           6 |          0 | TRUE       |
 | logistic5    |           6 |          0 | TRUE       |
-| loglogistic5 |           6 |          0 | TRUE       |
+| loglogistic5 |           6 |         12 | FALSE      |
 
 Eligibility summary across all models.
 
@@ -1310,16 +1327,16 @@ dplyr::glimpse(cr1$grid)
 #> $ log10_concentration     <dbl> -4.000000, -3.972477, -3.944954, -3.917430, -3…
 #> $ concentration           <dbl> 0.0001000000, 0.0001065426, 0.0001135132, 0.00…
 #> $ x_fit                   <dbl> -4.000000, -3.972477, -3.944954, -3.917430, -3…
-#> $ predicted_response      <dbl> 1.398742, 1.400610, 1.402525, 1.404490, 1.4065…
-#> $ ci_lower                <dbl> 1.171737, 1.174983, 1.178430, 1.181949, 1.1855…
-#> $ ci_upper                <dbl> 1.784976, 1.785086, 1.785201, 1.785323, 1.7854…
-#> $ predicted_concentration <dbl> -3.880520, -3.862948, -3.856497, -3.881174, -3…
-#> $ se_concentration        <dbl> 0.6794048, 0.6907654, 0.8896030, 0.9149750, 0.…
-#> $ pcov                    <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
-#> $ pcov_rmse               <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 150.00…
+#> $ predicted_response      <dbl> 1.416051, 1.417838, 1.419672, 1.421553, 1.4234…
+#> $ ci_lower                <dbl> 1.237652, 1.240154, 1.242718, 1.245344, 1.2480…
+#> $ ci_upper                <dbl> 1.803412, 1.803530, 1.803654, 1.803785, 1.8039…
+#> $ predicted_concentration <dbl> -3.895807, -3.929692, -3.841688, -3.834645, -3…
+#> $ se_concentration        <dbl> 0.7568610, 0.8111198, 0.7078487, 0.7680831, 0.…
+#> $ pcov                    <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 143.57…
+#> $ pcov_rmse               <dbl> 150.0000, 150.0000, 150.0000, 150.0000, 143.27…
 #> $ pcov_pass               <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
 #> $ noise_mode              <chr> "measurement_homoscedastic", "measurement_homo…
-#> $ d2y_dx2                 <dbl> NA, 0.06311380, 0.06477741, 0.06648632, 0.0682…
+#> $ d2y_dx2                 <dbl> NA, 0.06138896, 0.06302442, 0.06470468, 0.0664…
 # noise_mode column records which precision profile mode was used
 unique(cr1$grid$noise_mode)
 #> [1] "measurement_homoscedastic"
@@ -1509,57 +1526,81 @@ models”, subtitle = “Ribbon = range across curve_ids; line = mean”) }
     cat("Mode 0 — homoscedastic (sigma_obs):\n")
     #> Mode 0 — homoscedastic (sigma_obs):
     cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat_homo)))
-    #>   Posterior mean:  0.0053  log10(AU/mL)
+    #>   Posterior mean:  0.0034  log10(AU/mL)
     cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat_homo)))
-    #>   Posterior SD:    0.1103  log10(AU/mL)
+    #>   Posterior SD:    0.0948  log10(AU/mL)
     cat(sprintf("  Back-calc CV:    %.1f%%\n\n",
                 sd(x_hat_homo) * log(10) * 100))
-    #>   Back-calc CV:    25.4%
+    #>   Back-calc CV:    21.8%
     cat("Mode 1 — heteroscedastic CDAN (sigma_i = exp(log_sigma0 + log_sigma_slope*log|mu|)):\n")
     #> Mode 1 — heteroscedastic CDAN (sigma_i = exp(log_sigma0 + log_sigma_slope*log|mu|)):
     cat(sprintf("  Posterior mean:  %.4f  log10(AU/mL)\n", mean(x_hat_hetero)))
-    #>   Posterior mean:  -0.1573  log10(AU/mL)
+    #>   Posterior mean:  -0.1517  log10(AU/mL)
     cat(sprintf("  Posterior SD:    %.4f  log10(AU/mL)\n",   sd(x_hat_hetero)))
-    #>   Posterior SD:    0.6142  log10(AU/mL)
+    #>   Posterior SD:    0.6460  log10(AU/mL)
     cat(sprintf("  Back-calc CV:    %.1f%%\n",
                 sd(x_hat_hetero) * log(10) * 100))
-    #>   Back-calc CV:    141.4%
+    #>   Back-calc CV:    148.7%
 
 ------------------------------------------------------------------------
 
 ## Back-calculating test samples
 
-### Why noise is NOT injected for test samples
+### Noise injection for test samples: `include_measurement_error`
 
-This is the most important conceptual distinction in the package.
+Whether observation noise is injected when back-calculating test samples
+is controlled by one argument, `include_measurement_error`, which must
+take the same value for the precision grid and the samples so the sample
+points lie on the precision profile.
 
-When
-[`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md)
-is called on observed test-sample responses, the situation is
-fundamentally different from building a precision grid:
-
-> **The observed response $`y_\text{obs}`$ already IS the noisy
-> measurement. Injecting noise again would be double-counting.**
-
-The back-calculation task is: *given that the instrument returned
-$`y_\text{obs}`$, what is the posterior distribution of the unknown
-concentration $`x`$?* This is a pure inversion problem:
+**`include_measurement_error = TRUE` (the default).** Each posterior
+draw perturbs the observed response with the same Student-t noise model
+the grid uses before inverting:
 
 ``` math
 
 \hat{x}^{(s)}
-= f^{-1}\!\left(y_\text{obs};\; \boldsymbol{\theta}_k^{(s)}\right)
+= f^{-1}\!\left(y_\text{obs} + \varepsilon^{(s)};\; \boldsymbol{\theta}_k^{(s)}\right),
+\qquad \varepsilon^{(s)} \sim t_{\nu^{(s)}}\!\left(0, \sigma^{(s)}\right)
 ```
 
-No noise draw appears. The uncertainty in $`\hat{x}^{(s)}`$ arises
-solely from posterior uncertainty in the curve parameters
-$`\boldsymbol{\theta}_k^{(s)}`$.
+The reported precision then answers “how precisely does a single noisy
+reading like this one pin down a concentration?” — the classical
+immunoassay precision profile, comparable across samples and to the
+grid.
+
+**`include_measurement_error = FALSE`.** The observed response is
+inverted as is, so uncertainty comes only from the curve parameters. The
+argument for this mode is that $`y_\text{obs}`$ already *is* the noisy
+measurement; it gives an honest lower bound on precision and is
+appropriate when a plate has too few standards to estimate the noise
+model well.
 
 | Scenario | Function | Noise injected? | Source of uncertainty |
 |----|----|----|----|
-| Precision grid (homoscedastic) | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | ✅ Yes — Student-t($`\nu`$, $`\sigma_\text{obs}`$) constant | Parameter uncertainty + homoscedastic noise |
-| Precision grid (CDAN) | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | ✅ Yes — Student-t($`\nu`$, $`\sigma_i`$) where $`\sigma_i`$ scales with $`|\mu|`$ | Parameter uncertainty + concentration-dependent noise |
-| Test sample back-calculation | [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md) | ❌ No | Parameter uncertainty only (noise already realised in $`y_\text{obs}`$) |
+| Precision grid (homoscedastic) | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | when `include_measurement_error = TRUE` — Student-t($`\nu`$, $`\sigma_\text{obs}`$) | Parameter uncertainty + homoscedastic noise |
+| Precision grid (CDAN) | [`predict_grid_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_grid_bayes.md) | when `include_measurement_error = TRUE` — Student-t($`\nu`$, $`\sigma_i`$), $`\sigma_i`$ scaling with $`|\mu|`$ | Parameter uncertainty + concentration-dependent noise |
+| Test sample back-calculation | [`predict_samples_bayes()`](https://immunoplex.github.io/curveRbayes/reference/predict_samples_bayes.md) | when `include_measurement_error = TRUE` (same model as the grid) | As the grid; parameter uncertainty only when `FALSE` |
+
+The `noise_mode` column on `$samples` records which mode was used.
+
+### Draws beyond the asymptotes, intervals and probabilities
+
+When a draw’s (noisy) response falls beyond that draw’s lower or upper
+asymptote, it has no finite concentration. `se_concentration` and `pcov`
+drop such draws, which understates the spread near the ends of the
+curve; that summary is kept unchanged for comparability. Alongside it,
+every sample also gets columns computed from **all** draws, with an
+out-of-range draw counted as censored (concentration 0 or unbounded):
+`conc_q_lo` / `conc_q_med` / `conc_q_hi` (2.5 / 50 / 97.5 % on the
+natural, dilution-corrected scale), `p_below_lloq`, `p_above_uloq`,
+`p_below_cutoff` (pass `decision_cutoff =` to
+[`fit_calibration_bayes()`](https://immunoplex.github.io/curveRbayes/reference/fit_calibration_bayes.md)),
+and `frac_draws_below_a` / `frac_draws_above_d`. Censoring classes and
+bounds come from
+[`curveRcore::classify_censoring_multiplate()`](https://immunoplex.github.io/curveRcore/reference/classify_censoring_multiplate.html);
+see the curveRcore “Getting Started” vignette, section *Out-of-range
+samples*.
 
 ### Running back-calculation
 
@@ -1589,12 +1630,12 @@ if (!is.null(results) && nrow(results) > 0) {
 
 | curve_id | sampleid | mfi | predicted_concentration | final_concentration | se_concentration | pcov | pcov_pass |
 |:---|:---|---:|---:|---:|---:|---:|:---|
-| 1 | a001 | 18323.4 | 1.059 | 22931.93 | 0.380 | 87.416 | FALSE |
-| 1 | a002 | 19414.7 | 1.236 | 34433.04 | 0.439 | 101.049 | FALSE |
-| 1 | a003 | 20098.5 | 1.279 | 38032.36 | 0.471 | 108.516 | FALSE |
-| 1 | a004 | 19556.0 | 1.207 | 32188.42 | 0.486 | 111.985 | FALSE |
-| 1 | a005 | 20177.5 | 1.272 | 37394.04 | 0.452 | 104.149 | FALSE |
-| 1 | a006 | 70.1 | -1.896 | 25.44 | 0.255 | 58.677 | FALSE |
+| 1 | a001 | 18323.4 | 1.068 | 23382.347 | 0.362 | 83.304 | FALSE |
+| 1 | a002 | 19414.7 | 1.208 | 32296.213 | 0.415 | 95.490 | FALSE |
+| 1 | a003 | 20098.5 | 1.286 | 38630.748 | 0.427 | 98.319 | FALSE |
+| 1 | a004 | 19556.0 | 1.228 | 33844.681 | 0.458 | 105.365 | FALSE |
+| 1 | a005 | 20177.5 | 1.274 | 37614.394 | 0.450 | 103.659 | FALSE |
+| 1 | a006 | 70.1 | -1.883 | 26.166 | 0.237 | 54.510 | FALSE |
 
 Back-calculated concentrations (first rows). predicted_concentration is
 on the log10(AU/mL) fitting scale; final_concentration is on the natural
@@ -1623,12 +1664,12 @@ summary_table_bayes(fit) |>
 
 | curve_id | best_model | a_mean | a_sd | b_mean | b_sd | c_mean | c_sd | d_mean | d_sd | g_mean | g_sd | n_divergent | n_max_treedepth | n_standards | n_blanks | noise_mode |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|
-| 1 | logistic5 | 1.321 | 0.161 | 0.401 | 0.038 | -0.085 | 0.139 | 4.325 | 0.021 | 0.408 | 0.129 | 0 | 0 | 10 | 4 | FALSE |
-| 2 | logistic5 | 1.292 | 0.153 | 0.411 | 0.041 | -0.128 | 0.184 | 4.295 | 0.021 | 0.463 | 0.155 | 0 | 0 | 10 | 4 | FALSE |
-| 3 | logistic5 | 1.310 | 0.157 | 0.405 | 0.039 | -0.169 | 0.144 | 4.341 | 0.018 | 0.433 | 0.132 | 0 | 0 | 10 | 4 | FALSE |
-| 4 | logistic5 | 1.290 | 0.055 | 0.399 | 0.033 | 0.777 | 0.159 | 4.482 | 0.027 | 0.867 | 0.275 | 0 | 0 | 10 | 4 | FALSE |
-| 5 | logistic5 | 1.247 | 0.045 | 0.401 | 0.035 | 0.792 | 0.171 | 4.442 | 0.028 | 0.884 | 0.276 | 0 | 0 | 10 | 4 | FALSE |
-| 6 | logistic5 | 1.277 | 0.098 | 0.398 | 0.036 | 0.821 | 0.166 | 4.469 | 0.029 | 0.787 | 0.285 | 0 | 0 | 10 | 4 | FALSE |
+| 1 | logistic5 | 1.324 | 0.161 | 0.402 | 0.039 | -0.089 | 0.141 | 4.325 | 0.021 | 0.411 | 0.130 | 0 | 0 | 10 | 4 | FALSE |
+| 2 | logistic5 | 1.294 | 0.153 | 0.411 | 0.042 | -0.123 | 0.184 | 4.295 | 0.020 | 0.460 | 0.168 | 0 | 0 | 10 | 4 | FALSE |
+| 3 | logistic5 | 1.312 | 0.154 | 0.405 | 0.039 | -0.165 | 0.142 | 4.342 | 0.019 | 0.432 | 0.131 | 0 | 0 | 10 | 4 | FALSE |
+| 4 | logistic5 | 1.291 | 0.055 | 0.399 | 0.034 | 0.776 | 0.162 | 4.482 | 0.027 | 0.871 | 0.282 | 0 | 0 | 10 | 4 | FALSE |
+| 5 | logistic5 | 1.246 | 0.046 | 0.401 | 0.038 | 0.794 | 0.180 | 4.441 | 0.028 | 0.885 | 0.297 | 0 | 0 | 10 | 4 | FALSE |
+| 6 | logistic5 | 1.280 | 0.100 | 0.397 | 0.036 | 0.822 | 0.167 | 4.469 | 0.029 | 0.786 | 0.291 | 0 | 0 | 10 | 4 | FALSE |
 
 Per-curve summary: best model, posterior means and SDs, NUTS
 diagnostics, standard/blank counts, and noise mode.
@@ -1773,9 +1814,9 @@ Analysis* 13 (3): 917–1007. <https://doi.org/10.1214/17-BA1091>.
 
 ``` r
 sessionInfo()
-#> R version 4.5.1 (2025-06-13 ucrt)
+#> R version 4.5.2 (2025-10-31 ucrt)
 #> Platform: x86_64-w64-mingw32/x64
-#> Running under: Windows 11 x64 (build 26100)
+#> Running under: Windows 11 x64 (build 26200)
 #> 
 #> Matrix products: default
 #>   LAPACK version 3.12.1
@@ -1795,25 +1836,25 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] loo_2.9.0.9000    bayesplot_1.15.0  posterior_1.7.0   ggplot2_4.0.3    
-#> [5] dplyr_1.2.1       curveRbayes_0.4.2 curveRcore_0.4.2 
+#> [5] dplyr_1.2.1       curveRbayes_0.5.0 curveRcore_0.5.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      
 #>  [4] digest_0.6.39        magrittr_2.0.5       evaluate_1.0.5      
-#>  [7] grid_4.5.1           RColorBrewer_1.1-3   fastmap_1.2.0       
+#>  [7] grid_4.5.2           RColorBrewer_1.1-3   fastmap_1.2.0       
 #> [10] jsonlite_2.0.0       processx_3.9.0       backports_1.5.1     
 #> [13] ps_1.9.3             scales_1.4.0         textshaping_1.0.5   
 #> [16] jquerylib_0.1.4      abind_1.4-8          cli_3.6.6           
 #> [19] rlang_1.2.0          cmdstanr_0.9.0.9002  withr_3.0.2         
 #> [22] cachem_1.1.0         yaml_2.3.12          otel_0.2.0          
-#> [25] parallel_4.5.1       tools_4.5.1          checkmate_2.3.4     
+#> [25] parallel_4.5.2       tools_4.5.2          checkmate_2.3.4     
 #> [28] vctrs_0.7.3          R6_2.6.1             matrixStats_1.5.0   
 #> [31] lifecycle_1.0.5      fs_2.1.0             htmlwidgets_1.6.4   
 #> [34] ragg_1.5.1           pkgconfig_2.0.3      desc_1.4.3          
 #> [37] pkgdown_2.2.0        pillar_1.11.1        bslib_0.11.0        
 #> [40] gtable_0.3.6         data.table_1.18.4    glue_1.8.1          
 #> [43] systemfonts_1.3.2    xfun_0.57            tibble_3.3.1        
-#> [46] tidyselect_1.2.1     rstudioapi_0.18.0    knitr_1.51          
-#> [49] farver_2.1.2         htmltools_0.5.9      rmarkdown_2.31      
-#> [52] compiler_4.5.1       S7_0.2.2             distributional_0.8.1
+#> [46] tidyselect_1.2.1     knitr_1.51           farver_2.1.2        
+#> [49] htmltools_0.5.9      rmarkdown_2.31       compiler_4.5.2      
+#> [52] S7_0.2.2             distributional_0.8.1
 ```

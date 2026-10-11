@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">curveRbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,25 @@
       <small>Source: <a href="https://github.com/immunoplex/curveRbayes/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="curverbayes-050">curveRbayes 0.5.0<a class="anchor" aria-label="anchor" href="#curverbayes-050"></a></h2>
+<ul><li>
+<strong>Predictive intervals and threshold probabilities for test samples.</strong> <code><a href="../reference/predict_samples_bayes.html">predict_samples_bayes()</a></code> now also inverts every posterior draw with out-of-range responses kept as censored (<code><a href="https://immunoplex.github.io/curveRcore/reference/invert_with_bounds.html" class="external-link">curveRcore::invert_with_bounds()</a></code>) and adds <code>conc_q_lo</code> / <code>conc_q_med</code> / <code>conc_q_hi</code>, <code>p_below_lloq</code>, <code>p_above_uloq</code>, <code>p_below_cutoff</code>, <code>frac_draws_below_a</code> and <code>frac_draws_above_d</code> via <code><a href="https://immunoplex.github.io/curveRcore/reference/summarize_conc_draws.html" class="external-link">curveRcore::summarize_conc_draws()</a></code>. New <code>decision_cutoff</code> argument on <code><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes()</a></code> (recorded in <code>$meta</code>).</li>
+<li>
+<code>se_concentration</code> / <code>pcov</code> / <code>final_concentration</code> are byte-identical to 0.4.3 for the same posterior and seed: the new path reuses each draw’s already-sampled response and adds no RNG calls. The new <code>frac_draws_*</code> columns show how many draws those legacy summaries drop.</li>
+<li>Requires <code>curveRcore (&gt;= 0.5.0)</code>.</li>
+<li>Vignette: replaced the stale “noise is NOT injected for test samples” section — samples follow <code>include_measurement_error</code> (default <code>TRUE</code>), the same setting as the grid.</li>
+<li>
+<strong>Bug fix:</strong> <code><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes()</a></code> now passes <code>is_log_response</code> to <code><a href="../reference/predict_samples_bayes.html">predict_samples_bayes()</a></code> (the argument had been commented out), so test samples are back-calculated on the same response scale as the standards. Previously samples always assumed a log10 response; results change only for fits with <code>is_log_response = FALSE</code> (set through the settings cascade).</li>
+<li>Known, pre-existing: <code>test-reference-bayes.R</code> “sample predictions match reference” fails on the stored fixture with the 0.4.3 code as well; regenerate the fixture.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.3" id="curverbayes-043-2026-09-26">curveRbayes 0.4.3 (2026-09-26)<a class="anchor" aria-label="anchor" href="#curverbayes-043-2026-09-26"></a></h2>
+<ul><li>Declared the real dependency floor: <code>Imports: curveRcore (&gt;= 0.4.0)</code>. <code><a href="../reference/fit_calibration_bayes.html">fit_calibration_bayes()</a></code> passes <code>population =</code> to <code><a href="https://immunoplex.github.io/curveRcore/reference/new_calibration_result_multiplate.html" class="external-link">new_calibration_result_multiplate()</a></code>, which curveRcore only accepts from 0.4.0. With no floor, a clean install could resolve curveRcore 0.2.0 and then fail every fit with <code>unused argument (population = population)</code> at the end of the run.</li>
+<li>
+<code>hierarchical_loglogistic4.stan</code> now uses <code>sigma_log_c ~ cauchy(0, 0.5)</code>, completing the half-Cauchy switch from 0.4.2+. That family estimates the location on the log scale and so names its between-plate SD <code>sigma_log_c</code>; the original patch matched <code>sigma_(a|d|c|log_b)</code> and skipped it, leaving one family with a half-Normal location tau while the other four were half-Cauchy. The scale is 0.5, not the previous 1.0, because a half-Cauchy(0, 1) on a log-EC50 SD admits implausibly large between-plate spread.</li>
+<li>Version bump so the tag uniquely identifies the code. <code>main</code> had carried the LOO-stacking fix, the Gompertz overflow guard, the <code>reduce_sum</code> threading and the half-Cauchy taus while still declaring 0.4.2, so two materially different package states both answered <code>packageVersion("curveRbayes")</code> with “0.4.2”.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2" id="curverbayes-042">curveRbayes 0.4.2<a class="anchor" aria-label="anchor" href="#curverbayes-042"></a></h2>
 <ul><li>Created a new pcov_gate_class and changed the basis for pcov_pass classifcations.</li>

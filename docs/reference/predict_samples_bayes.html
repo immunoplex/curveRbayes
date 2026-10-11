@@ -13,7 +13,7 @@ the sample pcov is directly comparable to the precision profile."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">curveRbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,10 @@ the sample pcov is directly comparable to the precision profile.</p>
 <span>  cv_x_max <span class="op">=</span> <span class="fl">150</span>,</span>
 <span>  pcov_threshold <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  is_log_x <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  include_measurement_error <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  include_measurement_error <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  lloq_log10 <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  uloq_log10 <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  decision_cutoff <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,10 +114,25 @@ the measurement/CDAN profile. If FALSE, invert the observed response with no
 added noise (curve/parameter precision only). MUST match the value passed to
 <code><a href="predict_grid_bayes.html">predict_grid_bayes()</a></code> for the same fit.</p></dd>
 
+
+<dt id="arg-lloq-log-uloq-log-">lloq_log10, uloq_log10<a class="anchor" aria-label="anchor" href="#arg-lloq-log-uloq-log-"></a></dt>
+<dd><p>Numeric. This curve's LLOQ/ULOQ (log10,
+pre-dilution) for <code>p_below_lloq</code> / <code>p_above_uloq</code>. Default <code>NA</code>.</p></dd>
+
+
+<dt id="arg-decision-cutoff">decision_cutoff<a class="anchor" aria-label="anchor" href="#arg-decision-cutoff"></a></dt>
+<dd><p>Numeric or NULL. Dilution-corrected concentration for
+<code>p_below_cutoff</code>. Default NULL (column is <code>NA</code>).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Data frame with original sample columns plus prediction columns.</p>
+    <p>Data frame with original sample columns plus prediction columns,
+including the predictive interval / probability columns from
+<code><a href="https://immunoplex.github.io/curveRcore/reference/summarize_conc_draws.html" class="external-link">curveRcore::summarize_conc_draws()</a></code>. Those are computed from ALL draws,
+with draws whose response falls beyond an asymptote kept as censored;
+<code>se_concentration</code> / <code>pcov</code> are unchanged and still use the invertible
+draws only.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
