@@ -14,7 +14,10 @@ predict_samples_bayes(
   cv_x_max = 150,
   pcov_threshold = 20,
   is_log_x = TRUE,
-  include_measurement_error = TRUE
+  include_measurement_error = TRUE,
+  lloq_log10 = NA_real_,
+  uloq_log10 = NA_real_,
+  decision_cutoff = NULL
 )
 }
 \arguments{
@@ -41,9 +44,20 @@ observation noise the grid uses before back-calculating, so samples lie on
 the measurement/CDAN profile. If FALSE, invert the observed response with no
 added noise (curve/parameter precision only). MUST match the value passed to
 \code{\link[=predict_grid_bayes]{predict_grid_bayes()}} for the same fit.}
+
+\item{lloq_log10, uloq_log10}{Numeric. This curve's LLOQ/ULOQ (log10,
+pre-dilution) for \code{p_below_lloq} / \code{p_above_uloq}. Default \code{NA}.}
+
+\item{decision_cutoff}{Numeric or NULL. Dilution-corrected concentration for
+\code{p_below_cutoff}. Default NULL (column is \code{NA}).}
 }
 \value{
-Data frame with original sample columns plus prediction columns.
+Data frame with original sample columns plus prediction columns,
+including the predictive interval / probability columns from
+\code{\link[curveRcore:summarize_conc_draws]{curveRcore::summarize_conc_draws()}}. Those are computed from ALL draws,
+with draws whose response falls beyond an asymptote kept as censored;
+\code{se_concentration} / \code{pcov} are unchanged and still use the invertible
+draws only.
 }
 \description{
 For each test sample, evaluates the inverse model at every posterior draw to

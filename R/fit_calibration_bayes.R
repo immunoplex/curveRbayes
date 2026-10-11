@@ -81,6 +81,10 @@
 #'   across the posterior (curve/parameter uncertainty only). The noise MODEL
 #'   used when TRUE is chosen by `use_heteroscedastic_noise`. See
 #'   `predict_bayes.R` and UNDERSTANDING_precision_and_measurement_error.md.
+#' @param decision_cutoff Numeric or NULL. Dilution-corrected concentration
+#'   for each sample's `p_below_cutoff` (probability its concentration is below
+#'   the cutoff). Default NULL: `p_below_cutoff` is `NA`. `p_below_lloq` /
+#'   `p_above_uloq` are always computed.
 #' @param run_loo Logical or NULL. Default NULL (auto).
 #' @param verbose Logical. Default FALSE.
 #'
@@ -118,6 +122,7 @@ fit_calibration_bayes <- function(standards,
                                   compute_all_grids = FALSE,
                                   use_heteroscedastic_noise = FALSE,
                                   include_measurement_error = TRUE,
+                                  decision_cutoff = NULL,
                                   run_loo = NULL,
                                   persist_draws = FALSE,
                                   bayes_single_plate = FALSE,
@@ -171,6 +176,7 @@ fit_calibration_bayes <- function(standards,
           compute_all_grids = compute_all_grids,
           use_heteroscedastic_noise = use_heteroscedastic_noise,
           include_measurement_error = include_measurement_error,
+          decision_cutoff = decision_cutoff,
           run_loo = run_loo, persist_draws = persist_draws,
           bayes_single_plate = FALSE,          # each recursion is a plain N_plates=1 fit
           verbose = verbose
@@ -465,12 +471,15 @@ fit_calibration_bayes <- function(standards,
         samples_out <- predict_samples_bayes(
           this_samp, best_fit, curve_idx = idx,
           response_variable = response_var,
-          # is_log_response   = is_log_response,
+          is_log_response   = is_log_response,
           n_draws  = n_draws_predict,
           cv_x_max = cv_x_max,
           pcov_threshold = pcov_threshold,
           is_log_x = is_log_independent,
-          include_measurement_error = include_measurement_error
+          include_measurement_error = include_measurement_error,
+          lloq_log10 = assessments_by_model[[best_name]][[cid]]$lloq %||% NA_real_,
+          uloq_log10 = assessments_by_model[[best_name]][[cid]]$uloq %||% NA_real_,
+          decision_cutoff = decision_cutoff
         )
       }
     }
@@ -539,7 +548,8 @@ fit_calibration_bayes <- function(standards,
       include_measurement_error = include_measurement_error,
       n_draws_predict    = n_draws_predict,
       n_draws_ensemble   = n_draws_ensemble,
-      pcov_threshold     = pcov_threshold
+      pcov_threshold     = pcov_threshold,
+      decision_cutoff    = decision_cutoff
     )
 
     cr <- curveRcore::new_calibration_result(
@@ -573,6 +583,7 @@ fit_calibration_bayes <- function(standards,
     use_heteroscedastic_noise = use_heteroscedastic_noise,
     include_measurement_error = include_measurement_error,
     pcov_threshold     = pcov_threshold,
+    decision_cutoff    = decision_cutoff,
     timestamp          = Sys.time()
   )
 

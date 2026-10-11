@@ -247,8 +247,17 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
 #'   the measurement/CDAN profile. If FALSE, invert the observed response with no
 #'   added noise (curve/parameter precision only). MUST match the value passed to
 #'   [predict_grid_bayes()] for the same fit.
+#' @param lloq_log10,uloq_log10 Numeric. This curve's LLOQ/ULOQ (log10,
+#'   pre-dilution) for `p_below_lloq` / `p_above_uloq`. Default `NA`.
+#' @param decision_cutoff Numeric or NULL. Dilution-corrected concentration for
+#'   `p_below_cutoff`. Default NULL (column is `NA`).
 #'
-#' @return Data frame with original sample columns plus prediction columns.
+#' @return Data frame with original sample columns plus prediction columns,
+#'   including the predictive interval / probability columns from
+#'   [curveRcore::summarize_conc_draws()]. Those are computed from ALL draws,
+#'   with draws whose response falls beyond an asymptote kept as censored;
+#'   `se_concentration` / `pcov` are unchanged and still use the invertible
+#'   draws only.
 #'
 #' @export
 predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
@@ -257,7 +266,10 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
                                   n_draws = NULL, cv_x_max = 150,
                                   pcov_threshold = 20,
                                   is_log_x = TRUE,
-                                  include_measurement_error = TRUE) {
+                                  include_measurement_error = TRUE,
+                                  lloq_log10 = NA_real_,
+                                  uloq_log10 = NA_real_,
+                                  decision_cutoff = NULL) {
 
   family <- bayes_fit$model_family
   draws  <- bayes_fit$draws
@@ -317,7 +329,12 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
   #   grid uses, so the sample pcov includes the measurement-error term and the
   #   points land on the profile. curve-only mode: invert the fixed observed
   #   response (parameter uncertainty only).
-  x_mat <- matrix(NA_real_, nrow = n, ncol = S)
+  # x_cens: the same draws inverted with out-of-range responses kept as
+  # -Inf/+Inf (censored) instead of NA. It reuses each draw's already-sampled
+  # y_use, so it adds no RNG calls and x_mat (hence pcov) is unchanged.
+  x_mat  <- matrix(NA_real_, nrow = n, ncol = S)
+  x_cens <- matrix(NA_real_, nrow = n, ncol = S)
+  y_s    <- numeric(n)
   for (s in seq_len(S)) {
     for (i in seq_len(n)) {
       y_use <- if (isTRUE(include_measurement_error)) {
@@ -327,8 +344,11 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
       } else {
         fit_response[i]
       }
+      y_s[i] <- y_use
       x_mat[i, s] <- suppressWarnings(tryCatch(inv(y_use, s), error = function(e) NA_real_))
     }
+    x_cens[, s] <- curveRcore::invert_with_bounds(function(y) inv(y, s), y_s,
+                                                  a_draws[s], d_draws[s])
   }
 
   x_median <- apply(x_mat, 1, stats::median, na.rm = TRUE)
@@ -356,5 +376,14 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
   samples$noise_mode <- if (!include_measurement_error) "curve_only"
                         else if (use_hetero) "measurement_heteroscedastic"
                         else "measurement_homoscedastic"
+
+  lx <- x_cens
+  if (!is_log_x) {
+    fin <- is.finite(lx)
+    lx[fin] <- ifelse(lx[fin] > 0, log10(lx[fin]), -Inf)
+  }
+  summ <- curveRcore::summarize_conc_draws(lx, dilution, lloq_log10, uloq_log10,
+                                           decision_cutoff)
+  samples[names(summ)] <- summ
   samples
 }

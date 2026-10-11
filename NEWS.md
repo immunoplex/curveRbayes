@@ -1,3 +1,30 @@
+# curveRbayes 0.5.0
+
+* **Predictive intervals and threshold probabilities for test samples.**
+  `predict_samples_bayes()` now also inverts every posterior draw with
+  out-of-range responses kept as censored (`curveRcore::invert_with_bounds()`)
+  and adds `conc_q_lo` / `conc_q_med` / `conc_q_hi`, `p_below_lloq`,
+  `p_above_uloq`, `p_below_cutoff`, `frac_draws_below_a` and
+  `frac_draws_above_d` via `curveRcore::summarize_conc_draws()`. New
+  `decision_cutoff` argument on `fit_calibration_bayes()` (recorded in
+  `$meta`).
+* `se_concentration` / `pcov` / `final_concentration` are byte-identical to
+  0.4.3 for the same posterior and seed: the new path reuses each draw's
+  already-sampled response and adds no RNG calls. The new `frac_draws_*`
+  columns show how many draws those legacy summaries drop.
+* Requires `curveRcore (>= 0.5.0)`.
+* Vignette: replaced the stale "noise is NOT injected for test samples"
+  section — samples follow `include_measurement_error` (default `TRUE`), the
+  same setting as the grid.
+* **Bug fix:** `fit_calibration_bayes()` now passes `is_log_response` to
+  `predict_samples_bayes()` (the argument had been commented out), so test
+  samples are back-calculated on the same response scale as the standards.
+  Previously samples always assumed a log10 response; results change only for
+  fits with `is_log_response = FALSE` (set through the settings cascade).
+* Known, pre-existing: `test-reference-bayes.R` "sample predictions match
+  reference" fails on the stored fixture with the 0.4.3 code as well;
+  regenerate the fixture.
+
 # curveRbayes 0.4.3 (2026-09-26)
 
 * Declared the real dependency floor: `Imports: curveRcore (>= 0.4.0)`.

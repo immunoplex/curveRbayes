@@ -1258,36 +1258,55 @@ cat(sprintf("  Back-calc CV:    %.1f%%\n",
 
 # Back-calculating test samples {#backcalc}
 
-## Why noise is NOT injected for test samples {#no-noise}
+## Noise injection for test samples: `include_measurement_error` {#no-noise}
 
-This is the most important conceptual distinction in the package.
+Whether observation noise is injected when back-calculating test samples is
+controlled by one argument, `include_measurement_error`, which must take the
+same value for the precision grid and the samples so the sample points lie on
+the precision profile.
 
-When `predict_samples_bayes()` is called on observed test-sample
-responses, the situation is fundamentally different from building
-a precision grid:
-
-> **The observed response $y_\text{obs}$ already IS the noisy
-> measurement. Injecting noise again would be double-counting.**
-
-The back-calculation task is: *given that the instrument returned
-$y_\text{obs}$, what is the posterior distribution of the unknown
-concentration $x$?*
-This is a pure inversion problem:
+**`include_measurement_error = TRUE` (the default).** Each posterior draw
+perturbs the observed response with the same Student-t noise model the grid
+uses before inverting:
 
 $$
 \hat{x}^{(s)}
-= f^{-1}\!\left(y_\text{obs};\; \boldsymbol{\theta}_k^{(s)}\right)
+= f^{-1}\!\left(y_\text{obs} + \varepsilon^{(s)};\; \boldsymbol{\theta}_k^{(s)}\right),
+\qquad \varepsilon^{(s)} \sim t_{\nu^{(s)}}\!\left(0, \sigma^{(s)}\right)
 $$
 
-No noise draw appears.
-The uncertainty in $\hat{x}^{(s)}$ arises solely from posterior
-uncertainty in the curve parameters $\boldsymbol{\theta}_k^{(s)}$.
+The reported precision then answers "how precisely does a single noisy reading
+like this one pin down a concentration?" — the classical immunoassay precision
+profile, comparable across samples and to the grid.
+
+**`include_measurement_error = FALSE`.** The observed response is inverted as
+is, so uncertainty comes only from the curve parameters. The argument for this
+mode is that $y_\text{obs}$ already *is* the noisy measurement; it gives an
+honest lower bound on precision and is appropriate when a plate has too few
+standards to estimate the noise model well.
 
 | Scenario | Function | Noise injected? | Source of uncertainty |
 |---|---|---|---|
-| Precision grid (homoscedastic) | `predict_grid_bayes()` | ✅ Yes — Student-t($\nu$, $\sigma_\text{obs}$) constant | Parameter uncertainty + homoscedastic noise |
-| Precision grid (CDAN) | `predict_grid_bayes()` | ✅ Yes — Student-t($\nu$, $\sigma_i$) where $\sigma_i$ scales with $|\mu|$ | Parameter uncertainty + concentration-dependent noise |
-| Test sample back-calculation | `predict_samples_bayes()` | ❌ No | Parameter uncertainty only (noise already realised in $y_\text{obs}$) |
+| Precision grid (homoscedastic) | `predict_grid_bayes()` | when `include_measurement_error = TRUE` — Student-t($\nu$, $\sigma_\text{obs}$) | Parameter uncertainty + homoscedastic noise |
+| Precision grid (CDAN) | `predict_grid_bayes()` | when `include_measurement_error = TRUE` — Student-t($\nu$, $\sigma_i$), $\sigma_i$ scaling with $|\mu|$ | Parameter uncertainty + concentration-dependent noise |
+| Test sample back-calculation | `predict_samples_bayes()` | when `include_measurement_error = TRUE` (same model as the grid) | As the grid; parameter uncertainty only when `FALSE` |
+
+The `noise_mode` column on `$samples` records which mode was used.
+
+## Draws beyond the asymptotes, intervals and probabilities {#oor-draws}
+
+When a draw's (noisy) response falls beyond that draw's lower or upper
+asymptote, it has no finite concentration. `se_concentration` and `pcov` drop
+such draws, which understates the spread near the ends of the curve; that
+summary is kept unchanged for comparability. Alongside it, every sample also
+gets columns computed from **all** draws, with an out-of-range draw counted as
+censored (concentration 0 or unbounded): `conc_q_lo` / `conc_q_med` /
+`conc_q_hi` (2.5 / 50 / 97.5 % on the natural, dilution-corrected scale),
+`p_below_lloq`, `p_above_uloq`, `p_below_cutoff` (pass
+`decision_cutoff =` to `fit_calibration_bayes()`), and
+`frac_draws_below_a` / `frac_draws_above_d`. Censoring classes and bounds come
+from `curveRcore::classify_censoring_multiplate()`; see the curveRcore
+"Getting Started" vignette, section *Out-of-range samples*.
 
 ## Running back-calculation {#backcalc-run}
 

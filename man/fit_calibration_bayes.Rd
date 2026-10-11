@@ -26,11 +26,13 @@ fit_calibration_bayes(
   sampling = 1000L,
   adapt_delta = 0.9,
   seed = NULL,
+  threads_per_chain = 1L,
   n_draws_predict = 500L,
   n_draws_ensemble = 260L,
   compute_all_grids = FALSE,
   use_heteroscedastic_noise = FALSE,
   include_measurement_error = TRUE,
+  decision_cutoff = NULL,
   run_loo = NULL,
   persist_draws = FALSE,
   bayes_single_plate = FALSE,
@@ -119,6 +121,11 @@ immunoassay precision profile). FALSE inverts a fixed reference response
 across the posterior (curve/parameter uncertainty only). The noise MODEL
 used when TRUE is chosen by \code{use_heteroscedastic_noise}. See
 \code{predict_bayes.R} and UNDERSTANDING_precision_and_measurement_error.md.}
+
+\item{decision_cutoff}{Numeric or NULL. Dilution-corrected concentration
+for each sample's \code{p_below_cutoff} (probability its concentration is below
+the cutoff). Default NULL: \code{p_below_cutoff} is \code{NA}. \code{p_below_lloq} /
+\code{p_above_uloq} are always computed.}
 
 \item{run_loo}{Logical or NULL. Default NULL (auto).}
 

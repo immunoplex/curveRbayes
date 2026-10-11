@@ -13,6 +13,7 @@ fit_bayes_single(
   adapt_delta = 0.9,
   max_treedepth = 12L,
   seed = NULL,
+  threads_per_chain = 1L,
   compiled_model = NULL,
   verbose = FALSE
 )
