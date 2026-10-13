@@ -1,3 +1,9 @@
+# curveRbayes 0.5.1
+
+* Maintenance release: no functional changes. Rebuilt and documented against
+  curveRcore 0.5.2 (whose `getting-started` vignette now covers censoring and
+  precision weights).
+
 # curveRbayes 0.5.0
 
 * **Predictive intervals and threshold probabilities for test samples.**
