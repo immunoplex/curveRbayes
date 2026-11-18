@@ -13,7 +13,8 @@ predict_grid_bayes(
   pcov_threshold = 20,
   is_log_x = TRUE,
   is_log_response = TRUE,
-  include_measurement_error = TRUE
+  include_measurement_error = TRUE,
+  seed = NULL
 )
 }
 \arguments{
@@ -38,6 +39,11 @@ Passed to \code{\link[curveRcore:enrich_grid_with_d2y]{curveRcore::enrich_grid_w
 noise before back-calculation (measurement/CDAN precision). If FALSE, invert
 the fixed posterior-mean reference response across draws (curve/parameter
 precision only). See file header.}
+
+\item{seed}{Integer or NULL. With a seed, the draw thinning and the noise
+draws are reproducible and shared with \code{\link[=predict_samples_bayes]{predict_samples_bayes()}} for the
+same curve and \code{n_draws} (see file header). NULL draws them from the global
+RNG.}
 }
 \value{
 \code{grid} with added columns: \code{predicted_response}, \code{ci_lower},

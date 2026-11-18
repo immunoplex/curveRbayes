@@ -330,7 +330,8 @@ fit_calibration_bayes <- function(standards,
         pcov_threshold = pcov_threshold,
         is_log_x = is_log_independent,
         is_log_response = is_log_response,
-        include_measurement_error = include_measurement_error
+        include_measurement_error = include_measurement_error,
+        seed = seed
       )
     }
 
@@ -479,7 +480,8 @@ fit_calibration_bayes <- function(standards,
           include_measurement_error = include_measurement_error,
           lloq_log10 = assessments_by_model[[best_name]][[cid]]$lloq %||% NA_real_,
           uloq_log10 = assessments_by_model[[best_name]][[cid]]$uloq %||% NA_real_,
-          decision_cutoff = decision_cutoff
+          decision_cutoff = decision_cutoff,
+          seed = seed
         )
       }
     }

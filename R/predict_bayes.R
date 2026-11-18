@@ -29,7 +29,55 @@
 #
 # Because both paths call the SAME .obs_noise_sigma() helper, the two can never
 # drift apart again.
+#
+# ── REPRODUCIBILITY (0.5.2) ───────────────────────────────────────────────────
+# The draw thinning (n_draws) and the measurement-noise draws come from ONE
+# stream per curve, .noise_stream(): the subset of posterior draws and one
+# standardised t variate per draw (df = that draw's nu). With a seed (the fit's
+# seed, passed by fit_calibration_bayes()) the stream is generated under a
+# local seed derived from (seed, curve_idx), so:
+#   * the same seed gives identical grids and sample estimates (the caller's
+#     random-number state is left untouched);
+#   * a sample's estimate does not depend on which other samples (or controls,
+#     standards) are back-calculated with it, nor on their order;
+#   * grid points and samples use the same noise draws (for the same n_draws),
+#     so the profile and the samples carry the same Monte Carlo realisation.
+# Each point's marginal distribution is unchanged: draw s still adds
+# sigma_s * t(nu_s) noise. Without a seed the stream is drawn from the global
+# RNG, as before.
 # =============================================================================
+
+
+# Derive a per-curve seed from the fit seed (kept inside the integer range).
+.curve_seed <- function(seed, curve_idx) {
+  as.integer((as.numeric(seed) + 1000003 * as.numeric(curve_idx)) %% 2147483647)
+}
+
+# Evaluate `expr` under a fixed seed, restoring the caller's RNG state after.
+.with_local_seed <- function(seed, expr) {
+  had <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+  old <- if (had) get(".Random.seed", envir = globalenv(), inherits = FALSE) else NULL
+  on.exit(if (had) assign(".Random.seed", old, envir = globalenv())
+          else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+            rm(".Random.seed", envir = globalenv()))
+  set.seed(seed)
+  expr
+}
+
+# The curve's random stream: which posterior draws are used (`idx`) and one
+# standardised t variate per used draw (`e`; NA when nu is unavailable).
+.noise_stream <- function(S, n_draws, nu_draws, seed, curve_idx) {
+  gen <- function() {
+    idx <- if (!is.null(n_draws) && n_draws < S) sample.int(S, n_draws) else seq_len(S)
+    nu  <- if (length(nu_draws) >= S) nu_draws[idx] else rep(NA_real_, length(idx))
+    e   <- rep(NA_real_, length(idx))
+    ok  <- is.finite(nu) & nu > 0
+    if (any(ok)) e[ok] <- stats::rt(sum(ok), df = nu[ok])
+    list(idx = idx, e = e)
+  }
+  if (is.null(seed) || !length(seed) || !is.finite(seed)) gen()
+  else .with_local_seed(.curve_seed(seed, curve_idx), gen())
+}
 
 
 #' Observation-noise sigma for one posterior draw (shared by grid + samples)
@@ -79,6 +127,10 @@
 #'   noise before back-calculation (measurement/CDAN precision). If FALSE, invert
 #'   the fixed posterior-mean reference response across draws (curve/parameter
 #'   precision only). See file header.
+#' @param seed Integer or NULL. With a seed, the draw thinning and the noise
+#'   draws are reproducible and shared with [predict_samples_bayes()] for the
+#'   same curve and `n_draws` (see file header). NULL draws them from the global
+#'   RNG.
 #'
 #' @return `grid` with added columns: `predicted_response`, `ci_lower`,
 #'   `ci_upper`, `predicted_concentration`, `se_concentration`, `pcov`,
@@ -90,7 +142,8 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
                                pcov_threshold = 20,
                                is_log_x = TRUE,
                                is_log_response = TRUE,
-                               include_measurement_error = TRUE) {
+                               include_measurement_error = TRUE,
+                               seed = NULL) {
 
   family <- bayes_fit$model_family
   draws  <- bayes_fit$draws
@@ -114,8 +167,9 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
   use_hetero <- isTRUE(bayes_fit$stan_data$use_heteroscedastic_noise == 1L)
 
   S <- length(a_draws)
-  if (!is.null(n_draws) && n_draws < S) {
-    idx <- sample.int(S, n_draws)
+  ns <- .noise_stream(S, n_draws, nu_draws, seed, curve_idx)
+  if (length(ns$idx) < S) {
+    idx <- ns$idx
     a_draws <- a_draws[idx]; b_draws <- b_draws[idx]
     c_draws <- c_draws[idx]; d_draws <- d_draws[idx]
     if (!is.null(g_draws))            g_draws            <- g_draws[idx]
@@ -125,8 +179,9 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
       log_sigma0_draws      <- log_sigma0_draws[idx]
       log_sigma_slope_draws <- log_sigma_slope_draws[idx]
     }
-    S <- n_draws
+    S <- length(idx)
   }
+  e_draws <- ns$e
 
   fwd <- switch(family,
                 logistic4    = function(x, s) curveRcore::logistic4(x, a_draws[s], b_draws[s],
@@ -171,7 +226,7 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
       if (!is.finite(mu_s)) next
       sigma_s <- .obs_noise_sigma(mu_s, s, use_hetero,
                                   sigma_obs_draws, log_sigma0_draws, log_sigma_slope_draws)
-      y_noisy <- mu_s + sigma_s * stats::rt(1, df = nu_draws[s])
+      y_noisy <- mu_s + sigma_s * e_draws[s]
       x_mat[i, s] <- suppressWarnings(tryCatch(inv(y_noisy, s), error = function(e) NA_real_))
     }
   } else {
@@ -251,6 +306,10 @@ predict_grid_bayes <- function(grid, bayes_fit, curve_idx = 1L,
 #'   pre-dilution) for `p_below_lloq` / `p_above_uloq`. Default `NA`.
 #' @param decision_cutoff Numeric or NULL. Dilution-corrected concentration for
 #'   `p_below_cutoff`. Default NULL (column is `NA`).
+#' @param seed Integer or NULL. With a seed, the draw thinning and the noise
+#'   draws are reproducible, identical for every sample of the curve, and the
+#'   same as the grid's for the same `n_draws` (see file header). NULL draws
+#'   them from the global RNG.
 #'
 #' @return Data frame with original sample columns plus prediction columns,
 #'   including the predictive interval / probability columns from
@@ -269,7 +328,8 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
                                   include_measurement_error = TRUE,
                                   lloq_log10 = NA_real_,
                                   uloq_log10 = NA_real_,
-                                  decision_cutoff = NULL) {
+                                  decision_cutoff = NULL,
+                                  seed = NULL) {
 
   family <- bayes_fit$model_family
   draws  <- bayes_fit$draws
@@ -294,8 +354,9 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
   use_hetero <- isTRUE(bayes_fit$stan_data$use_heteroscedastic_noise == 1L)
 
   S <- length(a_draws)
-  if (!is.null(n_draws) && n_draws < S) {
-    idx <- sample.int(S, n_draws)
+  ns <- .noise_stream(S, n_draws, nu_draws, seed, curve_idx)
+  if (length(ns$idx) < S) {
+    idx <- ns$idx
     a_draws <- a_draws[idx]; b_draws <- b_draws[idx]
     c_draws <- c_draws[idx]; d_draws <- d_draws[idx]
     if (!is.null(g_draws)) g_draws <- g_draws[idx]
@@ -305,8 +366,9 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
       log_sigma0_draws      <- log_sigma0_draws[idx]
       log_sigma_slope_draws <- log_sigma_slope_draws[idx]
     }
-    S <- n_draws
+    S <- length(idx)
   }
+  e_draws <- ns$e
 
   inv <- switch(family,
                 logistic4    = function(y, s) curveRcore::inv_logistic4(y, a_draws[s], b_draws[s],
@@ -340,7 +402,7 @@ predict_samples_bayes <- function(samples, bayes_fit, curve_idx = 1L,
       y_use <- if (isTRUE(include_measurement_error)) {
         sigma_s <- .obs_noise_sigma(fit_response[i], s, use_hetero,
                                     sigma_obs_draws, log_sigma0_draws, log_sigma_slope_draws)
-        fit_response[i] + sigma_s * stats::rt(1, df = nu_draws[s])
+        fit_response[i] + sigma_s * e_draws[s]
       } else {
         fit_response[i]
       }

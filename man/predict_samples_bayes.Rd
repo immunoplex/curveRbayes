@@ -17,7 +17,8 @@ predict_samples_bayes(
   include_measurement_error = TRUE,
   lloq_log10 = NA_real_,
   uloq_log10 = NA_real_,
-  decision_cutoff = NULL
+  decision_cutoff = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -50,6 +51,11 @@ pre-dilution) for \code{p_below_lloq} / \code{p_above_uloq}. Default \code{NA}.}
 
 \item{decision_cutoff}{Numeric or NULL. Dilution-corrected concentration for
 \code{p_below_cutoff}. Default NULL (column is \code{NA}).}
+
+\item{seed}{Integer or NULL. With a seed, the draw thinning and the noise
+draws are reproducible, identical for every sample of the curve, and the
+same as the grid's for the same \code{n_draws} (see file header). NULL draws
+them from the global RNG.}
 }
 \value{
 Data frame with original sample columns plus prediction columns,
