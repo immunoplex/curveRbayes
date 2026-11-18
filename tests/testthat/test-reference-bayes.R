@@ -11,6 +11,15 @@
 #
 # Bayesian tolerances are wider than frequentist due to MCMC noise.
 #
+# MEASUREMENT ERROR (0.5.2): this snapshot was generated on 2026-06-03, before
+# curveRbayes added measurement noise to the back-calculation
+# (include_measurement_error, default TRUE since 2026-07-29). This file
+# therefore fits with include_measurement_error = FALSE, the condition the
+# snapshot was made under: it checks that the curve fits and the curve-only
+# back-calculation are unchanged since June. The default (noise on, seeded)
+# is checked against its own snapshot in test-reference-bayes-me.R.
+# The fit is run once per test session and reused by every test below.
+#
 # Generate the reference with:
 #   Rscript data-raw/generate_reference_bayes.R
 # =============================================================================
@@ -42,7 +51,14 @@ ref_path <- function() {
   testthat::test_path("fixtures", "reference_bayes_curve123.rds")
 }
 
+.ref_fit_cache <- new.env()
 run_bayes_curve123 <- function() {
+  if (!is.null(.ref_fit_cache$result)) return(.ref_fit_cache$result)
+  .ref_fit_cache$result <- .run_bayes_curve123()
+  .ref_fit_cache$result
+}
+
+.run_bayes_curve123 <- function() {
   data("bead_assay_example", package = "curveRcore", envir = environment())
 
   std_raw <- bead_assay_example$standards[
@@ -76,6 +92,7 @@ run_bayes_curve123 <- function() {
     seed               = 20260529,
     run_loo            = TRUE,
     n_draws_predict    = 500,
+    include_measurement_error = FALSE,   # the snapshot predates measurement noise
     verbose            = FALSE
   )
 }
@@ -226,30 +243,9 @@ test_that("grid predicted_response matches reference for each curve_id", {
   }
 })
 
-test_that("grid predicted_concentration matches reference for each curve_id", {
-  skip_if_not(cmdstanr_available())
-  skip_if_not(file.exists(ref_path()))
-
-  ref    <- readRDS(ref_path())
-  result <- run_bayes_curve123()
-
-  for (cid in EXPECTED_CIDS) {
-    cr     <- result$plates[[cid]]
-    ref_cr <- ref$plates[[cid]]
-
-    ref_pc <- ref_cr$grid$predicted_concentration
-    cur_pc <- cr$grid$predicted_concentration
-    both_ok <- is.finite(ref_pc) & is.finite(cur_pc)
-
-    if (any(both_ok)) {
-      expect_equal(cur_pc[both_ok], ref_pc[both_ok],
-                   tolerance = TOL_CONC,
-                   info = paste("Predicted conc shifted for curve_id", cid))
-    }
-    expect_equal(is.na(cur_pc), is.na(ref_pc),
-                 info = paste("NA pattern changed for curve_id", cid))
-  }
-})
+# grid predicted_concentration vs the June snapshot is checked in
+# test-reference-bayes-me.R: the June grid already included measurement noise
+# (only the June samples did not), so it is compared with a noise-on fit.
 
 
 # ============================================================================

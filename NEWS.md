@@ -1,3 +1,32 @@
+# curveRbayes 0.5.2
+
+* **Reproducible measurement noise.** With `include_measurement_error = TRUE`
+  (the default) the noise added before back-calculation, and the thinning of
+  posterior draws (`n_draws`), were drawn from R's global random-number
+  generator without a seed, so two runs of the same job with the same `seed`
+  gave different sample estimates (up to 2% inside the dynamic range, up to
+  25% above ULOQ). They now come from one stream per curve, seeded from the
+  fit's `seed` and the curve's index (`predict_grid_bayes()` and
+  `predict_samples_bayes()` gain `seed`, passed by `fit_calibration_bayes()`):
+  * the same seed gives identical grids and sample estimates, and the caller's
+    random-number state is left untouched;
+  * a sample's estimate no longer depends on which other samples are
+    back-calculated with it, or on their order;
+  * the grid and the samples use the same noise draws.
+  Each sample's distribution is unchanged; results differ from 0.5.1 by Monte
+  Carlo noise only. Without a seed the stream is drawn from the global RNG as
+  before.
+* **Reference tests split.** `test-reference-bayes.R` compares with the June
+  2026 snapshot, which predates measurement noise in the back-calculation, so
+  it now fits with `include_measurement_error = FALSE` (the condition the
+  snapshot was made under); it checks that fits and the curve-only
+  back-calculation are unchanged. (The June grid already added measurement
+  noise; only the June samples did not. So the June grid is compared with a
+  noise-on fit, in the new file.) The default (noise on, seeded) is checked by
+  the new `test-reference-bayes-me.R` against its own snapshot
+  (`data-raw/generate_reference_bayes_me.R`), with tolerances by region of the
+  curve. Both files fit once and reuse the result.
+
 # curveRbayes 0.5.1
 
 * Maintenance release: no functional changes. Rebuilt and documented against
